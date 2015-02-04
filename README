@@ -1,17 +1,50 @@
 LIONS pipeline architecture
-#--------------------------------------------------------------------
+#====================================================================
+ LIONS is a bioinformatic analysis pipeline which brings together a
+ few pieces of software and some home-brewed scripts to annotate a
+ paired-end RNAseq library against a reference TE annotation set
+ (such as Repeat Masker).
 
+ East Lion proccesses a bam file input, re-aligns it to a genome,
+ builds an ab initio assembly using Tophat2. This assembly is then
+ proccessed and local read searches are done at the 5' ends to find
+ additional transcript start sites and quality control the 5' ends of
+ the assembly. The output is a file-type <library>.lions which
+ annotates the intersection between the assembly, a reference gene set
+ and repeat set.
+
+ West Lion compiles different .lions files, groups them into biological
+ catagories (i.e. Cancer vs. Normal or Treatment vs. Control) and
+ compares and analyzes the data to create graphs and meaningful
+ interpretation of the data.
+
+# LIONS File Architecture
+# ===================================================================
 # ./
+	base directory:  LIONS is a self-contained pipeline and 
+	references needed by LIONS from the system are linked
+	within this directory.
 
-	This is the directory this file is found in. LIONS is self-
-	contained and references needed by LIONS from the system
-	are looked for locally.
-
-#--------------------------------------------------------------------
-
+	lions.sh <input.list> <parameters.ctrl>
+		The master script from which the entire pipeline is ran
+		The script reads and procceses all files in input.list
+		and all parameters can be controlled from parameters.ctrl
+	
+	
 # ./bin
-
 	Binary: A folder for symbolic links to binaries needed by
 	the pipeline.
 	
-## ./bin/<system
+	## ./bin/<system>.ctrl
+		A 2 column CSV file listing paths for software.
+		A correct reference for each software listed here
+		is required. Each peice of software will have
+		symbolic links created to link it to the correct
+		path in the system.
+
+		The tempalte.lns file is a template for the software
+		required.
+
+# ./scripts
+	Scripts: all scripts to run lion are held here except for the
+	controlling lions.sh script which is in the base folder

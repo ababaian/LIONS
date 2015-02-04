@@ -1,0 +1,4 @@
+bam2fastx	.../bam2fastx
+tophat2	.../tophat2
+bowtie2	.../bowtie2
+python3	.../python3
