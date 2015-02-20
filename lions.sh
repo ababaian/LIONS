@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage:  .lions.sh <input.list> <parameter.ctrl>
+# Usage: .lions.sh <parameter.ctrl (opt.)>
 #
 # ===================================================================
 # LIONS analysis pipeline
@@ -18,12 +18,22 @@
 # *** WRITE LAST ***
 
 # Read parameter file (imports run parameters)
+if [ -z $1 ]
+then
+	echo " No parameter input file specified. Using default file:"
+	echo "      ./LIONS/parameter.ctrl"
+
 	PARAMETER="parameter.ctrl"
-	. $PARAMETER $PWD # works in bash only
+else
+	echo " Custom parameter file set. Using file:"
+	echo "     $1"
+fi
+	# Run parameter script
+	.$PARAMETER # works in bash only
 
 # Run Initialization Script
 	bash $SCRIPTS/initialize.sh
 
 # EAST LION =========================================================
 
-sh runTH2.sh <Input Bam> <output_name>
+#sh runTH2.sh <Input Bam> <output_name>

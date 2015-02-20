@@ -1,5 +1,5 @@
 #!/bin/bash
-# parameter.ctrl <LIONS pwd>
+# parameter.ctrl
 # PARAMETER CONTROL FILE
 # Defines parameters with which to run LIONS
 # =========================================================
@@ -7,10 +7,14 @@
 # PROJECT -------------------------------------------------
 	export PROJECT='sandbox' # Project Name
 
+	export INPUT_LIST='input.list' # <libName> <libPath> <group> csv file
+
 	export INDEX='hg19r' # Genome resource to use
 
-	# Directories
-	export BASE=$1 # Base folder for ~/LIONS/
+# Directories
+	export BASE=$PWD # Base folder for ~/LIONS/
+
+	export setBinPath="$BASE/bin/setBinPath.sh"
 
 	export SCRIPTS="$BASE/scripts"
 
@@ -34,8 +38,6 @@
 	export bowtie2="$BASE/bin/bowtie2"
 
 # Tophat 2
-	tophat2="$BASE/bin/tophat2"
-
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50
 	INREAD='50'
@@ -44,3 +46,5 @@
 	
 
 # WEST LION -----------------------------------------------
+
+

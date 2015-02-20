@@ -25,22 +25,32 @@ LIONS pipeline architecture
 	references needed by LIONS from the system are linked
 	within this directory.
 
-	lions.sh <input.list> <parameters.ctrl>
+	./lions.sh <parameter.ctrl>
 		The master script from which the entire pipeline is ran
 		The script reads and procceses all files in input.list
-		and all parameters can be controlled from parameters.ctrl
-	
+		and all parameters can be controlled from parameter.ctrl
+
+	./parameter.ctrl
+		A bash script which defines global variables for all LIONS
+		scripts. Also defines project-specific variables such as
+		Project Name, library input list etc...
+
+	./input.list
+		A three column tab-delimited file defining:
+		<Library_Name> <Library_Path_on_system> <Biological_Grouping>
+		Group Naming Convention: 1 = control 2 = experimental 3 = other
+		
 	
 # ./bin
 	Binary: A folder for symbolic links to binaries needed by
-	the pipeline.
+	the pipeline and script to initilize the folder.
 	
-	## ./bin/<system>.ctrl
-		A 2 column CSV file listing paths for software.
-		A correct reference for each software listed here
-		is required. Each peice of software will have
-		symbolic links created to link it to the correct
-		path in the system.
+	./bin/setBinPath(_sys).sh
+		A bash script which defines the location of all the software
+		required by LIONS. Can be set for different systems using the
+		_sys suffix and set in the respective paramter.ctrl file.
+		Each peice of software will have symbolic links created to link
+		it to the correct path in the system.
 
 		The tempalte.lns file is a template for the software
 		required.
