@@ -1,0 +1,16 @@
+# LIONS ERROR CODES
+
+# Error 1 - internal software error. Check last-run software.
+
+# Intiailzation Codes ---------------------------
+# Error 2 - Initializal file missing or inaccesible
+	A file is missing. Ensure you have a complete version of LIONS and/or make the missing script readable/exectable
+
+# Error 3 - A LIONS script is missing
+	A script is missing from ./LIONS/scripts/ ; ensure your copy of LIONS is complete or redownload.
+
+# Error 4 - Initialization bin missing
+	A binary is not found on the system. Configure ./LIONS/bin/intializeBin.sh for your system
+
+# Error 5 - A resource file is missing or unreadable
+	Checking/initialization of ./LIONS/scripts

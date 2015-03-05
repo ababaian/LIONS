@@ -45,7 +45,7 @@ LIONS pipeline architecture
 	Binary: A folder for symbolic links to binaries needed by
 	the pipeline and script to initilize the folder.
 	
-	./bin/setBinPath(_sys).sh
+	./bin/initializeBin(_sys).sh
 		A bash script which defines the location of all the software
 		required by LIONS. Can be set for different systems using the
 		_sys suffix and set in the respective paramter.ctrl file.
@@ -57,4 +57,11 @@ LIONS pipeline architecture
 
 # ./scripts
 	Scripts: all scripts to run lion are held here except for the
-	controlling lions.sh script which is in the base folder
+	controlling lions.sh script which is in the base folder.
+	Check initializeScripts.sh for complete list of scripts
+
+	./scripts/eastLion.sh
+	./scripts/westLion.sh
+
+# ./resources
+

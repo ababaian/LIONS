@@ -14,14 +14,13 @@
 # Directories
 	export BASE=$PWD # Base folder for ~/LIONS/
 
-	export setBinPath="$BASE/bin/setBinPath.sh"
-
 	export SCRIPTS="$BASE/scripts"
 
 	export TMP="/tmp/artmp" # Temporary working directory [Cluster-only]
 
 	export RESOURCES="$BASE/resources/$INDEX/"
 
+	export pDIR="$BASE/projects/$PROJECT"
 # SYSTEM --------------------------------------------------
 # Performance
 	export SYSTEM='glitch' # System Name

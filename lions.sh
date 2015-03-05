@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage: .lions.sh <parameter.ctrl (opt.)>
-#
+set -e
 # ===================================================================
 # LIONS analysis pipeline
 # ===================================================================
@@ -11,6 +11,21 @@
 #
 # Details can be found in README
 #
+echo ''
+echo ''
+echo '==============================================================='
+echo '========================= L I O N S ==========================='
+echo '==============================================================='
+echo '''                             _   _
+                           _/ \|/ \_
+                          /\\/   \//\
+                          \|/<\ />\|/   *RAWR*
+                          /\   _   /\  /
+                          \|/\ Y /\|/
+                           \/|v-v|\/
+                            \/\_/\/
+'''
+echo ''
 
 # INITIALIZATION ===================================================
 # Start-up script which checks all requisites are operational for
@@ -20,20 +35,26 @@
 # Read parameter file (imports run parameters)
 if [ -z $1 ]
 then
-	echo " No parameter input file specified. Using default file:"
+	echo " No parameter input file specified. Importing default file:"
 	echo "      ./LIONS/parameter.ctrl"
-
 	PARAMETER="parameter.ctrl"
+	echo ''
 else
-	echo " Custom parameter file set. Using file:"
-	echo "     $1"
+	echo " Import parameter file."
+	echo "    Project Parameters: ./$1"
+	PARAMETER=$1
+	echo ''
 fi
 	# Run parameter script
-	.$PARAMETER # works in bash only
+	source $PARAMETER # works in bash only
 
 # Run Initialization Script
-	bash $SCRIPTS/initialize.sh
+echo ' running initializeLIONS.sh'
+
+	bash $SCRIPTS/initializeLIONS.sh
 
 # EAST LION =========================================================
 
 #sh runTH2.sh <Input Bam> <output_name>
+
+
