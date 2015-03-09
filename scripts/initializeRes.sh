@@ -17,7 +17,7 @@
 
 # Resource Directory (from parent script)
 	#RESOURCES="$BASE/resources/$INDEX"
-	cd $RESOURCES/$res
+	cd $RESOURCES
 
 # Resource list----------------------------------
 
@@ -46,8 +46,11 @@
 # Test if file exist and can be read
 FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "... $FILE found."; else echo "     $FILE not found (empty or non-readable)."; echo " ===== ERROR 5: MISSING REQUISITE RESOURCE ===== "; exit 2; fi'
 
+# GENOME FILE CHECK -----------------------------
+cd genome # go to genome directory
+
 # ----- Check if genome.fa file is present
-	FILE="$genomeFa"; eval FCHECK_rs
+	FILE="$genomeFa"; eval $FCHECK_rs
 
 # -----  Check if genome.fa.fai is present, if not generate it
 if [ ! -r $genomeFai ];
@@ -63,5 +66,9 @@ then
 	$BOWTIE2_BUILD $genomeFa $res
 fi
 
-	
+cd ..
+
+# REPEAT FILE CHECK ------------------------------
+
+# OTHER FILE CHECK -------------------------------
 

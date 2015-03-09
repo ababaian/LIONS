@@ -1,0 +1,10 @@
+lions.sh
+
+	line X: Add a flow control to also allow fastq input files
+	into tophat and skip the bam extraction steps
+
+	line 80: Control script for Cluster/Local runs (Qsub)
+
+initializeLIONS.sh
+
+	line 132: implement archive folder for each run

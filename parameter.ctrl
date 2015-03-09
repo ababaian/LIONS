@@ -4,46 +4,57 @@
 # Defines parameters with which to run LIONS
 # =========================================================
 
+# The LIONS den
+	export BASE=$PWD # Base folder for ~/LIONS/
+
 # PROJECT -------------------------------------------------
 	export PROJECT='sandbox' # Project Name
 
-	export INPUT_LIST='input.list' # <libName> <libPath> <group> csv file
+	export INPUT_LIST="$BASE/input.list" # <libName> <libPath> <group> csv file
 
 	export INDEX='hg19r' # Genome resource to use
 
+	export RUNID=$(date +%y%m%d_%H%M) # Unique Run ID; date_hhmm
+
 # Directories
-	export BASE=$PWD # Base folder for ~/LIONS/
 
 	export SCRIPTS="$BASE/scripts"
 
 	export TMP="/tmp/artmp" # Temporary working directory [Cluster-only]
 
-	export RESOURCES="$BASE/resources/$INDEX/"
+	export RESOURCES="$BASE/resources/$INDEX"
 
 	export pDIR="$BASE/projects/$PROJECT"
+	
+	export lBIN="$BASE/bin"
+
 # SYSTEM --------------------------------------------------
 # Performance
 	export SYSTEM='glitch' # System Name
-	# genesis = run with qsub commands on the gsc genesis cluster
+	# gsc = run with qsub commands on the gsc genesis cluster
 	# <local> = run on local machine.
 
 	export THREADS='1' # number of CPU cores to use
 
 # Cluster Commands
-	export QSUB='' # qsub submission command
+	if [ $SYSTEM == 'gsc' ]
+	then # Cluster QSUB
+		export QSUB='qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus 4 -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G'
+
+	else # Local (no) QSUB
+		export QSUB=''
+	fi
 
 # EAST LION -----------------------------------------------
-# Bowtie 2		
-	export bowtie2="$BASE/bin/bowtie2"
+# Bowtie 2
+	export BOWTIE=''
 
 # Tophat 2
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50
 	INREAD='50'
-
-	export TOPHAT="$tophat2 -p $THREADS -r $INREAD --report-secondary-alignments"
+	export ctrlTH2=" $BOWTIE-p $THREADS -r $INREAD --report-secondary-alignments"
 	
-
 # WEST LION -----------------------------------------------
 
 

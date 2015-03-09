@@ -13,7 +13,6 @@
 	export BAM2FASTX='bam2fastx'
 	export TOPHAT2='tophat2'
 	export BOWTIE2='bowtie2'
-	export BOWTIE2_BUILD='bowtie2-build'
 	export PYTHON3='python3'
 	#JAVA
 	#CUFFLINKS
@@ -34,11 +33,26 @@ mkLink='ln -fs $(command -v $WARE) $BASE/bin/$WARE'
 echo "     Check that system software requirements are available and working."
 
 echo ''
-	WARE=$SAMTOOLS; eval $wareExists; eval $mkLink
-	WARE=$BAM2FASTX; eval $wareExists; eval $mkLink
-	WARE=$TOPHAT2; eval $wareExists; eval $mkLink
-	WARE=$BOWTIE2; eval $wareExists; eval $mkLink
-	WARE=$PYTHON3; eval $wareExists; eval $mkLink
+	# Samtools
+	WARE=$SAMTOOLS; eval $wareExists #; eval $mkLink
+		ln -fs $(command -v $WARE) $BASE/bin/samtools
+
+	# Bam2Fastx
+	WARE=$BAM2FASTX; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/bam2fastx
+
+	# Tophat2
+	WARE=$TOPHAT2; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/tophat2
+
+	# Bowtie2
+	WARE=$BOWTIE2; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/bowtie2
+
+	# Python3
+	WARE=$PYTHON3; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/python3
+
 echo ''
 
 # End of script : )

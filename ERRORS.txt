@@ -14,3 +14,9 @@
 
 # Error 5 - A resource file is missing or unreadable
 	Checking/initialization of ./LIONS/scripts
+
+# eastLion Codes --------------------------------
+# Error 10 - alignment not generated
+	An attempt was made to generate an alignment but the output file was empty at the end of the script
+
+

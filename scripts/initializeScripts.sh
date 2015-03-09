@@ -84,6 +84,5 @@ echo ''
 	FILE='ChimericReadTool/intervalTree.py'; eval $FCHECK_rs
 	FILE='ChimericReadTool/chimericReadSearch.py'; eval $FCHECK_rs
 
-
 echo ''
 # End of script : )

@@ -37,12 +37,12 @@ if [ -z $1 ]
 then
 	echo " No parameter input file specified. Importing default file:"
 	echo "      ./LIONS/parameter.ctrl"
-	PARAMETER="parameter.ctrl"
+	export PARAMETER="parameter.ctrl"
 	echo ''
 else
 	echo " Import parameter file."
 	echo "    Project Parameters: ./$1"
-	PARAMETER=$1
+	export PARAMETER=$1
 	echo ''
 fi
 	# Run parameter script
@@ -53,8 +53,35 @@ echo ' running initializeLIONS.sh'
 
 	bash $SCRIPTS/initializeLIONS.sh
 
-# EAST LION =========================================================
+echo ' initialization completed successfully.'
+echo ''
 
-#sh runTH2.sh <Input Bam> <output_name>
+
+# EAST LION =========================================================
+echo ''
+echo '                     E A S T       L I O N                     '
+echo ''
+echo ' ./LIONS/scripts/eastLion.sh' 
+echo '==============================================================='
+echo '  Align reads to genome and perform chimeric analysis'
+echo ''
+cd $pDIR #./LIONS/projects/<projectName>
+
+# Loop through each library in input file
+iterN=$(wc -l $INPUT_LIST | cut -f1 -d' ' -)
+
+for nLib in $(seq $iterN)
+do
+	# Extract row of entries from input list
+	rowN=$(sed -n "$nLib"p $INPUT_LIST)
+	# Library Name
+	libName=$(echo $rowN | cut -f1 -d' ')
+	
+	# ****** Add CONTROL PROTOCOL FOR CLUSTER/LOCAL RUN
+
+	echo " Iteration $nLib: $libName ------------------------------------------"
+	echo "      run: eastLion.sh $libName"
+	bash $SCRIPTS/eastLion.sh $libName
+done
 
 
