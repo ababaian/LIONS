@@ -28,75 +28,61 @@ usage()
 	# sh RNArpkmMaster.sh hg19gc_v14 test_run R HS0988.bam 
 	# sh RNArpkmMaster.sh mm9v65 test_run R Lorincz_PGC/bams/RNA-seq.PGC.bam 
 
-# -------------------------------------------------------------------------------------
-# INITIALIZAITON ----------------------------------------------------------------------
+# -------------------------------------------------------------------
+# INITIALIZAITON ----------------------------------------------------
+# -------------------------------------------------------------------
 
-# Which folder is the script ran out of?
-	#SHELL_BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-	SHELL_BASE='/home/ababaian/software/RNAseqPipeline'
-# Dependent Scripts
-	rnaMasterScript=$SHELL_BASE/RNAseqMaster.sh
-	#RegionsCoverageFromWigCalculator=/projects/03/genereg/projects/SOLEXA/lib/RegionsCoverageFromWigCalculator_May6_2011.jar
-	RegionsCoverageFromWigCalculator=/home/ababaian/software/RNAseqPipeline/bin/RegionsCoverageFromWigCalculator_May6_2011.jar
+# Script and Binary Directories for RNAseqPipeline
 
-# BINARIES
-# Java
-	#J=java #local install
-	#J=/gsc/software/linux-x86_64/jre-1.6.0_16/bin/java # Use older version of Java for use on Apollo
-	J=/gsc/software/linux-x86_64/jre1.7.0_03/bin/java
+# JAVA access
+	export J="$lBIN/java"
+
+# RNAseqPipeline Shell Base
+	export SHELL_BASE="$SCRIPTS/RNAseqPipeline"
+
+# Java (Jar) Binaries Base
+	export JAVA_BASE="$SHELL_BASE/bin"
 
 # Samtools
-	SAMTOOLS=samtools
-	#SAMTOOLS=/gsc/software/linux-x86_64/samtools-0.1.13/samtools
+	export SAMTOOLS="$lBIN/samtools"
+
+# Dependent Scripts
+	rnaMasterScript=$SHELL_BASE/RNAseqMaster.sh
+	RegionsCoverageFromWigCalculator=$SHELL_BASE/bin/RegionsCoverageFromWigCalculator_May6_2011.jar
+
 
 # INPUT PARAMETERS
 	species=$1 # Reference Set
-	name=$2 # Project Name
+	name=$2 # Library Name
 	sr=$3 # Stranded/paiRed read type
-
-	inputA=$4 # BAM-file
-	inputB=$5 #Obsolete
-
-# Check that the input file is BAM
-# 
-if [ $# -eq 4 ]; then
-	# Check if BAM or FASTQ
-	if [ ${inputA: -4} == ".bam" ]; then
-		bamFile=`readlink -f $inputA`
-	else
-		echo "ERROR: Expected bam. Got $inputA" 1>&2
-		exit 1
-	fi
-fi
+	bamFile=$4 # BAM-file
 
 # Read length in Bam File
 	length=$($SAMTOOLS view $bamFile | awk '($1!~/@/) {s=s+1; if(s==1){print length($10)} else {exit}}')
 
+# Resource for RNAseqPipeline
+
+	# Reference Exon Annotation Folder
+	res="$pDIR/$name/resources"
+
+	# Chromosome Sizes File
+	chrs="$RESOURCES/genome/$INDEX.chr.size"
+
+	# BWA Conversion File
+	chrfile="$RESOURCES/genome/$INDEX.bwa.names"
+
 	echo "=======  Run Parameters  ========" 
-	echo "bamFile:$bamFile"
-	echo "species:$species"
-	echo "name:$name"
-	echo "read length:$length"
+	echo " bamFile: $bamFile"
+	echo " species: $species"
+	echo " name: $name"
+	echo " read length: $length bp"
+	echo " resource folder: $res" # **********
+	echo " chr sizes: $chrs" # ********
+	echo " chr name conv.: $chrfile" # *******
 	echo ""
-
-# Resources
-	# hg19gc_v14 : hg19 and Gencode v14	
-	reschrs=$(sh $SHELL_BASE/RNAgetRes.sh $species)
-
-	# Reference Annotation
-	res=$(eval echo $reschrs | cut -f 1 -d ',')
-
-	# Chromosome Sizes
-	chrs=$(echo $reschrs | cut -f 2 -d ',')
-
-	echo $res
-	echo $chrs
 
 #---------------------------------------------------------------------
 # EXECUTE SCRIPTS ----------------------------------------------------
-echo ""
-echo ""
-echo "########## Running RNAseqMaster.sh ##########"
 
 # Calculate Coverage and RPKM
 	# RNAseqMaster.sh <BAM> <Project_name> <output_folder>
@@ -105,8 +91,10 @@ echo "########## Running RNAseqMaster.sh ##########"
 	# Where; Running Mask = COVERAGE, RPKM, LEAKAGE,PROFILE,
 	# REPORT (1:run, 0:norun)
 	
-	echo "sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species R 0 1,1,0,0,1"
-	sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species $sr 10 1,1,0,0,1 $J
+	echo " cmd: "
+	echo " sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species R 0 1,1,0,0,1 $res $chrs $chrfile"
+	echo ''
+	sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species $sr 10 1,1,0,0,1 $res $chrs $chrfile
 
 	echo "RNAseqMaster complete"
 

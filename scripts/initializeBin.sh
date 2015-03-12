@@ -13,9 +13,10 @@
 	export BAM2FASTX='bam2fastx'
 	export TOPHAT2='tophat2'
 	export BOWTIE2='bowtie2'
+	export BOWTIE_BUILD='bowtie-build'
+	export CUFFLINKS='cufflinks'
 	export PYTHON3='python3'
-	#JAVA
-	#CUFFLINKS
+	export JAVA='java'
 	
 
 # Functions -------------------------------------
@@ -49,9 +50,21 @@ echo ''
 	WARE=$BOWTIE2; eval $wareExists
 		ln -fs $(command -v $WARE) $BASE/bin/bowtie2
 
+	# Bowtie-build
+	WARE=$BOWTIE_BUILD; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/bowtie-build
+
+	# Cufflinks
+	WARE=$CUFFLINKS; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/cufflinks
+
 	# Python3
 	WARE=$PYTHON3; eval $wareExists
 		ln -fs $(command -v $WARE) $BASE/bin/python3
+
+	# Java
+	WARE=$JAVA; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/java
 
 echo ''
 

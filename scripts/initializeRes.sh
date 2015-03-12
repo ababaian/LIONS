@@ -12,8 +12,7 @@
 # which will allow for parallel computing
 
 # Resource Name:
-	export res=$1 # Resource name/ genome version name
-	# also called $INDEX
+	# $INDEX
 
 # Resource Directory (from parent script)
 	#RESOURCES="$BASE/resources/$INDEX"
@@ -23,16 +22,17 @@
 
 # RESOURCES/genome
 	
-	genomeFa="$res.fa" # Genome Fasta
-	genomeFai="$res.fa.fai" # Genome Fasta Index
+	genomeFa="$INDEX.fa" # Genome Fasta
+	genomeFai="$INDEX.fa.fai" # Genome Fasta Index
 
-	bt_1="$res.1.bt2" #Bowtie 2 index files for genome
-	bt_2="$res.2.bt2"
-	bt_3="$res.3.bt2"
-	bt_4="$res.4.bt2"
-	bt_r1="$res.rev.1.bt2"
-	bt_r2="$res.rev.2.bt2"
-	bt_chr="$res.chr.size"
+	bt_1="$INDEX.1.bt2" #Bowtie 2 index files for genome
+	bt_2="$INDEX.2.bt2"
+	bt_3="$INDEX.3.bt2"
+	bt_4="$INDEX.4.bt2"
+	bt_r1="$INDEX.rev.1.bt2"
+	bt_r2="$INDEX.rev.2.bt2"
+	bt_chr="$INDEX.chr.size"
+	bt_bwa="$INDEX.bwa.names"
 
 # RESOURCES/repeat
 	repeatMasker="RepeatMasker.hg19.ucsc" # RepeatMasker UCSC download	
@@ -57,13 +57,25 @@ if [ ! -r $genomeFai ];
 then
 	echo ' Genome fasta index file not found. Generating...'
 	$SAMTOOLS faidx $genomeFa
+	
+	# Generate res.chr.size file
+	cut -f1,2 $INDEX.fa.fai > $INDEX.chr.size
+	
+	# Generate INDEX.bwa.names
+	cut -f1 $INDEX.fa.fai > tmp
+	cut -f1 $INDEX.fa.fai | sed 's/chr//g' - > tmp2
+	paste tmp2 tmp > $INDEX.bwa.names
+	rm tmp*
+	
+	
+	
 fi
 
 # -----  Check if bowtie2 index is present, if not generate it
 if [ ! -r $bt_1 ];
 then
 	echo ' Bowtie2 index file not found. Generating...'
-	$BOWTIE2_BUILD $genomeFa $res
+	$lBIN/bowtie-build $genomeFa $INDEX
 fi
 
 cd ..

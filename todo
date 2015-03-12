@@ -8,3 +8,8 @@ lions.sh
 initializeLIONS.sh
 
 	line 132: implement archive folder for each run
+
+
+parameter.ctrl
+
+	line 63: Implement Guided (ab initio) assembly, make a GTF file in resource which will be used to guide assembly

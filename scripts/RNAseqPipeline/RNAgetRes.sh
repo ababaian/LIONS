@@ -1,6 +1,6 @@
 #!/bin/sh
 # RNAgetRes.sh
-# ~~~ PEGASUS ~~~
+# LIONS Variant
 # Resources Sets for RNAseq Analysis
 # Usage: RNAseqPipeline <1:Resource_set> <2:Resource_Base_dir>
 # also called 'species'
@@ -8,7 +8,7 @@
 # OUTPUT: directories/files for RNAseq Pipeline
 # 
 	set -e
-	set -o pipefail
+	#set -o pipefail
 
 # Read Input
 	species=$1
@@ -49,10 +49,10 @@ if [ "$species" == "hg19gc_v14" ]; then
 	chimeric=/home/ababaian/resources/sets/RM/ForChimericSearch_hg19
 
 elif [ "$species" == "assembly" ]; then
-        res='$RESOURCES/sets/assembly/hl_120913/$name'
-        chrs='$RESOURCES/chimeric/hg19r.chr.size'
-        chrfile='$RESOURCES/chimeric/hg19r.bwa.names'
-	btwindex='$RESOURCES/hg19/bowtie/'
+        res='$pDIR/$name/resources'
+        chrs='$RESOURCES/$INDEX/genome/$INDEX.chr.size'
+        chrfile='$RESOURCES/$INDEX/genome/$INDEX.bwa.names'
+	btwindex='$RESOURCES/$INDEX/genome/'
 	TEdata='$RESOURCES/sets/RM/SINES_LINES_LTRS_hg19'
 	chimeric='$RESOURCES/sets/RM/ForChimericSearch_hg19'
 

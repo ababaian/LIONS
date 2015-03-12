@@ -14,7 +14,7 @@
 GTF=$1
 NAME=$2
 
-echo "Generating resource data for $GTF with the name $NAME"
+echo " Generating resource data for $GTF with the name $NAME"
 
 # ---------------------------------------------------------
 
@@ -124,7 +124,7 @@ echo "Generating resource data for $GTF with the name $NAME"
 echo 'Precursor files generated'
 echo ' Running EnsembleResourceGenerated.sh'
 
-	sh EnsemblResourceGenerator.sh $NAME
+	bash $BASE/scripts/RNAseqPipeline/resourceGeneration/EnsemblResourceGenerator.sh $NAME
 
 # Cleanup
 rm *.tmp

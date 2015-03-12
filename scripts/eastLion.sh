@@ -83,6 +83,7 @@ if [ -s $libName.bam ]
 then
 	echo " $libName.bam is already generated."
 	echo " ... skipping alignment"
+	echo ''
 	rm $INDEX*
 
 else # Generate Alignment
@@ -119,6 +120,7 @@ else # Generate Alignment
 	$lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq
 	
 	echo ' ... tophat2 completed.'
+	echo ''
 
 # -------- CLEANUP
 	rm temp* # Clear temporary files
@@ -178,6 +180,94 @@ else # Generate Alignment
 	ln -s ./alignment/$OUTPUT.bam.bai ./$OUTPUT.bam.bai
 
 fi 
+
+# ASSEMBLY ----------------------------------------------------------
+# Flow control
+if [ -s assembly/transcripts.gtf ]
+then
+# Assembly already ran; skip	
+	echo "  transcripts.gtf Assembly file already generated."
+	echo "  ... skipping cufflinks assembly"
+	echo ''
+else
+# Run Cufflinks
+ 
+# Make an ouput folder for Cufflinks Assembly
+	mkdir -p assembly
+
+# Declare the input/output files
+	echo "  No assembly detected"
+	echo "     Bam input: $OUTPUT.bam"
+	echo "     Label: $libName"
+	echo "     Genome: $INDEX"
+
+if [ $deNovo == '1']
+then
+	echo '     De Novo Assembly'
+else
+ 	echo '     Guided Assembly'
+fi
+	echo "     Controls:     $ctrlCL2"
+
+# Run Cufflinks
+	# Parameters set and imported from parameter.ctrl
+	echo ' Running Cufflinks ...'
+	echo "   cmd: $lBIN/cufflinks -o ./assembly -L $libName $ctrlCL2 $OUTPUT.bam"
+
+	$lBIN/cufflinks -o ./assembly -L $libName $ctrlCL2 $OUTPUT.bam
+
+	echo " ... cufflinks completed."
+
+
+fi
+
+# RESOURCE GENERATION -----------------------------------------------
+# Flow Control
+if [ -s resources/assembly_exons ]
+then
+# Resources already generated
+	echo '  Resources already generated.'
+	echo '  ... skipping.'
+	echo ''
+else
+# Resources have not been generated yet
+	# Initialize Resources folder for library
+	mkdir -p resources
+	cd resources
+
+	# link transcripts.gtf to resources folder
+	ln -fs ../assembly/transcripts.gtf transcripts.gtf
+
+	echo "  Building resources for $libName"
+
+	# Run buildResourceGTF.sh
+	$BASE/scripts/RNAseqPipeline/resourceGeneration/buildResourceGTF.sh transcripts.gtf assembly
+	cd ..
+fi
+
+
+# RNASEQPIPELINE ----------------------------------------------------
+
+# For LIONS; REF='assembly'
+
+	# RNAseq Analysis
+	echo " RNAseq Pipeline Analysis"
+	echo "     cmd: RNAseqPipeline.sh $REF $libName R $OUTPUT.bam"
+	
+	bash $SCRIPTS/RNAseqPipeline/RNAseqPipeline.sh $REF $libName R $OUTPUT.bam
+
+	echo ""
+
+	# Chimeric Analysis
+	echo " Chimeric Reads Analysis"
+	echo "      ChimericReadTool.sh $FPATH $PWD/$name/wig/$name.$QUALITY.wig.gz $REF"
+	
+	bash ChimericReadTool.sh $FPATH $PWD/$libName/wig/$libName.$QUALITY.wig.gz $REF
+	
+	echo ""
+
+# CHIMERICREADTOOL --------------------------------------------------
+
 
 # CLEAN-UP ----------------------------------------------------------
 

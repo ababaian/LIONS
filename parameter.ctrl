@@ -53,8 +53,62 @@
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50
 	INREAD='50'
+
 	export ctrlTH2=" $BOWTIE-p $THREADS -r $INREAD --report-secondary-alignments"
+
+# Cufflinks
+	# Ab initio (guided) or De Novo assembly?
+	export deNovo='1' # 1 = De Novo; 0 = Ab Initio
+
+	# Guide file upon which to assemble *** REQUIRES IMPLEMENTATION**
+	guide="$RESOURCES/annotation/guide.gtf"
+
+	#Minimum fragments per transfrag
+	# default is 10
+	minFrag='--min-frags-per-transfrag 10'
+
+	# Multi-mapping transfrag fragments
+	# Default is 0.75;
+	multiFrag='--max-multiread-fraction 0.99'
+
+	# Minimum coveraged to attempt 3` trimming
+	# Default is 10
+	minTrim='--trim-3-avgcov-thresh 5'
+
+	# Minimum Trim dropoff in fraction
+	trimDrop='--trim-3-dropoff-frac=0.1'
+
+	# Merge Radius in bp
+	# Default is 50 bp
+	mergeR='--overlap-radius 50'
+
+	# Multiple Mapping read correction
+	# include [-u]
 	
+	if [ $deNovo == '1' ]
+	then # De Novo Assembly
+		export ctrlCL2="-u -p $THREADS $minFrag $multiFrag $minTrim $trimDrop $mergeR"
+	else # Ab Initio Assembly
+		export ctrlCL2="-u -p $THREADS -g $guide"
+	fi
+
+
+# RNAseqPipeline
+
+	# Reference Annotations
+	export REF='assembly'
+
+	# RNAseq Analysis Quality
+	export QUALITY='q10.F772'
+
+#RNAgetRes.sh (outdated)
+#	res='$pDIR/$name/resources'
+#	chr="$RESOURCES/$INDEX/genome/$INDEX.chr.size"
+#       chrfile="$RESOURCES/$INDEX/genome/$INDEX.bwa.names"
+#	btwindex="$RESOURCES/$INDEX/genome/"
+#	TEdata="$RESOURCES/sets/RM/SINES_LINES_LTRS_hg19"
+#	chimeric="$RESOURCES/sets/RM/ForChimericSearch_hg19"
+
 # WEST LION -----------------------------------------------
 
 

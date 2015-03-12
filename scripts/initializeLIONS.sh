@@ -82,6 +82,7 @@ fi
 
 	echo ' attempting to run initializeBin.sh'
 	source $INITBIN # Run initializeBin.sh
+	rm $INITBIN
 
 	echo ' ... binary check completed successfully!'
 	echo ''
