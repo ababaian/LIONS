@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # RNAseqCoverageCalculator.sh
 # Modified for LIONS pipeline
 
@@ -19,14 +19,16 @@ date
 echo "Running RNAseqCoverageCalculator - $0 ------------"
 
 # Input Parameters
+# RNAseqCoverageCalculator.sh $name $Wdir $Cdir $species $sr $Cdir/$name.coverage.log $res $chrSize
+
 	echo "Run Parameters"
 	echo "     Name: "$1
 	echo "     Wigd: "$2
-	echo "     output: "$3
+	echo "     output: "$3 # Directory or file?
 	echo "     Reference Set: "$4
 	echo "     S/R: "$5
-	echo "     res: $6"
-	echo "     chrs: $7"
+	echo "     res: "$7
+	echo "     chrSize: "$8
 	echo ""
 	echo ""
 
@@ -35,8 +37,8 @@ echo "Running RNAseqCoverageCalculator - $0 ------------"
 	out=$3
 	species=$4
 	sr=$5	# strand specific or regular S/R
-	res=$6
-	chrs=$7
+	res=$7
+	chrSize=$8
 
 	mkdir -p $out
 
@@ -58,10 +60,10 @@ if [ "$sr" == "S" ]; then
 			exit 1
 		fi
 			
-		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns_"$pref -s $chrs -o $out -n $name
-		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes_"$pref -s $chrs -o $out -n $name
-		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage_"$pref -s $chrs -o $out -n $name
-		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage_"$pref -s $chrs -o $out -n $name
+		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns_"$pref -s $chrSize -o $out -n $name
+		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes_"$pref -s $chrSize -o $out -n $name
+		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage_"$pref -s $chrSize -o $out -n $name
+		$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage_"$pref -s $chrSize -o $out -n $name
 	
 	done
 
@@ -91,14 +93,14 @@ else #SR = R
 	echo "Running RegionsCoverageFromWigCalculator"
 	echo ""
 
-	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns" -s $chrs -o $out -n $name"
-	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns" -s $chrs -o $out -n $name
-	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes" -s $chrs -o $out -n $name"
-	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes" -s $chrs -o $out -n $name
-	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage" -s $chrs -o $out -n $name"
-	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage" -s $chrs -o $out -n $name
-	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage" -s $chrs -o $out -n $name"
-	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage" -s $chrs -o $out -n $name
+	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns" -s $chrSize -o $out -n $name"
+	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_introns" -s $chrSize -o $out -n $name
+	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes" -s $chrSize -o $out -n $name"
+	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_genes" -s $chrSize -o $out -n $name
+	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage" -s $chrSize -o $out -n $name"
+	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_genes_for_coverage" -s $chrSize -o $out -n $name
+	echo "$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage" -s $chrSize -o $out -n $name"
+	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $res"/"$species"_exons_for_coverage" -s $chrSize -o $out -n $name
 
 fi
 

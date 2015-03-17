@@ -9,6 +9,10 @@ initializeLIONS.sh
 
 	line 132: implement archive folder for each run
 
+RNAseqPipeline.sh
+	
+	Add a protocol to change the wig file to UCSC compatible wig files
+	I should have conversion scripts on the gsc somewhere
 
 parameter.ctrl
 

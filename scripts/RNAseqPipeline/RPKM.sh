@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 # RPKM.sh
 # Calculates RPKM from a BAM given a gene reference
 set -e
-set -o pipefail
+#set -o pipefail
 
 # USAGE ------------------------------------------------------
 usage()

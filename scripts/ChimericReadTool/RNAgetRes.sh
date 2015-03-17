@@ -1,1 +1,0 @@
-/home/ababaian/software/RNAseqPipeline/RNAgetRes.sh

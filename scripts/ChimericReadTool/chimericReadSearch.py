@@ -9,9 +9,9 @@
 
 # IMPORT -------------------------------------
 import csv
-import pysam
+import pysam # Needs to be installed
 import sys
-import intervalTree as it
+import intervalTree as it # Custom script
 import pickle
 import os
 import pprint
@@ -496,7 +496,7 @@ if __name__ == '__main__':
 	
 
 	# Check if IntervalTree Exists for <ann_file>
-	if (not "assembly" in ExonFile ) and (file_exists(resTreeAnn) and file_exists(resListAnn)):
+	if (file_exists(resTreeAnn) and file_exists(resListAnn)):
 		
 		# Use precompiled interval tree
 		inFile = open(resTreeAnn, 'rb')

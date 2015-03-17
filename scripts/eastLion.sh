@@ -242,9 +242,9 @@ else
 
 	# Run buildResourceGTF.sh
 	$BASE/scripts/RNAseqPipeline/resourceGeneration/buildResourceGTF.sh transcripts.gtf assembly
+
 	cd ..
 fi
-
 
 # RNASEQPIPELINE ----------------------------------------------------
 
@@ -258,16 +258,15 @@ fi
 
 	echo ""
 
-	# Chimeric Analysis
-	echo " Chimeric Reads Analysis"
-	echo "      ChimericReadTool.sh $FPATH $PWD/$name/wig/$name.$QUALITY.wig.gz $REF"
-	
-	bash ChimericReadTool.sh $FPATH $PWD/$libName/wig/$libName.$QUALITY.wig.gz $REF
-	
-	echo ""
-
 # CHIMERICREADTOOL --------------------------------------------------
 
+	# Chimeric Analysis
+	echo " Chimeric Reads Analysis"
+	echo "      ChimericReadTool.sh $pDIR/$libName/$libName.bam"
+
+	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/RNAseq/wig/$libName.$QUALITY.wig.gz $REF
+
+	echo ""
 
 # CLEAN-UP ----------------------------------------------------------
 

@@ -55,7 +55,7 @@ echo ''
 
 	# Resourcse
 	res=$8
-	chrs=$9
+	chrSize=$9
 	chrfile=$10
 
 # Ouput 
@@ -123,9 +123,10 @@ echo ''
 	if [ "$RUN_COVERAGE" = "1" ]; then
 		echo "Calculating Genomic Coverage..."
 		
-		echo "$SHELL_BASE/RNAseqCoverageCalculator.sh $name $Wdir $Cdir $species $sr $J > $Cdir/$name.coverage.log $res $chrs"
+		echo "$SHELL_BASE/RNAseqCoverageCalculator.sh $name $Wdir $Cdir $species $sr $Cdir/$name.coverage.log $res $chrSize"
+		echo ''
 
-		$SHELL_BASE/RNAseqCoverageCalculator.sh $name $Wdir $Cdir $species $sr $J > $Cdir/$name.coverage.log $res $chrs"
+		bash $SHELL_BASE/RNAseqCoverageCalculator.sh $name $Wdir $Cdir $species $sr $Cdir/$name.coverage.log $res $chrSize
 
 		echo "Coverage Complete"
 		#mkdir -p $Cdir"/covDist"

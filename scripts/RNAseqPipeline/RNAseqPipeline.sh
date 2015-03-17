@@ -5,8 +5,9 @@
 
 set -e
 
-# USAGE -------------------------------------------------------------------------------
+# USAGE -------------------------------------------------------------
 # if parameters not ran correctly
+
 usage()
 	{
 	echo "RNAseqPipeline.sh "
@@ -66,7 +67,7 @@ usage()
 	res="$pDIR/$name/resources"
 
 	# Chromosome Sizes File
-	chrs="$RESOURCES/genome/$INDEX.chr.size"
+	chrSize="$RESOURCES/genome/$INDEX.chr.size"
 
 	# BWA Conversion File
 	chrfile="$RESOURCES/genome/$INDEX.bwa.names"
@@ -77,8 +78,8 @@ usage()
 	echo " name: $name"
 	echo " read length: $length bp"
 	echo " resource folder: $res" # **********
-	echo " chr sizes: $chrs" # ********
-	echo " chr name conv.: $chrfile" # *******
+	echo " chr sizes: $chrSize" # ********
+	echo " chr name conv: $chrfile" # *******
 	echo ""
 
 #---------------------------------------------------------------------
@@ -92,9 +93,9 @@ usage()
 	# REPORT (1:run, 0:norun)
 	
 	echo " cmd: "
-	echo " sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species R 0 1,1,0,0,1 $res $chrs $chrfile"
+	echo " sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species R 0 1,1,0,0,1 $res $chrSize $chrfile"
 	echo ''
-	sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species $sr 10 1,1,0,0,1 $res $chrs $chrfile
+	sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species $sr 10 1,1,0,0,1 $res $chrSize $chrfile
 
 	echo "RNAseqMaster complete"
 

@@ -1,0 +1,10 @@
+# LIONS requisites to be installed
+
+# Easy Way: Install pip 1.5.4
+# then:		sudo pip install pysam
+
+# Hard Way: Install from source
+	# setuptools 14.3
+	# Cython 0.22
+	# Pysam
+

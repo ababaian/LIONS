@@ -1,26 +1,148 @@
 #!/bin/bash
-# Chimeric Read Tool v1.0 
+# Chimeric Read Tool v1.0  [ LIONS ]
 # Mod by Artem
 # Usage:
-# ChimericReadTool.sh <input.bam> <Coverage.wig> <Reference_set>
+# ChimericReadTool.sh <input.bam>
 # output goes to current working directory
 # =====================================================================
 
 #set -e
 #set -o pipefail
 
-input=$1
-PWD=$2
-JUMBLE=$3
+PWD=`pwd`
 
-fwig="$PWD/wig/K562_j$JUMBLE.q10.F772.wig.gz"
+usage()
+	{
+	echo "Script to find chimeric reads, generate stats for reads and exons"
+	echo ""
+	echo "USAGE:"
+	echo "ChimericReadTool.sh <BAM file>"
+	echo ""
+	echo "     Human genome 19 with GENCODE v14 = hg19gc_v14"
+	echo "     Note: BAM file should have associated bam.bai index file"
+	echo ""
+	}
+
+#if [ $# -ne 3 ]; then
+#	usage
+#	exit 1
+#fi
+
+# INPUT Parameters ----------------------------------------------------
+
+	# Bam input file
+	bam=$1
+	bai=$bam.bai # assumes index is present
+
+	name=$libName # Alias for this script
+
+	# For assembly-based method; takes the library name for accessing res
+	fwig="$pDIR/$libName/RNAseq/$libName.$QUALITY.wig.gz"
+	echo $fwig
+	species='assembly'
+
+
+	#Check input is readable
+	if [ ! -r $bam ]; then
+		usage
+		echo "ERROR: Unable to read BAM file"
+		exit 1
+	fi
+
+	if [ ! -r $bai ]; then
+		echo "ERROR: Cannot find BAM index file ($bai)"
+		echo "       Run samtools index on BAM file or find associated index file"
+		exit 1
+	fi
+
+	if [ ! -r $fwig ]; then
+		usage
+		echo "ERROR: Unable to read WIG file"
+		exit 1
+	fi
 
 # INITIALIZATION ------------------------------------------------------
 
-	SCRIPT_BASE='/home/ababaian/software/ChimericReadTool'
-	#python3=/gsc/software/linux-x86_64/python-3.2.2/bin/python3	
-	python3='/home/ababaian/software/python3/bin/python3'
+# JAVA access
+	export J="$lBIN/java"
 
+# Chimeric Read Tool Shell Base
+	export SCRIPT_BASE="$SCRIPTS/ChimericReadTool"
+
+# Java (Jar) Binaries Base
+	export JAVA_BASE="$SCRIPTS/RNAseqPipeline/bin"
+
+# Samtools
+	export SAMTOOLS="$lBIN/samtools"
+
+# Acquire Resources
+	# Reference Exon Annotation Folder
+	export res="$pDIR/$name/resources"
+	export exons="$pDIR/$name/resources/assembly_exons"
+
+	# Chromosome Sizes File
+	export chrs="$RESOURCES/genome/$INDEX.chr.size"
+
+	# BWA Conversion File
+	export chrfile="$RESOURCES/genome/$INDEX.bwa.names"
+
+	# Bowtie Index
+	export 	btwindex='$RESOURCES/$INDEX/genome/'
+
+	# Repeat Masker Data
+	export repeats="$RESOURCES/rm/SINES_LINES_LTRS_hg19"
+
+	# More TE data
+	#chimeric="$RESOURCES/rm/ForChimericSearch_hg19"
+
+
+	echo "================================="
+	echo "The Resources used are:"
+	echo "     Reference set: " $species
+	echo "     name: " $name
+	echo "     res: " $res
+	echo "     repeats: " $repeats
+	echo "     exons: " $exons
+	echo "     chrs: " $chrs
+	echo "================================="
+	echo ""
+
+# Example files
+	#exons=/projects/mbilenky/resources/mm9rs_0313/mm9rs_0313_exons
+	#repeats=/projects/mbilenky/resources/RepeatMasker/ForChimericSearch_mm9
+	#chrs=/projects/03/genereg/projects/SOLEXA/chr_info/mm9.chrom.sizes
+	#fwig=/projects/mbilenky/mlc/Jake/PGC_analysis/wig/rpkm_PGC_analysis.q10.F516.wig.gz
+	#bam=/projects/mbilenky/mlc/Jake/Lorincz_PGC/bams/RNA-seq.PGC.bam
+
+
+# READ ANALYIS---------------------------------------------------------
+
+# Temporary file for analysis
+	ChimReadSearch="$PWD/chimericReadSearch.out"
+
+# Parse Exon File to contain annotation on single-exon transcripts
+	# Check if file exists, then just use the already existing file
+	if [ -e "$exons"_2 ] 
+	then
+	 	echo "Exon_2 exists, use it"
+	else
+	 	bash $SCRIPT_BASE/exon_scan.sh $exons
+	fi
+
+# Build temporary resource
+
+# Loads BAM file and finds chimeric reads and creates stats on exon/repeat interactions
+# Defines ER/DR/etc reads and aggrogates results
+	
+	echo "Running Chimeric Read Search python script"
+	echo ""
+	echo "$python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch"
+	echo ""
+	
+	$python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch
+	echo "read search complete."	
+	echo "==============================="
+	echo ""
 
 # OUTPUT from chimericReadSearch.py
 	# field = colNum
@@ -77,16 +199,16 @@ fwig="$PWD/wig/K562_j$JUMBLE.q10.F772.wig.gz"
 
 # Regions to input for Coverage Calculation
 	# Put in the exon coords
-	less $input | cut -f 13,14,15 > $PWD/tmp_repeat_coords
+	less $ChimReadSearch | cut -f 13,14,15 > $PWD/tmp_repeat_coords
 
 	# Put in the repeat coords
-	less $input | cut -f 13,16,17 >> $PWD/tmp_repeat_coords
+	less $ChimReadSearch | cut -f 13,16,17 >> $PWD/tmp_repeat_coords
 
 	# Put in upstream Exon coords
-	less $input | cut -f 13,21,22 >> $PWD/tmp_repeat_coords
+	less $ChimReadSearch | cut -f 13,21,22 >> $PWD/tmp_repeat_coords
 
 	# Put in upstream coords of the repeat
-	less $input | cut -f 13,16,17,18 | awk '{ 
+	less $ChimReadSearch | cut -f 13,16,17,18 | awk '{ 
 if ($4==1) 
 	print $1"\t"($2-50)"\t"($2); 
 else 
@@ -108,7 +230,7 @@ else
 	# Run Regions Coverage Calculator
 	# Exons / Repeats / Upstream Repeats
 
-	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $PWD/tmp_uniq_repeat_coords -s /home/ababaian/resources/chimeric/hg19r.chr.size -o $PWD -n results
+	$J -jar -Xmx5G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $PWD/tmp_uniq_repeat_coords -s $chrs -o $PWD -n results
 
 
 # Integrate data into spreadsheet ---------------------------------------------
@@ -117,7 +239,7 @@ else
 # parse coordinates for Exon/UpExon/Repeat/50bp
 # added as additional columns on the right
 
-less $input | awk '{
+less $ChimReadSearch | awk '{
 if ($18==1) # +strand
 	print $0"\tchr"$13":"$14"-"$15"\tchr"$13":"$21"-"$22"\tchr"$13":"$16"-"$17"\tchr"$13":"($16-50)"-"($16); 
 else # -strand
@@ -175,6 +297,6 @@ join -1 $UPSTREAM -2 1 $PWD/tmp_input_sorted3 $PWD/tmp_sorted_repeat_data | sed 
 
 # Clean up
 	rm tmp*
-	#rm $input 
+	#rm $ChimReadSearch 
 
 # End of script :D

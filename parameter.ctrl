@@ -101,6 +101,9 @@
 	# RNAseq Analysis Quality
 	export QUALITY='q10.F772'
 
+# Chimeric Read Tool
+
+
 #RNAgetRes.sh (outdated)
 #	res='$pDIR/$name/resources'
 #	chr="$RESOURCES/$INDEX/genome/$INDEX.chr.size"

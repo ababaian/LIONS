@@ -53,8 +53,8 @@ elif [ "$species" == "assembly" ]; then
         chrs='$RESOURCES/$INDEX/genome/$INDEX.chr.size'
         chrfile='$RESOURCES/$INDEX/genome/$INDEX.bwa.names'
 	btwindex='$RESOURCES/$INDEX/genome/'
-	TEdata='$RESOURCES/sets/RM/SINES_LINES_LTRS_hg19'
-	chimeric='$RESOURCES/sets/RM/ForChimericSearch_hg19'
+	TEdata='$RESOURCES/rm/SINES_LINES_LTRS_hg19'
+	chimeric='$RESOURCES/rm/ForChimericSearch_hg19'
 
 else
 	echo "RNAgetRes.sh ERROR: No matching resources for species: $species" 1>&2

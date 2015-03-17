@@ -29,6 +29,8 @@ wareExists='if [ -z $(command -v $WARE) ]; then echo ... $WARE not found. Exitin
 mkLink='ln -fs $(command -v $WARE) $BASE/bin/$WARE'
 # shortcut link doesn't work. Can't figure out why not
 
+py3Exists='$PYTHON3 -c "import $WARE"; if [ $? = 0 ]; then echo " ... $WARE python3 module found"; else echo " $WARE python3 module not found! ERROR 6"; echo " (note: If this is pysam, install it from ~/LIONS/software/pysam.zip"; exit 6; fi'
+
 # Check Software list -------------------------
 # 
 echo "     Check that system software requirements are available and working."
@@ -67,5 +69,26 @@ echo ''
 		ln -fs $(command -v $WARE) $BASE/bin/java
 
 echo ''
+
+# Check that Python3 Modules are installed and function
+
+echo "     Check Python3 Modules are installed"
+
+	# Run 'python3 -c 'import $WARE' and check if the module $WARE exists in python3 else exit 6
+
+
+	WARE='csv'; eval $py3Exists
+	WARE='setuptools'; eval $py3Exists
+	WARE='pysam'; eval $py3Exists
+	WARE='sys'; eval $py3Exists
+	WARE='pickle'; eval $py3Exists
+	WARE='os'; eval $py3Exists
+	WARE='pprint'; eval $py3Exists
+	WARE='threading'; eval $py3Exists
+	WARE='collections'; eval $py3Exists
+	WARE='multiprocessing'; eval $py3Exists
+	WARE='datetime'; eval $py3Exists
+	WARE='re'; eval $py3Exists
+
 
 # End of script : )

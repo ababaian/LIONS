@@ -109,7 +109,7 @@ cd $BASE
 echo " Initializing $PROJECT Directory: $pDIR"
 	mkdir -p $pDIR # ./LIONS/projects/<projectName>
 	echo $INPUT_LIST $PARAMETER
-	mkdir $pDIR/run$RUNID
+	mkdir -p $pDIR/run$RUNID
 	cp $INPUT_LIST $pDIR/run$RUNID/input.list
 	cp $PARAMETER $pDIR/run$RUNID/parameter.ctrl
 
