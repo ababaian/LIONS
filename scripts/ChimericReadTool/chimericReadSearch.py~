@@ -342,10 +342,10 @@ if __name__ == '__main__':
 
 # Pre-computed Exon Data	
 	# Directory containing pre-computed IntervalTrees
-	resTreeDir = '/home/ababaian/resources/chimeric/precomputed'
+	resTreeDir = os.path.dirname(os.path.realpath(annotation_file_path))
 	
 	# Exon File Name
-	ExonFile = os.path.split(exon_file_path)[1] 
+	ExonFile = os.path.split(exon_file_path)[1]
 	
 	# Precomputed IntervalTree (if it exists)
 	resTreeExon = (resTreeDir + "/" + ExonFile + ".tree")
@@ -378,6 +378,11 @@ if __name__ == '__main__':
 
 	# Exception added for "assembly" runs
 	# such that exon trees are computed novo
+
+# ****
+# For increased efficiency on re-running analaysis
+# remove 'assembly' always calculated conidtion here
+# ****
 
 	if (not "assembly" in ExonFile ) and (file_exists(resTreeExon) and file_exists(resListExon) and file_exists(resInfoExon)):
 	
@@ -463,6 +468,8 @@ if __name__ == '__main__':
 
 		print("Exon tree building complete",file=sys.stderr)
 
+# ****
+# Modifiy this as well!
 		if (ExonFile != "assembly_exons_2"):
 
 			# Save exon tree to resource directory

@@ -66,7 +66,7 @@ echo ''
 	flag='772'
 
 # Directory Initialization
-	Bdir=$dir"/"RNAseq # folder for individual library
+	Bdir=$dir"/"expression # folder for individual library
 	mkdir -p $Bdir
 	cd $Bdir
 	ln -fs ../alignment/$bam ./$bam

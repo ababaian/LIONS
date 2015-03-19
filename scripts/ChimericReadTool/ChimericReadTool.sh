@@ -9,7 +9,7 @@
 #set -e
 #set -o pipefail
 
-PWD=`pwd`
+PWD=`pwd` # Base Library Directory
 
 usage()
 	{
@@ -34,10 +34,10 @@ usage()
 	bam=$1
 	bai=$bam.bai # assumes index is present
 
-	name=$libName # Alias for this script
+	name=$libName # Alias for this script; imported from eastLion.sh
 
 	# For assembly-based method; takes the library name for accessing res
-	fwig="$pDIR/$libName/RNAseq/$libName.$QUALITY.wig.gz"
+	fwig="$pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz"
 	echo $fwig
 	species='assembly'
 
@@ -87,10 +87,10 @@ usage()
 	export chrfile="$RESOURCES/genome/$INDEX.bwa.names"
 
 	# Bowtie Index
-	export 	btwindex='$RESOURCES/$INDEX/genome/'
+	export btwindex="$RESOURCES/$INDEX/genome/"
 
 	# Repeat Masker Data
-	export repeats="$RESOURCES/rm/SINES_LINES_LTRS_hg19"
+	export repeats="$RESOURCES/repeat/SINES_LINES_LTRS_hg19"
 
 	# More TE data
 	#chimeric="$RESOURCES/rm/ForChimericSearch_hg19"
@@ -103,7 +103,7 @@ usage()
 	echo "     res: " $res
 	echo "     repeats: " $repeats
 	echo "     exons: " $exons
-	echo "     chrs: " $chrs
+	echo "     chrSize: " $chrs
 	echo "================================="
 	echo ""
 
@@ -114,6 +114,9 @@ usage()
 	#fwig=/projects/mbilenky/mlc/Jake/PGC_analysis/wig/rpkm_PGC_analysis.q10.F516.wig.gz
 	#bam=/projects/mbilenky/mlc/Jake/Lorincz_PGC/bams/RNA-seq.PGC.bam
 
+# Initialize Chimeric Analysis Folder ---------------------------------
+
+# chimAnalysis
 
 # READ ANALYIS---------------------------------------------------------
 
@@ -136,10 +139,10 @@ usage()
 	
 	echo "Running Chimeric Read Search python script"
 	echo ""
-	echo "$python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch"
+	echo "$lBIN/python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch"
 	echo ""
 	
-	$python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch
+	$lBIN/python3 $SCRIPT_BASE/chimericReadSearch.py "$exons"_2 $repeats $bam tmp.bed > $ChimReadSearch
 	echo "read search complete."	
 	echo "==============================="
 	echo ""
@@ -223,9 +226,9 @@ else
 
 	# JAVA
 	#J=/gsc/software/linux-x86_64/jre1.7.0_03/bin/java
-	J=/gsc/software/linux-x86_64/jre-1.6.0_16/bin/java
+	#J=/gsc/software/linux-x86_64/jre-1.6.0_16/bin/java
 	#JAVA_BASE=/projects/03/genereg/projects/SOLEXA/lib/
-	JAVA_BASE=/home/ababaian/software/RNAseqPipeline/bin/
+	#JAVA_BASE=/home/ababaian/software/RNAseqPipeline/bin/
 
 	# Run Regions Coverage Calculator
 	# Exons / Repeats / Upstream Repeats
@@ -297,6 +300,7 @@ join -1 $UPSTREAM -2 1 $PWD/tmp_input_sorted3 $PWD/tmp_sorted_repeat_data | sed 
 
 # Clean up
 	rm tmp*
-	#rm $ChimReadSearch 
+	rm $ChimReadSearch
+	mv final_results $libName.raw.lions
 
 # End of script :D

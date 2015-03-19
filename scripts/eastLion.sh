@@ -17,7 +17,7 @@
 	# Run parameters are imported from the ./LIONS/parameter.ctrl
 
 # Library Name
-	libName=$1
+	export libName=$1
 
 # Input Bam File
 	INPUT="input.bam"
@@ -133,6 +133,9 @@ else # Generate Alignment
 	$lBIN/samtools cat -o unsorted.bam accepted_hits.bam unmapped.bam
 	$lBIN/samtools sort unsorted.bam $OUTPUT
 	$lBIN/samtools index $OUTPUT.bam
+
+# Calculate Flagstat for bam file
+	$lBIN/samtools flagstat $OUTPUT.bam > $OUTPUT.flagstat
 
 	# run a command; if bam file output is greater then 1 Mb
 	# then remove fastq files and copy everything over
@@ -264,8 +267,9 @@ fi
 	echo " Chimeric Reads Analysis"
 	echo "      ChimericReadTool.sh $pDIR/$libName/$libName.bam"
 
-	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/RNAseq/wig/$libName.$QUALITY.wig.gz $REF
+	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz $REF
 
+	echo " ... Chimeric analysis completed."
 	echo ""
 
 # CLEAN-UP ----------------------------------------------------------
