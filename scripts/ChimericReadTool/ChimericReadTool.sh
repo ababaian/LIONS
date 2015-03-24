@@ -301,6 +301,6 @@ join -1 $UPSTREAM -2 1 $PWD/tmp_input_sorted3 $PWD/tmp_sorted_repeat_data | sed 
 # Clean up
 	rm tmp*
 	rm $ChimReadSearch
-	mv final_results $libName.raw.lions
+	mv final_results $libName.lcsv
 
 # End of script :D

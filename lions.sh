@@ -77,11 +77,16 @@ do
 	# Library Name
 	libName=$(echo $rowN | cut -f1 -d' ')
 	
-	# ****** Add CONTROL PROTOCOL FOR CLUSTER/LOCAL RUN
+	# ****** Add CONTROL PROTOCOL FOR CLUSTER/LOCAL RUN (QSUB)
 
 	echo " Iteration $nLib: $libName ------------------------------------------"
 	echo "      run: eastLion.sh $libName"
+
 	bash $SCRIPTS/eastLion.sh $libName
+
+	echo " ... run complete ---------------------------------------------------"
+	echo ''
+	echo ''
 done
 
 

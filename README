@@ -59,9 +59,36 @@ LIONS pipeline architecture
 	Scripts: all scripts to run lion are held here except for the
 	controlling lions.sh script which is in the base folder.
 	Check initializeScripts.sh for complete list of scripts
+	The main scripts are 
 
 	./scripts/eastLion.sh
+		Alignment, Assembly, Chimeric Detection pipeline
+
 	./scripts/westLion.sh
+		LIONS analysis pipeline
 
 # ./resources
+	<INDEX>: the name of the index set. To be compatible with different
+	genome versions, species and gene sets there can be different sets
+	of data. The <INDEX> global variable is set in parameter.ctrl file
+	
+	./resources/<INDEX>/annotation
+	<GENESET> file: A ucsc formatted file containing a gene set to be
+	used in the analysis (i.e. look for overlapping genes to transcripts)
+	Download from: https://genome.ucsc.edu/cgi-bin/hgTables
+	The standard annotation set used was RefSeq 'RefGene' table.
+
+	./resources/<INDEX>/genome
+	<INDEX>.fa: The only requisite file here for running LIONS is a fasta
+	formatted genome. This could be a symbolic link. LIONS will generate
+	the other files neccesary from INDEX.fa. If you have the .bt2 index
+	files already generated you can symbolically link them in this folder
+	to skip re-generating them.
+
+	./resources/<INDEX>/repeat
+	<REPEAT I> *********
+	<REPEAT II> *********
+
+
+
 

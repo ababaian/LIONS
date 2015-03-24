@@ -12,9 +12,14 @@
 
 	export INPUT_LIST="$BASE/input.list" # <libName> <libPath> <group> csv file
 
-	export INDEX='hg19r' # Genome resource to use
+	export INDEX='hg19r' # Genome resource set to use
+	#  Should be a ~/LIONS/resources/<INDEX>/ folder
+	#  See README file 'RESOURCE INITIALIZATION' to set up
+	#  the folder prior to running LIONS the first time
 
-	export RUNID=$(date +%y%m%d_%H%M) # Unique Run ID; date_hhmm
+	export GENESET='refSeq_hg19.ucsc' # Reference Gene Set. UCSC format.
+
+	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
 
 # Directories
 
@@ -92,25 +97,55 @@
 		export ctrlCL2="-u -p $THREADS -g $guide"
 	fi
 
-
 # RNAseqPipeline
 
 	# Reference Annotations
 	export REF='assembly'
 
 	# RNAseq Analysis Quality
-	export QUALITY='q10.F772'
+		# q = quality cutoff; F bam flags to discard
+		# i.e. 'q10.F772'
+		# i.e. 'q1.F1796' 
+	export QUALITY='q10.F772' 
 
 # Chimeric Read Tool
+	# self-contained
 
+# ChimSort
+	# These parameters define what is defined as a 
+	# "TE-initiated transcript" and what is exonization/termination are
+	# note: See chimSort.R script to see how these are used for sorting
 
-#RNAgetRes.sh (outdated)
-#	res='$pDIR/$name/resources'
-#	chr="$RESOURCES/$INDEX/genome/$INDEX.chr.size"
-#       chrfile="$RESOURCES/$INDEX/genome/$INDEX.bwa.names"
-#	btwindex="$RESOURCES/$INDEX/genome/"
-#	TEdata="$RESOURCES/sets/RM/SINES_LINES_LTRS_hg19"
-#	chimeric="$RESOURCES/sets/RM/ForChimericSearch_hg19"
+	# Sort Bypass: If a sorted .lions file is already present
+	# do you want to re-calcualate the 'initiations'?
+	# 0 = Re-calcualte 'initiation' using parameters set below
+	# 1 = Don't re-calculate 'initiation' if it exists
+	export SORTBYPASS='1'
+
+	# Number of Chimeric Reads Required (total)
+	export crtReads='3' # Variable: <Value below> or 1/20 RPM
+	
+	# Thread Ratio
+	export crtThread='10' # >=
+	export crtDownThread='10' # |number| required 
+
+	# RPKM cut-off to consider an exon 'expressed'
+	export crtRPKM='1' # >=
+
+	# Contribution of TE to total transcript expression (Exon / TE)
+	export crtContribution='0.1' # >=
+
+	# Expression immediatly upstream TE
+	export crtUpstreamCover='2' # >=
+
+	# Expression of exons upstream of involved exon
+	export crtUpstreamExonCover='1.5' # >=
+	
+	# Final Export String
+	export CRT=$( echo $crtReads $crtThread $crtDownThread $crtRPKM $crtContribution $crtUpstreamCover $crtUpstreamExonCover )
+
+	# Splice Partner Classification
+	# Repeat Rank > 0 AND RepeatExonic
 
 # WEST LION -----------------------------------------------
 

@@ -39,6 +39,12 @@
 	# Genome Index
 	 #INDEX='hg19r'
 
+
+# MASTER FLOW CONTROL ===============================================
+if [ ! -e $outDir/$libName.lions ] # no primary LIONS file exists
+then
+# RUN LIONS PIPELINE FROM THE START
+
 # CLUSTER/LOCAL ALTERNATIVE PROTOCOLS -------------------------------
 if [ $SYSTEM == 'gsc' ]
 then #Cluster
@@ -78,7 +84,14 @@ cd $WORK # go to working directory
 
 
 # ALIGNMENT ---------------------------------------------------------
+# Use Tophat2 to generate an alignment with the parameters defined
+# in paramters.ctrl file
+# LIONS defaults are tuned for aligning reptative sequences; feel free to
+# change it up and try new runs
+
+# Alignment Flow Control
 # If an aligned file already exists, don't recalculate it
+
 if [ -s $libName.bam ]
 then
 	echo " $libName.bam is already generated."
@@ -95,25 +108,22 @@ else # Generate Alignment
 	echo "     Bam output: $OUTPUT.bam"
 	echo "     Genome: $INDEX"
 
-# Working Directory ** Comment out **
-	#echo " listing working folder contents: "
-	#ls -lh
 
-# Sort the input bam file
+# Sort the input bam file for generating fastq files for input
 	echo " Sorting input bam file with samtools ..."
 	$lBIN/samtools sort -n $INPUT $WORK/temp_sort
 	#rm $INPUT # cleanup input
 
-# Convert to fastq files
+# Convert bam to fastq files
 	# Produces two files for paired-end reads
 	# temp.1.fq temp.2.fq
 	echo " Converting sorted bam file to fastq file"
 	$lBIN/bam2fastx -Q -q -A -P -N -o $WORK/temp.fq $WORK/temp_sort.bam
 	
-	# Clean Up
-	#rm temp_sort.bam
+	# Clean Up from this point
+	rm temp_sort.bam
 
-# Run Tophat2
+# Run Tophat2 Alignment
 	echo " Running tophat2 ..."
 
 	echo "  cmd: $lbin/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq"
@@ -122,21 +132,22 @@ else # Generate Alignment
 	echo ' ... tophat2 completed.'
 	echo ''
 
-# -------- CLEANUP
+# -------- Post Alignment Cleanup
 	rm temp* # Clear temporary files
 	rm $INDEX* # Clear bowtie index files
 	
 	#echo 'Directory after clearup'
 	#ls -lh
 
-# Append to single output file
+# Append tophat2 output bam files to a to single bam file
 	$lBIN/samtools cat -o unsorted.bam accepted_hits.bam unmapped.bam
 	$lBIN/samtools sort unsorted.bam $OUTPUT
 	$lBIN/samtools index $OUTPUT.bam
 
-# Calculate Flagstat for bam file
+# Calculate Flagstat for bam file (Read statistics)
 	$lBIN/samtools flagstat $OUTPUT.bam > $OUTPUT.flagstat
 
+# Alignment Sanity Check
 	# run a command; if bam file output is greater then 1 Mb
 	# then remove fastq files and copy everything over
 	# return a message the the alignment worked
@@ -170,7 +181,7 @@ else # Generate Alignment
 		exit 10 # Exit with error 10
 	fi
 
-# Post Alignment Organization
+# Post Alignment Organization of project folder
 	# Create an 'alignment' folder and move all the tophat2 files into
 	# this folder
 	mkdir .tmp
@@ -185,6 +196,11 @@ else # Generate Alignment
 fi 
 
 # ASSEMBLY ----------------------------------------------------------
+# Use Cufflinks to generate an assembly of transcripts from which
+# TE-Assembly interactions may be inferred
+# Previously we used RefSeq instead of assembly (and it's still possible)
+# but found the results to be poorer.
+
 # Flow control
 if [ -s assembly/transcripts.gtf ]
 then
@@ -193,8 +209,8 @@ then
 	echo "  ... skipping cufflinks assembly"
 	echo ''
 else
-# Run Cufflinks
- 
+
+
 # Make an ouput folder for Cufflinks Assembly
 	mkdir -p assembly
 
@@ -225,6 +241,10 @@ fi
 fi
 
 # RESOURCE GENERATION -----------------------------------------------
+# Create resource files from the assembly. Most of these are not neccesary
+# but were/are part of the RNAseqPipeline software from the GSC.
+# Thus 
+
 # Flow Control
 if [ -s resources/assembly_exons ]
 then
@@ -247,11 +267,25 @@ else
 	$BASE/scripts/RNAseqPipeline/resourceGeneration/buildResourceGTF.sh transcripts.gtf assembly
 
 	cd ..
+
+	# From FlagStat File; create a file of 'mappedReads' and put it into resources
+	sed -n 3p alignment/$libName.flagstat | cut -f1 -d' ' - > resources/mappedReads
+	
 fi
 
 # RNASEQPIPELINE ----------------------------------------------------
+# Generates RPKM values for the transcripts
+# Creates a wig file ** Edit this for UCSC compatability **
 
-# For LIONS; REF='assembly'
+# Flow Control
+if [ -s expression/$libname.*.wig.gz ]
+then
+	# RNA seq already ran
+	echo " RNAseq Pipeline already performed"
+	echo " .... skipping "
+
+else
+# Note: For LIONS; REF='assembly'
 
 	# RNAseq Analysis
 	echo " RNAseq Pipeline Analysis"
@@ -261,15 +295,76 @@ fi
 
 	echo ""
 
+fi
+
 # CHIMERICREADTOOL --------------------------------------------------
+# Core protocol for detecting TE-Transcript interactions
+# This run script sets up the file architecture 
+# and runs the python script to generate the core values for the .lions
+# files
+
+# Flow Control
+if [ -s $libName.pc.lcsv ];
+then
+	# RNA seq already ran
+	echo " Chimeric Analysis already performed"
+	echo " .... skipping "
+	echo ''
+
+else
 
 	# Chimeric Analysis
 	echo " Chimeric Reads Analysis"
 	echo "      ChimericReadTool.sh $pDIR/$libName/$libName.bam"
 
 	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz $REF
+	# Output is <libName>.raw.lions
+	# Total TE-Transcript interaction table
+
+	# ChimIntersect
+	# Intersection with Defined Protein Coding Genes
+	echo "  ChimIntersect"
+	echo "       chimIntersect.sh $libName"
+	bash $SCRIPTS/ChimericReadTool/chimIntersect.sh $libName	
 
 	echo " ... Chimeric analysis completed."
+	echo ""
+fi
+
+
+# CHIMSORT ----------------------------------------------------------
+# Sort the pcRaw output from ChimericReadTool/chimIntersect into
+# a set of TE which are likely to be the initiation events
+# the sort script is customizable and parameters are set in the
+# parameter.ctrl file
+
+# Read Mapped Read number
+	mappedReads=$(cat resources/mappedReads)
+
+	# Run ChimSort Script
+	echo ' ChimSort'
+	echo "     Library: $libName"
+	echo "     Raw Lions File: $libName.pc.lcsv" 
+	echo "     Output: $libName.lions"
+	echo ''
+	echo "     --- parameters --- "
+	echo "     Mapped Reads: $mappedReads"
+	echo "     # Read Support = $crtReads"
+	echo "     ThreadRatio = $crtThread"
+	echo "     DownStream Threads = $crtDownThread"
+	echo "     RPKM = $crtRPKM"
+	echo "     TE Contribution = $crtContribution"
+	echo "     Upstream Coverage = $crtUpstreamCover"
+	echo "     Upstream Exon Expression = $crtUpstreamExonCover"
+	echo ''
+
+
+	# Chimeric Filtering
+	echo "  Run ChimSort"
+	echo "     Rscript chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT"
+	
+	Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT
+
 	echo ""
 
 # CLEAN-UP ----------------------------------------------------------
@@ -282,5 +377,63 @@ fi
 			cd $BASE
 			mv $WORK $outDir
 		fi
+
+# End LIONS pipeline
+
+# MASTER FLOW CONTROL ===============================================
+else # LIONS file already exists
+
+	# Recalculate chimSort (Bypass Protocol)
+	if [ $SORTBYPASS = '1' ] 
+	then
+	# East Lion already complete; don't recalculate sort
+		echo " East Lions has already been completed. "
+		echo "    $libName.lions exists"
+		echo "    not re-calculating chimSort (SORTBYPASS = 1)"
+
+	else
+	# East Lion already completed; re-calcualte sort though
+		echo " East Lions has already been completed. "
+		echo "    $libName.lions exists"
+		echo "    SORTBYPASS = 0, "
+		echo "    will re-recalcualte chimSort ..."
+
+		# Move to project/library directory
+		WORK=$outDir # work in output space
+		cd $WORK # go to working directory
+
+		# Read Mapped Read number
+		mappedReads=$(cat resources/mappedReads)
+
+		# Run ChimSort Script
+		echo ' Re-calculate ChimSort'
+		echo "     Library: $libName"
+		echo "     Raw Lions File: $libName.pc.lcsv" 
+		echo "     Output: $libName.lions"
+		echo "     Run ID: $RUNID"
+		echo ''
+		echo "     --- parameters --- "
+		echo "     Mapped Reads: $mappedReads"
+		echo "     # Read Support = $crtReads"
+		echo "     ThreadRatio = $crtThread"
+		echo "     DownStream Threads = $crtDownThread"
+		echo "     RPKM = $crtRPKM"
+		echo "     TE Contribution = $crtContribution"
+		echo "     Upstream Coverage = $crtUpstreamCover"
+		echo "     Upstream Exon Expression = $crtUpstreamExonCover"
+		echo ''
+
+
+		# Chimeric Filtering
+		echo "  Run ChimSort"
+		echo "     Rscript chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT"
+	
+		Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT
+
+		echo ""
+
+	fi # End Bypass flow control
+
+fi # END Master Flow control
 
 # Done script :D
