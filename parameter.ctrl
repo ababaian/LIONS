@@ -17,7 +17,9 @@
 	#  See README file 'RESOURCE INITIALIZATION' to set up
 	#  the folder prior to running LIONS the first time
 
-	export GENESET='refSeq_hg19.ucsc' # Reference Gene Set. UCSC format.
+	export GENESET='refSeq_hg19.ucsc' # Reference Gene Set. UCSC format
+
+	export REPEATMASKER='rm_hg19.ucsc' # RepeatMasker. UCSC format
 
 	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
 
@@ -148,5 +150,25 @@
 	# Repeat Rank > 0 AND RepeatExonic
 
 # WEST LION -----------------------------------------------
+# chimGroup.R
+	# These parameters define recurrent and specific
+	# 'TE initiated' events
+	# 
+	# The third column of <input.list> defines libraries as one of
+	# 1: Control / Normal
+	# 2: Experimental / Cancer
+	# 3: Other / unused
+
+	# Recurrent Cutoff
+	# Must be present in at least this many Group 2 libraries
+	export cgGroupRecurrence='2'
+
+	# Specificity Cutoff
+	# Must be absent in at least this many Group 1 libraires
+	export cgSpecificity='0'
+
+	# chimGroup command string
+	export CG=$(echo $cgGroupRecurrence $cgSpecificity)
+
 
 

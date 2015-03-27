@@ -423,7 +423,6 @@ else # LIONS file already exists
 		echo "     Upstream Exon Expression = $crtUpstreamExonCover"
 		echo ''
 
-
 		# Chimeric Filtering
 		echo "  Run ChimSort"
 		echo "     Rscript chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT"
@@ -435,5 +434,9 @@ else # LIONS file already exists
 	fi # End Bypass flow control
 
 fi # END Master Flow control
+
+
+# Add counter to summitLog_$RUNID that the run is completed successfully
+echo $libName >> $pDIR/summitLog_$RUNID
 
 # Done script :D

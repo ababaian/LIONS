@@ -86,8 +86,13 @@ LIONS pipeline architecture
 	to skip re-generating them.
 
 	./resources/<INDEX>/repeat
-	<REPEAT I> *********
-	<REPEAT II> *********
+	<REPEATMASKER>.ucsc: a ucsc formatted file containing the repeatMasker
+	annotation for the genome. 
+	Columns are;
+	bin, swScore, milliDiv, milliDel, milliIns, genoName, genoStart,
+	genoEnd, genoEnd, genoLeft, strand, repName, repClass, repFamily,
+	repStart, repEnd, repLeft, id
+
 
 
 

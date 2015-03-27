@@ -26,9 +26,9 @@ echo ""
 # Function: Checks $FILE exists + permissions, returns that it does
 # or returns a does not exist error 2 and exits
 
-FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "     $FILE found."; else echo "     $FILE not found (empty or non-readable)."; echo " ===== ERROR 2: MISSING REQUISITE FILE ===== "; exit 2; fi'
+FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "     $FILE found."; else echo "     $FILE not found (empty or non-readable. Check permissions.)."; echo " ===== ERROR 2: MISSING REQUISITE FILE ===== "; exit 2; fi'
 
-FCHECK_x='if [ -s $FILE -a -x $FILE ]; then echo "     $FILE found."; else echo "     $FILE not found (empty or non-executable)."; echo " ===== ERROR 2: MISSING REQUISITE FILE ===== "; exit 2; fi'
+FCHECK_x='if [ -s $FILE -a -x $FILE ]; then echo "     $FILE found."; else echo "     $FILE not found (empty or non-executable. Check permissions.)."; echo " ===== ERROR 2: MISSING REQUISITE FILE ===== "; exit 2; fi'
 
 FILE='' # File to check
 
@@ -39,12 +39,12 @@ echo ''
 # SCRIPT CHECK --------------------------------------------
 	cd $BASE/scripts #goto Script folder
 
-	FILE='initializeScripts.sh'
+	FILE='Initialize/initializeScripts.sh'
 		eval $FCHECK_x
 
 	echo ' ... checking scripts'
 
-	bash initializeScripts.sh # Run init script
+	bash Initialize/initializeScripts.sh # Run init script
 
 	echo ' ... script check completed successfully!'
 	echo ''
@@ -61,6 +61,10 @@ then
 	INITBIN="initializeBin_$SYSTEM.sh"
 	FILE=$INITBIN
 		eval $FCHECK_x
+
+	echo ' attempting to run initializeBin.sh'
+	source $INITBIN # Run initializeBin.sh
+
 else
 
 	if [ -e initializeBin.sh ] # initializeBin.sh exists
@@ -71,18 +75,18 @@ else
 	
 	else # DNE: copy initializeBin.sh from scripts folder
 		echo '     Using default binary initilization file'
-		cp $BASE/scripts/initializeBin.sh $lBIN/initializeBin.sh
+		cp $BASE/scripts/Initialize/initializeBin.sh $lBIN/initializeBin.sh
 
 		INITBIN='initializeBin.sh'
 		FILE="$INITBIN"
 
 		eval $FCHECK_x
 	fi
-fi
 
 	echo ' attempting to run initializeBin.sh'
 	source $INITBIN # Run initializeBin.sh
 	rm $INITBIN
+fi
 
 	echo ' ... binary check completed successfully!'
 	echo ''
@@ -95,7 +99,7 @@ cd $BASE
 	echo '     Check genome files, repeat files and annotations are in order'
 	echo ''
 
-	source $SCRIPTS/initializeRes.sh $INDEX
+	source $SCRIPTS/Initialize/initializeRes.sh $INDEX
 
 	echo ' ... resource check completed successfully!'
 	echo ''
@@ -109,9 +113,9 @@ cd $BASE
 echo " Initializing $PROJECT Directory: $pDIR"
 	mkdir -p $pDIR # ./LIONS/projects/<projectName>
 	echo $INPUT_LIST $PARAMETER
-	mkdir -p $pDIR/run$RUNID
-	cp $INPUT_LIST $pDIR/run$RUNID/input.list
-	cp $PARAMETER $pDIR/run$RUNID/parameter.ctrl
+	mkdir -p $pDIR/logs/run$RUNID
+	cp $INPUT_LIST $pDIR/logs/run$RUNID/input.list
+	cp $PARAMETER $pDIR/logs/run$RUNID/parameter.ctrl
 
 # Make and Initialize Library Folders
 	iterN=$(wc -l $INPUT_LIST | cut -f1 -d' ' -)

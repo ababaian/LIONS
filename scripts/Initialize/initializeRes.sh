@@ -35,7 +35,7 @@
 	bt_bwa="$INDEX.bwa.names"
 
 # RESOURCES/repeat
-	repeatMasker="RepeatMasker.hg19.ucsc" # RepeatMasker UCSC download	
+	repeatMasker="$REPEATMASKER" # RepeatMasker UCSC download	
 	rmSearch="ForChimericSearch_hg19" # LINE SINE LTR DNA Other elements only
 
 # RESOURCES/annotation
@@ -49,7 +49,7 @@
 
 # Test if file exist and can be read
 # Returns an error if it doesn't else it returns a 'S'all good' and continues
-FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "... $FILE found."; else echo "     $FILE not found (empty or non-readable)."; echo " ===== ERROR 5: MISSING REQUISITE RESOURCE ===== "; echo Check README for more information; exit 2; fi'
+FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "... $FILE found."; else echo "     $FILE not found (empty or non-readable)."; echo " Check if file exists or permissions"; echo " ===== ERROR 5: MISSING REQUISITE RESOURCE ===== "; echo Check README for more information; exit 2; fi'
 
 # GENOME FILE CHECK -----------------------------
 cd genome # go to genome directory
@@ -84,7 +84,24 @@ fi
 cd ..
 
 # REPEAT FILE CHECK ------------------------------
-# ***** Implement UCSC download/ File Conversion *****
+# Use UCSC RepeatMasker Table
+# (download ucsc RefSeq table https://genome.ucsc.edu/cgi-bin/hgTables)
+cd repeat
+
+# Check if the Repeat Masker annotation file defined in parameter.ctrl exists
+	FILE=$repeatMasker; eval $FCHECK_rs
+
+# Generate rmStats Statistics Data-frame for R-based analyses
+if [ ! -r 'rmStats.Rdata' ]
+then
+	echo " rmStats.Rdata: statistics data frames not found. Generating..."
+	Rscript $SCRIPTS/Initialize/rmResource.R $repeatMasker
+
+	# Add string input to rmResource to generate ForChimeric Search file
+	# i.e. 1 --> make it, 0 --> don't make it
+fi
+
+cd ..
 
 # ANNOTATION FILE CHECK- -------------------------
 # Reference UCSC Table File

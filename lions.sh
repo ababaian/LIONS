@@ -51,7 +51,7 @@ fi
 # Run Initialization Script
 echo ' running initializeLIONS.sh'
 
-	bash $SCRIPTS/initializeLIONS.sh
+	bash $SCRIPTS/Initialize/initializeLIONS.sh
 
 echo ' initialization completed successfully.'
 echo ''
@@ -63,9 +63,12 @@ echo '                     E A S T       L I O N                     '
 echo ''
 echo ' ./LIONS/scripts/eastLion.sh ' 
 echo '==============================================================='
-echo '  Align reads to genome and perform chimeric analysis'
+echo '  Align reads to genome and perform TE-initiation analysis'
 echo ''
 cd $pDIR #./LIONS/projects/<projectName>
+
+# Initialize Summit Log file
+touch summitLog_$RUNID
 
 # Loop through each library in input file
 iterN=$(wc -l $INPUT_LIST | cut -f1 -d' ' -)
@@ -84,9 +87,52 @@ do
 
 	bash $SCRIPTS/eastLion.sh $libName
 
-	echo " ... run complete ---------------------------------------------------"
+	echo " ... run complete -------------------------------------------"
 	echo ''
 	echo ''
 done
 
+# Check that all libraries have completed
+	#iterN is the number of libraries
+summitN=$(wc -l $pDIR/summitLog_$RUNID | cut -f1 -d' ' )
+
+while [  $summitN -lt $iterN ]  # Not all EAST LION iterations have completed
+do 
+
+	# Verbose
+	echo " $summitN / $iterN East Lion scripts completed. Waiting..."
+	date
+
+	# Wait 10 minutes
+	#sleep 500s # Actual
+	sleep 2s # For Testing
+
+	# Recalculate summitN
+	summitN=$(wc -l $pDIR/summitLog_$RUNID | cut -f1 -d' ')
+
+done
+
+# All runs completed, clear summit log
+rm $pDIR/summitLog_$RUNID
+
+echo ''
+echo ' All EAST LION scripts have completed. '
+
+
+# WEST LION =========================================================
+echo ''
+echo '                     W E S T       L I O N                     '
+echo ''
+echo ' ./LIONS/scripts/westLion.sh ' 
+echo '==============================================================='
+echo '  Group and analyze lions files of TE-initiation events'
+echo ''
+cd $pDIR #./LIONS/projects/<projectName>
+
+# Run West Lions Script
+	echo ' run: westLion.sh'
+	bash $SCRIPTS/westLion.sh
+
+echo ''
+echo ' WEST LION scripts have completed. '
 

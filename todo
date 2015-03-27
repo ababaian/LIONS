@@ -7,7 +7,10 @@ lions.sh
 
 initializeLIONS.sh
 
-	line 132: implement archive folder for each run
+	Add R to /bin directory
+
+	Add scripts to convert RepeatMasker.ucsc to ForChimericSearch_hg19,
+	SINES_LINES_LTRS_hg19 ...
 
 RNAseqPipeline.sh
 	

@@ -52,14 +52,13 @@ echo "     Check that LIONS scripts exist and are read/executable"
 echo ''
 
 # Initializations
-	FILE='initializeLIONS.sh'; eval $FCHECK_rs
-	FILE='initializeScripts.sh'; eval $FCHECK_rs
-	FILE='initializeBin.sh'; eval $FCHECK_rs
-	FILE='initializeRes.sh'; eval $FCHECK_rs
+	FILE='Initialize/initializeLIONS.sh'; eval $FCHECK_rs
+	FILE='Initialize/initializeScripts.sh'; eval $FCHECK_rs
+	FILE='Initialize/initializeBin.sh'; eval $FCHECK_rs
+	FILE='Initialize/initializeRes.sh'; eval $FCHECK_rs
 
 # East Lion
 	FILE='eastLion.sh'; eval $FCHECK_rs
-	FILE='runTH2.sh'; eval $FCHECK_rs
 
 # West Lion
 	FILE='westLion.sh'; eval $FCHECK_rs
@@ -83,6 +82,9 @@ echo ''
 	FILE='ChimericReadTool/exon_scan.sh'; eval $FCHECK_rs
 	FILE='ChimericReadTool/intervalTree.py'; eval $FCHECK_rs
 	FILE='ChimericReadTool/chimericReadSearch.py'; eval $FCHECK_rs
+	FILE='ChimericReadTool/chimIntersect.sh'; eval $FCHECK_rs
+	FILE='ChimericReadTool/chimIntLookup.R'; eval $FCHECK_rs
+	FILE='ChimericReadTool/chimSort.R'; eval $FCHECK_rs
 
 echo ''
 # End of script : )
