@@ -27,7 +27,6 @@
     #   3: Other/ non-grouped samples
     #   ...
 
-
   RMDATA_PATH= STDIN[3]
 
 # Parameters
@@ -56,6 +55,7 @@ for  (RUN in c(1:2)) {
 	if (RUN == 1){
 
 	print(" Running standard analysis" )
+
 	# Standard:
 	OUTPUT = stdOUTPUT
 
@@ -65,6 +65,7 @@ for  (RUN in c(1:2)) {
 	 
 	 # Cancer Group
 	 canGroup = 2
+
 
 	 } else {
 	 print(" Running inverse analysis" )
@@ -82,6 +83,10 @@ for  (RUN in c(1:2)) {
 # INITIALIZATION ====================================================
 
 # Import
+
+# ************ ERROR WITH THIS INPUT ******************
+# Test with a toy
+
 
   Chimera = read.csv(file=pLIONS, header=T, sep='\t')
   

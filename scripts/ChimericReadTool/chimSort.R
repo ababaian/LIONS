@@ -16,6 +16,7 @@
   STDIN = commandArgs(trailingOnly = TRUE)
 
   INPUT = STDIN[1] # Chimera_Results
+  INPUTNAME = unlist(strsplit(as.character(INPUT), split = "\\."))[1]
 
   OUTPUT = STDIN[2] # Chimeric Output
 
@@ -174,7 +175,7 @@ ChimeraTable = read.csv(file=INPUT,
   #  (for comparing multiple lists)
   
   # LIBRARY = unlist(strsplit(INPUT,split = '/'))[1]
-    LIBRARY = INPUT
+    LIBRARY = INPUTNAME
     ChimeraOut = cbind(ChimeraOut, LIBRARY)
     
   # Write output CSV

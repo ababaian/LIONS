@@ -46,7 +46,7 @@
 # Cluster Commands
 	if [ $SYSTEM == 'gsc' ]
 	then # Cluster QSUB
-		export QSUB='qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus 4 -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G'
+		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus 4 -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
 
 	else # Local (no) QSUB
 		export QSUB=''
@@ -67,8 +67,22 @@
 	# Ab initio (guided) or De Novo assembly?
 	export deNovo='1' # 1 = De Novo; 0 = Ab Initio
 
-	# Guide file upon which to assemble *** REQUIRES IMPLEMENTATION**
-	guide="$RESOURCES/annotation/guide.gtf"
+	# Check that assembly guide GTF file exists if it's being used
+	if [ $deNovo == '0' ]
+	then
+		# Guide file upon which to assemble
+		guide="$RESOURCES/annotation/guide.gtf"
+
+		# Check of Guide file doesn't exists; exit
+		if [ ! -s $guide ]
+		then
+		echo " ERROR 5 - Missing resource file"
+		echo " Ab initio assembly selected (using a GTF guide -g)"
+		echo " but the guide file $guide does not exist or cannot be read"
+		echo " check parameter.ctrl and/or initialize a guide file"
+		exit 5
+		fi
+	fi
 
 	#Minimum fragments per transfrag
 	# default is 10
@@ -122,7 +136,7 @@
 	# do you want to re-calcualate the 'initiations'?
 	# 0 = Re-calcualte 'initiation' using parameters set below
 	# 1 = Don't re-calculate 'initiation' if it exists
-	export SORTBYPASS='1'
+	export SORTBYPASS='0'
 
 	# Number of Chimeric Reads Required (total)
 	export crtReads='3' # Variable: <Value below> or 1/20 RPM
@@ -161,11 +175,11 @@
 
 	# Recurrent Cutoff
 	# Must be present in at least this many Group 2 libraries
-	export cgGroupRecurrence='2'
+	export cgGroupRecurrence='1'
 
 	# Specificity Cutoff
 	# Must be absent in at least this many Group 1 libraires
-	export cgSpecificity='0'
+	export cgSpecificity='1'
 
 	# chimGroup command string
 	export CG=$(echo $cgGroupRecurrence $cgSpecificity)

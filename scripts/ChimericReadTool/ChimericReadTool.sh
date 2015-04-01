@@ -90,7 +90,7 @@ usage()
 	export btwindex="$RESOURCES/$INDEX/genome/"
 
 	# Repeat Masker Data
-	export repeats="$RESOURCES/repeat/SINES_LINES_LTRS_hg19"
+	export repeats="$RESOURCES/repeat/forChimericSearch"
 
 	# More TE data
 	#chimeric="$RESOURCES/rm/ForChimericSearch_hg19"

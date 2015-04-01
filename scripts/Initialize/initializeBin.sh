@@ -17,6 +17,7 @@
 	export CUFFLINKS='cufflinks'
 	export PYTHON3='python3'
 	export JAVA='java'
+	export RSCRIPT='Rscript'
 	
 
 # Functions -------------------------------------
@@ -67,6 +68,10 @@ echo ''
 	# Java
 	WARE=$JAVA; eval $wareExists
 		ln -fs $(command -v $WARE) $BASE/bin/java
+
+	# Rscript
+	WARE=$RSCRIPT; eval $wareExists
+		ln -fs $(command -v $WARE) $BASE/bin/Rscript
 
 echo ''
 

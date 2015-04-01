@@ -75,8 +75,26 @@ done
 	echo ''
 
 # ChimGroup ---------------------------------------------------------
-#
+# Using a the project.lions file look for TE-initiated transcripts
+# which are recurrent and specific to a library grouping
+# i.e. Cancer Recurrent and Specific Chimera
+
+	# Run ChimGroup Script
+	rmStats="$RESOURCES/repeat/rmStats.Rdata" #auto-gen from rm.ucsc
+
+	echo ' ChimGroup'
+	echo "     Project: $PROJECT"
+	echo "     Lions File: $pLionFile" 
+	echo ''
+	echo "     --- parameters --- "
+	echo "     Recurrence Cutoff # = $cgGroupRecurrence"
+	echo "     Specificity Cutoff #: = $cgSpecificity"
 
 
+
+	echo " Run chimGroup.R"
+	echo "   Rscript chimGroup.R $pLionFile $INPUT_LIST $rmStats $CG"
+
+	$lBIN/Rscript $SCRIPTS/ChimericAnalysis/chimGroup.R $pLionFile $INPUT_LIST $rmStats $CG
 
 # End of Script *<=D

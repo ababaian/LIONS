@@ -18,6 +18,10 @@
   # Columns of input <rm>.ucsc file
   # See LIONS README for information on file columns
 
+  makeChimericSearch = STDIN[2]
+  # 0: file exists, don't generate the forChimericSearch file 
+  # 1: file doesn't exist, generate forChimericSearch
+
   # Output Rdata files (binary file)
   OUTPUT = 'rmStats.Rdata'
 
@@ -47,6 +51,27 @@
   }
 
 # Chimeric Read Search CSV File =====================================
+# build the forChimericSearch.bed file
+# Includes LINE SINE LTR DNA Other elements (TE) and exclude other repeats
+
+if ( makeChimericSearch == 1 ){
+
+# Initialize the bed file
+forChimericSearch = cbind( RMDB[,c('genoName','genoStart','genoEnd',
+                                   'strand','repName','repClass','repFamily')])
+
+# Sort by position
+forChimericSearch = forChimericSearch[with(forChimericSearch, order(genoName, genoStart)), ]
+
+# Filter to keep; LTR, LINE, SINE, DNA, Other
+retain = c('LTR', 'LTR?', 'LINE', 'LINE?', 'SINE', 'SINE?', 'DNA', 'DNA?', 'Other', 'RC')
+forChimericSearch = forChimericSearch[which(forChimericSearch[,'repClass'] %in% retain),]
+
+# Write output
+write.table(forChimericSearch, file = 'forChimericSearch', append = F, quote = F,
+            sep = "\t", row.names = F, col.names = F)
+}
+
 
 # RepeatMasker.Rdata ================================================
 # table Name/Class/Family statistics for analysis in West Lion

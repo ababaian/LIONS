@@ -7,10 +7,7 @@ lions.sh
 
 initializeLIONS.sh
 
-	Add R to /bin directory
 
-	Add scripts to convert RepeatMasker.ucsc to ForChimericSearch_hg19,
-	SINES_LINES_LTRS_hg19 ...
 
 RNAseqPipeline.sh
 	
@@ -19,4 +16,3 @@ RNAseqPipeline.sh
 
 parameter.ctrl
 
-	line 63: Implement Guided (ab initio) assembly, make a GTF file in resource which will be used to guide assembly

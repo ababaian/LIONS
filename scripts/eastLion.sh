@@ -363,7 +363,7 @@ fi
 	echo "  Run ChimSort"
 	echo "     Rscript chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT"
 	
-	Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT
+	$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT
 
 	echo ""
 
@@ -427,7 +427,7 @@ else # LIONS file already exists
 		echo "  Run ChimSort"
 		echo "     Rscript chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT"
 	
-		Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT
+		$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT
 
 		echo ""
 

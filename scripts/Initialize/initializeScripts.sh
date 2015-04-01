@@ -86,5 +86,8 @@ echo ''
 	FILE='ChimericReadTool/chimIntLookup.R'; eval $FCHECK_rs
 	FILE='ChimericReadTool/chimSort.R'; eval $FCHECK_rs
 
+# Chimeric Analysis Scripts
+	FILE='ChimericAnalysis/chimGroup.R'; eval $FCHECK_rs
+
 echo ''
 # End of script : )

@@ -85,7 +85,7 @@ do
 	echo " Iteration $nLib: $libName ------------------------------------------"
 	echo "      run: eastLion.sh $libName"
 
-	bash $SCRIPTS/eastLion.sh $libName
+	$QSUB bash $SCRIPTS/eastLion.sh $libName
 
 	echo " ... run complete -------------------------------------------"
 	echo ''

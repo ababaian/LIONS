@@ -94,8 +94,16 @@ cd repeat
 # Generate rmStats Statistics Data-frame for R-based analyses
 if [ ! -r 'rmStats.Rdata' ]
 then
+
+	if [ ! -r 'forChimericSearch' ]
+	then # file doesn't exist
+		makeChimericSearch='1'
+	else # file exists, don't make
+		makeChimericSearch='0'
+	fi
+
 	echo " rmStats.Rdata: statistics data frames not found. Generating..."
-	Rscript $SCRIPTS/Initialize/rmResource.R $repeatMasker
+	$lBIN/Rscript $SCRIPTS/Initialize/rmResource.R $repeatMasker $makeChimericSearch
 
 	# Add string input to rmResource to generate ForChimeric Search file
 	# i.e. 1 --> make it, 0 --> don't make it
