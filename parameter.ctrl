@@ -3,6 +3,7 @@
 # PARAMETER CONTROL FILE
 # Defines parameters with which to run LIONS
 # =========================================================
+# Adjust these to your system
 
 # The LIONS den
 	export BASE=$PWD # Base folder for ~/LIONS/
@@ -18,8 +19,10 @@
 	#  the folder prior to running LIONS the first time
 
 	export GENESET='refSeq_hg19.ucsc' # Reference Gene Set. UCSC format
+	# in ~/LIONS/resources/<INDEX>/annotation/<GENESET>	
 
 	export REPEATMASKER='rm_hg19.ucsc' # RepeatMasker. UCSC format
+	# in ~/LIONS/resources/<INDEX>/repeat/<REPEATMASKER>
 
 	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
 
@@ -46,11 +49,24 @@
 # Cluster Commands
 	if [ $SYSTEM == 'gsc' ]
 	then # Cluster QSUB
-		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus 4 -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
+		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
 
 	else # Local (no) QSUB
 		export QSUB=''
 	fi
+
+# SOFTWARE PATHS ------------------------------------------
+# For all software below, enter in where LIONS should access it on this system
+
+	export SAMTOOLS='samtools_0.1.18' # Samtools (less than version 1.x)
+	export BAM2FASTX='bam2fastx'
+	export TOPHAT2='tophat2'
+	export BOWTIE2='bowtie2'
+	export BOWTIE_BUILD='bowtie-build'
+	export CUFFLINKS='cufflinks'
+	export PYTHON3='python3'
+	export JAVA='java'
+	export RSCRIPT='Rscript'
 
 # EAST LION -----------------------------------------------
 # Bowtie 2

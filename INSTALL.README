@@ -1,0 +1,18 @@
+LIONS Installation Steps
+
+1. Download LIONS core files from github
+
+3. In ./LIONS/resources copy 'example' folder to '<genomeName>' folder
+
+4. Populate the resource files:
+
+	a) In ./LIONS/resources/<genomeName>/genome/ add a <genomeName>.fa genome file
+	b) In ./LIONS/resources/<genomeName>/annotation/ add the ucsc annotation file
+	c) In ./LIONS/resources/<genomeName>/repeat/ add the ucsc repeatMasker file
+
+7. Set up the project in parameter.ctrl:
+
+	a) Give your project a name and fill out all the parameters as you see fit.
+	b) In the software list, refer LIONS to the paths for each software on your system. If it's in $BIN/ already then you can simply type the command
+
+

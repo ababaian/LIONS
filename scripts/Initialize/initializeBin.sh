@@ -7,18 +7,7 @@
 # also creates shortcuts to software in ~/LIONS/bin
 
 # Set Software list----------------------------
-# For all software below, enter in where LIONS should access it
-# Samtools (Less than version 1.x)
-	export SAMTOOLS='samtools_0.1.18'
-	export BAM2FASTX='bam2fastx'
-	export TOPHAT2='tophat2'
-	export BOWTIE2='bowtie2'
-	export BOWTIE_BUILD='bowtie-build'
-	export CUFFLINKS='cufflinks'
-	export PYTHON3='python3'
-	export JAVA='java'
-	export RSCRIPT='Rscript'
-	
+# Software paths imported from paramter.ctrl file
 
 # Functions -------------------------------------
 
