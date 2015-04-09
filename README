@@ -43,20 +43,65 @@ LIONS pipeline architecture
 	
 # ./bin
 	Binary: A folder for symbolic links to binaries needed by
-	the pipeline and script to initilize the folder.
-	
-	./bin/initializeBin(_sys).sh
-		A bash script which defines the location of all the software
-		required by LIONS. Can be set for different systems using the
-		_sys suffix and set in the respective paramter.ctrl file.
-		Each peice of software will have symbolic links created to link
-		it to the correct path in the system.
+	the pipeline and script to initilize the folder. Make sure to set
+	the correct commands for the software list in parameters.ctrl for
+	your system
 
-		The tempalte.lns file is a template for the software
-		required.
+
+# ./projects
+	For each <Project_Name> a single folder will be initilized in which
+	the data will be organized.
+
+	./projects/<Project_Name>
+	The main directory for this project. Each individual library in the
+	input will have a folder generated here called <Library>.
+
+	./projects/<Project_Name>/logs
+	Folder contains run-specific information such as input file at time
+	of run and a copy of the input parameter file at time of run.
+
+	./projects/<Project_Name>/Analysis(_RUNID)
+	Not implemented yet. This contains all data analysis for a run
+	of LIONS. All graphs and project-wide .lions files are stored here
+	
+	./projects/<Project_Name>/<Library>
+	Library-specific data and primary analysis files.
+
+	./projects/<Project_Name>/<Library>/<Library>.lcsv
+	Raw output file from LIONS containing all possible TE-Exon interaction
+	data. This will include initiations, exonizations and terminations
+	along with many calculated values about these loci from which
+	LIONS will sort initiation events from the others. <Library>.pc.lcsv
+	is the same file with additional information about overlapping protein
+	coding genes.
+
+	./projects/<Project_Name>/<Library>/<Library>.lions
+	Initiation only TE-exon data from post-sorting. This file is the 
+	complete list of transcripts initiated by TEs in this library. This
+	data is passed on to the West Lion protocol to compare TE usage
+	between libraries.
+
+	./projects/<Project_Name>/<Library>/alignment
+	tophat2-generated alignment and the re-aligned .bam file which
+	will be used for analysis. Also contains flagstats and log files.
+	Note: Once the alignment is generated it will not be re-generated
+	even if you change the alignment parameters in parameter.ctrl. To
+	re-make alignments simply start the project with a new name or delete
+	these files.
+
+	./projects/<Project_Name>/<Library>/assembly
+	cufflinks-generated assembly in 'transcripts.gtf'
+
+	./projects/<Project_Name>/<Library>/expression
+	The output from a series of custom scripts 'RNAseqPipeline' which
+	will generate wig files and perform RPKM calculations on a series 
+
+	./projects/<Project_Name>/<Library>/resources
+	Charlie-foxtrot of library-specific files used to calculate a score
+	of parameters in the pipeline.
 
 # ./scripts
-	Scripts: all scripts to run lion are held here except for the
+	Scripts: all scripts to run lions are held here except for the
 	controlling lions.sh script which is in the base folder.
 	Check initializeScripts.sh for complete list of scripts
 	The main scripts are 
@@ -92,6 +137,14 @@ LIONS pipeline architecture
 	bin, swScore, milliDiv, milliDel, milliIns, genoName, genoStart,
 	genoEnd, genoEnd, genoLeft, strand, repName, repClass, repFamily,
 	repStart, repEnd, repLeft, id
+
+# ./software
+	Packaged with LIONS is a few bits of software which will set-up your
+	system to run the pipeline. Namely setuptools and pysam are the most
+	challenging things to install. I found that it's easiest to set-up
+	the pipeline using pip and download the package pysam from there.
+	Pysam is used to read teh bam files in the python scripts.
+
 
 
 

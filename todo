@@ -16,3 +16,11 @@ RNAseqPipeline.sh
 
 parameter.ctrl
 
+eastLions.sh
+
+	Simplify output files <Library>.lcsv and <Library>.pc.lcsv to a signle
+	<Library>.lcsv file (with pc information). These are redundant.
+
+	Alignment Bypass flow control. Implement a parameter to NOT regenerate
+	alignments if an input bam file is given. Simply link the given
+	alignment within the folder structure and continue with the pipeline.

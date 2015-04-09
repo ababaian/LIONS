@@ -70,14 +70,22 @@
 
 # EAST LION -----------------------------------------------
 # Bowtie 2
+	# Alignment parameters passed on to Tophat2
 	export BOWTIE=''
 
 # Tophat 2
+	# Alignment Bypass
+	# 0: Calculate a new alignment for the input
+	# 1: Do not re-calculate the alignment, simply create
+	#    symbolic link to the bam file in <input.list> within
+	#    the LIONS folder architecture
+	export ALIGNBYPASS='0'
+
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50
 	INREAD='50'
 
-	export ctrlTH2=" $BOWTIE-p $THREADS -r $INREAD --report-secondary-alignments"
+	export ctrlTH2=" $BOWTIE -p $THREADS -r $INREAD --report-secondary-alignments"
 
 # Cufflinks
 	# Ab initio (guided) or De Novo assembly?

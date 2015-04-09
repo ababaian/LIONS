@@ -28,39 +28,39 @@ echo "     Check that system software requirements are available and working."
 echo ''
 	# Samtools
 	WARE=$SAMTOOLS; eval $wareExists #; eval $mkLink
-		ln -fs $(command -v $WARE) $BASE/bin/samtools
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/samtools
 
 	# Bam2Fastx
 	WARE=$BAM2FASTX; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/bam2fastx
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/bam2fastx
 
 	# Tophat2
 	WARE=$TOPHAT2; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/tophat2
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/tophat2
 
 	# Bowtie2
 	WARE=$BOWTIE2; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/bowtie2
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/bowtie2
 
 	# Bowtie-build
 	WARE=$BOWTIE_BUILD; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/bowtie-build
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/bowtie-build
 
 	# Cufflinks
 	WARE=$CUFFLINKS; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/cufflinks
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/cufflinks
 
 	# Python3
 	WARE=$PYTHON3; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/python3
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/python3
 
 	# Java
 	WARE=$JAVA; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/java
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/java
 
 	# Rscript
 	WARE=$RSCRIPT; eval $wareExists
-		ln -fs $(command -v $WARE) $BASE/bin/Rscript
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/Rscript
 
 echo ''
 

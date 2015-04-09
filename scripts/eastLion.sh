@@ -101,6 +101,21 @@ then
 
 else # Generate Alignment
 
+# Alignment Bypass Flow Control Starts
+if [ $ALIGNMENTBYPASS == '1' ] # Bypass is True
+then
+	# Create a symbolic link between the input bam file
+	# and the final output.bam file
+	echo "  No previous alignment detected"
+	echo "  Aligment Bypass is set to true"
+	echo "  A new alignment won't be calculated,"
+	echo "  The input alignment will be used instead"
+	ln -s $INPUT $PWD/$OUTPUT.bam
+
+	# Clean up index files
+	rm INDEX*
+
+else # Bypass is False, calculate Alignment
 # Declare the input/output files
 	echo "  No previous alignment detected"
 	echo "  Aligning reads to the genome"
@@ -126,9 +141,28 @@ else # Generate Alignment
 # Run Tophat2 Alignment
 	echo " Running tophat2 ..."
 
-	echo "  cmd: $lbin/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq"
+	echo "  cmd: $lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq"
 	$lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq
-	
+
+# Alignment Sanity Check I
+	# run a command; if bam file output is greater then 1 Mb
+	# then remove fastq files and copy everything over
+	# return a message the the alignment worked
+	# else copy back the fastq files and output that the alignment
+	# didn't work
+
+	fileSize=$(du -k accepted_hits.bam | cut -f1) # kb size of $OUTPUT.bam
+	minSize=20 # Minimum size of file to be accepted
+
+	if [ $fileSize -ge $minSize ] # bam file must be 1 Mb 
+	then
+		echo 'Alignment likley completed successfully!'
+	else
+		echo 'Alignment probably didnt work'
+		echo ' ============= ERROR 10: Alignment Not Generated ============='
+	exit 10 # Exit with error 10
+	fi
+
 	echo ' ... tophat2 completed.'
 	echo ''
 
@@ -144,22 +178,20 @@ else # Generate Alignment
 	$lBIN/samtools sort unsorted.bam $OUTPUT
 	$lBIN/samtools index $OUTPUT.bam
 
+fi # Alignment Bypass Flow Control Ends
+
+
 # Calculate Flagstat for bam file (Read statistics)
 	$lBIN/samtools flagstat $OUTPUT.bam > $OUTPUT.flagstat
 
-# Alignment Sanity Check
-	# run a command; if bam file output is greater then 1 Mb
-	# then remove fastq files and copy everything over
-	# return a message the the alignment worked
-	# else copy back the fastq files and output that the alignment
-	# didn't work
+# Alignment Sanity Check II
 
-	fileSize=$(du -k $OUTPUT.bam | cut -f1) # kb size of $OUTPUT.bam
+	fileSize=$(du -k $(readlink -f $OUTPUT.bam) | cut -f1) # kb size of $OUTPUT.bam
 	minSize=20 # Minimum size of file to be accepted
 
 	if [ $fileSize -ge $minSize ] # bam file must be 1 Mb 
 	then
-		echo 'Alignment likley completed successfully!'
+		echo 'Bam processing succesful'
 		# Cleanup
 		rm accepted_hits.bam
 		rm unmapped.bam
@@ -193,7 +225,7 @@ else # Generate Alignment
 	ln -s ./alignment/$OUTPUT.bam ./$OUTPUT.bam
 	ln -s ./alignment/$OUTPUT.bam.bai ./$OUTPUT.bam.bai
 
-fi 
+fi # End Alignment flow
 
 # ASSEMBLY ----------------------------------------------------------
 # Use Cufflinks to generate an assembly of transcripts from which
@@ -437,6 +469,6 @@ fi # END Master Flow control
 
 
 # Add counter to summitLog_$RUNID that the run is completed successfully
-echo $libName >> $pDIR/summitLog_$RUNID
+echo $libName $(date) >> $pDIR/summitLog_$RUNID
 
 # Done script :D
