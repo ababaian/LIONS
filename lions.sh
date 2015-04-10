@@ -85,7 +85,13 @@ do
 	echo " Iteration $nLib: $libName ------------------------------------------"
 	echo "      run: eastLion.sh $libName"
 
-	$QSUB bash $SCRIPTS/eastLion.sh $libName
+	if [ $CLUSTER == '1' ]
+	then # Cluster QSUB
+		$QSUB $SCRIPTS/eastLion.sh $libName
+
+	else # Local (no) QSUB
+		$SCRIPTS/eastLion.sh $libName
+	fi
 
 	echo " ... run complete -------------------------------------------"
 	echo ''

@@ -49,9 +49,11 @@
 # Cluster Commands
 	if [ $SYSTEM == 'gsc' ]
 	then # Cluster QSUB
+		export CLUSTER='1'
 		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
 
 	else # Local (no) QSUB
+		export CLUSTER='0'
 		export QSUB=''
 	fi
 

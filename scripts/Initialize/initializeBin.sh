@@ -14,7 +14,7 @@
 # Checks if running the command set in $WARE exists
 # If it doesn't exits with error 4: bin missing
 
-wareExists='if [ -z $(command -v $WARE) ]; then echo ... $WARE not found. Exiting with status 4; exit 4; else echo ... $WARE found.; fi'
+wareExists='if [ -z "$(command -v $WARE)" ]; then echo ... $WARE not found. Exiting with status 4; exit 4; else echo ... $WARE found.; fi'
 
 mkLink='ln -fs $(command -v $WARE) $BASE/bin/$WARE'
 # shortcut link doesn't work. Can't figure out why not
