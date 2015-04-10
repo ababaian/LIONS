@@ -57,7 +57,12 @@ then #Cluster
 	cp -R $RESOURCES/genome/* $WORK
 
 	# Bam input file (cp)
-	cp $INPUT $WORK
+	cp $outDIR/$INPUT $WORK
+
+	# Running on temporary space
+	echo " Running on temporary space on cluster"
+	echo " ls -alh"
+	ls -alh $WORK
 
 else # Local
 # Create symbolic links to the output directory and work from there
@@ -79,6 +84,7 @@ echo "     ... eastLion.sh running"
 echo "     Library: $libName"
 echo "     Ouput Directory: $outDir"
 echo "     Working Directory: $WORK"
+echo "     Alignment Bypass: $ALIGNMENTBYPASS"
 echo ''
 cd $WORK # go to working directory
 
@@ -110,6 +116,7 @@ then
 	echo "  Aligment Bypass is set to true"
 	echo "  A new alignment won't be calculated,"
 	echo "  The input alignment will be used instead"
+
 	ln -s $INPUT $PWD/$OUTPUT.bam
 
 	# Clean up index files

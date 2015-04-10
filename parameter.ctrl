@@ -41,12 +41,12 @@
 # SYSTEM --------------------------------------------------
 # Performance
 	export SYSTEM='glitch' # System Name
-	# gsc = run with qsub commands on the gsc genesis cluster
+	# <gsc> = run with qsub commands on the gsc genesis cluster
 	# <local> = run on local machine.
 
 	export THREADS='1' # number of CPU cores to use
 
-# Cluster Commands
+# Cluster Specific Commands
 	if [ $SYSTEM == 'gsc' ]
 	then # Cluster QSUB
 		export CLUSTER='1'
