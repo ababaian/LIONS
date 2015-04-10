@@ -57,7 +57,7 @@ then #Cluster
 	cp -R $RESOURCES/genome/* $WORK
 
 	# Bam input file (cp)
-	cp $outDIR/$INPUT $WORK
+	cp $outDir/$INPUT $WORK
 
 	# Running on temporary space
 	echo " Running on temporary space on cluster"
