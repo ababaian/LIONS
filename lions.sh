@@ -110,8 +110,9 @@ do
 	date
 
 	# Wait 10 minutes
-	#sleep 500s # Actual
-	sleep 2s # For Testing
+	sleep 600s # Actual
+
+	
 
 	# Recalculate summitN
 	summitN=$(wc -l $pDIR/summitLog_$RUNID | cut -f1 -d' ')

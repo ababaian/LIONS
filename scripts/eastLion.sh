@@ -414,7 +414,7 @@ fi
 		then
 			# copy files to output
 			cd $BASE
-			mv $WORK $outDir
+			mv $WORK/* $outDir
 		fi
 
 # End LIONS pipeline
