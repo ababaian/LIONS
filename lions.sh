@@ -79,18 +79,25 @@ do
 	rowN=$(sed -n "$nLib"p $INPUT_LIST)
 	# Library Name
 	libName=$(echo $rowN | cut -f1 -d' ')
-	
-	# ****** Add CONTROL PROTOCOL FOR CLUSTER/LOCAL RUN (QSUB)
 
 	echo " Iteration $nLib: $libName ------------------------------------------"
 	echo "      run: eastLion.sh $libName"
 
-	if [ $CLUSTER == '1' ]
-	then # Cluster QSUB
-		$QSUB $SCRIPTS/eastLion.sh $libName
+	if [ ! -e $pDIR/$libName/$libName.lions ] && [ $SORTBYPASS = '1']
+	then
+	# Lions output for this library doesn't exist
+	# so let's make it.
 
-	else # Local (no) QSUB
-		$SCRIPTS/eastLion.sh $libName
+		if [ $CLUSTER == '1' ]
+		then # Cluster QSUB
+			$QSUB $SCRIPTS/eastLion.sh $libName
+
+		else # Local (no) QSUB
+			$SCRIPTS/eastLion.sh $libName
+		fi
+
+	else
+		echo "   East Lions has previously been completed. " 
 	fi
 
 	echo " ... run complete -------------------------------------------"

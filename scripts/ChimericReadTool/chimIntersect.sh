@@ -103,7 +103,7 @@
 # Drop to R and perform look up on ChimID into AssemblyBed
 # and return the unique AssemblyBed entries from ChimID
 	ln -s $refFile refGene.bed
-	Rscript $SCRIPTS/ChimericReadTool/chimIntLookup.R
+	$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimIntLookup.R
 	rm refGene.bed
 	rm *.int.refGene
 	# Final output is named 'appendCol.tmp'

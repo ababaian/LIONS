@@ -1,12 +1,18 @@
 #!/bin/bash
 # westLion.sh
 # 
-
+# USAGE:
+#	.westLion.sh
+#	ran from lions.sh
+#
+# Wrapper for processing .lions files
+# with a semblence of sanity
+#
 
 # CONTROL PANEL -----------------------------------------------------
 
 echo "     ... westLion.sh running"
-echo "     Library: $libName"
+echo "     Project: $libName"
 echo "     Ouput Directory: $outDir"
 echo "     Working Directory: $WORK"
 echo ''

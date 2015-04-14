@@ -122,7 +122,7 @@ then
 	# Clean up index files
 	rm INDEX*
 
-else # Bypass is False, calculate Alignment
+else # Alignment Bypass is False, calculate Alignment
 # Declare the input/output files
 	echo "  No previous alignment detected"
 	echo "  Aligning reads to the genome"
@@ -232,7 +232,7 @@ fi # Alignment Bypass Flow Control Ends
 	ln -s ./alignment/$OUTPUT.bam ./$OUTPUT.bam
 	ln -s ./alignment/$OUTPUT.bam.bai ./$OUTPUT.bam.bai
 
-fi # End Alignment flow
+fi # End all Alignment flow
 
 # ASSEMBLY ----------------------------------------------------------
 # Use Cufflinks to generate an assembly of transcripts from which
@@ -240,7 +240,7 @@ fi # End Alignment flow
 # Previously we used RefSeq instead of assembly (and it's still possible)
 # but found the results to be poorer.
 
-# Flow control
+# Assembly Flow control
 if [ -s assembly/transcripts.gtf ]
 then
 # Assembly already ran; skip	
@@ -259,7 +259,7 @@ else
 	echo "     Label: $libName"
 	echo "     Genome: $INDEX"
 
-if [ $deNovo == '1']
+if [ $deNovo == '1' ]
 then
 	echo '     De Novo Assembly'
 else
@@ -284,7 +284,7 @@ fi
 # but were/are part of the RNAseqPipeline software from the GSC.
 # Thus 
 
-# Flow Control
+# Resource Flow Control
 if [ -s resources/assembly_exons ]
 then
 # Resources already generated
@@ -310,13 +310,13 @@ else
 	# From FlagStat File; create a file of 'mappedReads' and put it into resources
 	sed -n 3p alignment/$libName.flagstat | cut -f1 -d' ' - > resources/mappedReads
 	
-fi
+fi # End resource flow control
 
 # RNASEQPIPELINE ----------------------------------------------------
 # Generates RPKM values for the transcripts
 # Creates a wig file ** Edit this for UCSC compatability **
 
-# Flow Control
+# Expression Flow Control
 if [ -s expression/$libname.*.wig.gz ]
 then
 	# RNA seq already ran
@@ -334,7 +334,7 @@ else
 
 	echo ""
 
-fi
+fi # End expression flow control
 
 # CHIMERICREADTOOL --------------------------------------------------
 # Core protocol for detecting TE-Transcript interactions
@@ -342,7 +342,7 @@ fi
 # and runs the python script to generate the core values for the .lions
 # files
 
-# Flow Control
+# Chimera Read Tool Flow Control
 if [ -s $libName.pc.lcsv ];
 then
 	# RNA seq already ran
@@ -368,7 +368,7 @@ else
 
 	echo " ... Chimeric analysis completed."
 	echo ""
-fi
+fi # End chimera read tool flow
 
 
 # CHIMSORT ----------------------------------------------------------
