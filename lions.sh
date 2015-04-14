@@ -83,7 +83,7 @@ do
 	echo " Iteration $nLib: $libName ------------------------------------------"
 	echo "      run: eastLion.sh $libName"
 
-	if [ ! -e $pDIR/$libName/$libName.lions ] && [ $SORTBYPASS = '1']
+	if [ ! -e $pDIR/$libName/$libName.lions ]
 	then
 	# Lions output for this library doesn't exist
 	# so let's make it.
@@ -96,7 +96,24 @@ do
 			$SCRIPTS/eastLion.sh $libName
 		fi
 
+	elif [ $SORTBYPASS = '0' ]
+	then
+	# Lions output already exists but
+	# East Lion bypass is set to false, re-calculate lions file
+	# so let's make it.
+
+		if [ $CLUSTER == '1' ]
+		then # Cluster QSUB
+			$QSUB $SCRIPTS/eastLion.sh $libName
+
+		else # Local (no) QSUB
+			$SCRIPTS/eastLion.sh $libName
+		fi
+
 	else
+	# East Lion file already exists and bypass is true (1)
+	# Skip the east lion
+
 		echo "   East Lions has previously been completed. " 
 	fi
 
