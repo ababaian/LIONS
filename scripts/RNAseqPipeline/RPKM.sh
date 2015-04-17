@@ -30,7 +30,6 @@ fi
 # Print start time
 date
 echo "Running RPKM.sh - $0"
-#svn info https://svn01.bcgsc.ca/svn/Solexa_Shell/RPKM.sh | awk '/Revision/ || /Last Changed Date/'
 
 #INPUT PARAMETERS ----------------------------------------------
 	name=$1 # Project Name
@@ -40,6 +39,8 @@ echo "Running RPKM.sh - $0"
 		# A = average exon coverage
 		# M = Median exon coverage
 		# X = 95% value of exon coverage
+	species=$5
+	sr=$6 # S/R reads
 
 if [ "$metric" == "A" ]; then
 	cut=1-6
@@ -54,16 +55,6 @@ else
 	usage
 	exit 1
 fi
-
-	species=$5
-	echo "Reference Set: $species"
-	sr=$6 # S/R reads
-
-#SHELL_BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-	SHELL_BASE='/home/ababaian/software/RNAseqPipeline'	
-	reschrs=$(sh $SHELL_BASE/RNAgetRes.sh $species)
-	res=$(eval echo $reschrs | cut -f 1 -d ',')
-	chrs=$(echo $reschrs | cut -f 2 -d ',')
 
 	pcid=$res$species"_genes.pc.EnsID"
 	ncid=$res$species"_genes.nc.EnsID"

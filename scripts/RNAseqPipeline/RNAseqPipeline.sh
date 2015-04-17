@@ -64,13 +64,13 @@ usage()
 # Resource for RNAseqPipeline
 
 	# Reference Exon Annotation Folder
-	res="$pDIR/$name/resources"
+	export res="$pDIR/$name/resources"
 
 	# Chromosome Sizes File
-	chrSize="$RESOURCES/genome/$INDEX.chr.size"
+	export chrSize="$RESOURCES/genome/$INDEX.chr.size"
 
 	# BWA Conversion File
-	chrfile="$RESOURCES/genome/$INDEX.bwa.names"
+	export chrfile="$RESOURCES/genome/$INDEX.bwa.names"
 
 	echo "=======  Run Parameters  ========" 
 	echo " bamFile: $bamFile"

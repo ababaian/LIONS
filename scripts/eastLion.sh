@@ -84,7 +84,7 @@ echo "     ... eastLion.sh running"
 echo "     Library: $libName"
 echo "     Ouput Directory: $outDir"
 echo "     Working Directory: $WORK"
-echo "     Alignment Bypass: $ALIGNMENTBYPASS"
+echo "     Alignment Bypass: $ALIGNBYPASS"
 echo ''
 cd $WORK # go to working directory
 
@@ -98,17 +98,25 @@ cd $WORK # go to working directory
 # Alignment Flow Control
 # If an aligned file already exists, don't recalculate it
 
-if [ -s $libName.bam ]
+if [ -s alignment/$libName.bam ]
 then
 	echo " $libName.bam is already generated."
 	echo " ... skipping alignment"
 	echo ''
 	rm $INDEX*
+	
+	# Check if index is generated
+	if [ ! -s $libName.bam.bai ]
+	then
+		$lBIN/samtools index $OUPUT.bam
+		mv $OUTPUT.bam.bai alignment/$OUTPUT.bam.bai
+		ln -s alignment/$OUTPUT.bam.bai $OUTPUT.bam.bai
+	fi	
 
 else # Generate Alignment
 
 # Alignment Bypass Flow Control Starts
-if [ $ALIGNMENTBYPASS == '1' ] # Bypass is True
+if [ $ALIGNBYPASS == '1' ] # Bypass is True
 then
 	# Create a symbolic link between the input bam file
 	# and the final output.bam file
@@ -117,10 +125,11 @@ then
 	echo "  A new alignment won't be calculated,"
 	echo "  The input alignment will be used instead"
 
-	ln -s $INPUT $PWD/$OUTPUT.bam
+	ln -s $(readlink -f $INPUT) $PWD/$OUTPUT.bam
+	$lBIN/samtools index $OUTPUT.bam
 
 	# Clean up index files
-	rm INDEX*
+	rm $INDEX*
 
 else # Alignment Bypass is False, calculate Alignment
 # Declare the input/output files
@@ -200,9 +209,9 @@ fi # Alignment Bypass Flow Control Ends
 	then
 		echo 'Bam processing succesful'
 		# Cleanup
-		rm accepted_hits.bam
-		rm unmapped.bam
-		rm unsorted.bam
+		rm -f accepted_hits.bam
+		rm -f unmapped.bam
+		rm -f unsorted.bam
 		
 	else
 		echo 'Alignment probably didnt work'
@@ -346,7 +355,7 @@ fi # End expression flow control
 if [ -s $libName.pc.lcsv ];
 then
 	# RNA seq already ran
-	echo " Chimeric Analysis already performed"
+	echo " Chimeric Read Tool already ran"
 	echo " .... skipping "
 	echo ''
 
@@ -354,9 +363,11 @@ else
 
 	# Chimeric Analysis
 	echo " Chimeric Reads Analysis"
-	echo "      ChimericReadTool.sh $pDIR/$libName/$libName.bam"
+	echo "      ChimericReadTool.sh $libName.bam"
 
-	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz $REF
+	#bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz $REF
+
+	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam expression/wig/$libName.$QUALITY.wig.gz $REF
 	# Output is <libName>.raw.lions
 	# Total TE-Transcript interaction table
 
@@ -403,6 +414,16 @@ fi # End chimera read tool flow
 	echo "     Rscript chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT"
 	
 	$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT
+
+	# Sanity Check
+	if [ -s $libName.lions ] # was the lions file generated
+	then
+		echo "Lions file generated successfully."
+		lionSuccess='1'
+	else
+		echo "Lions file not generated. Something is amiss."
+		lionSuccess='0'
+	fi
 
 	echo ""
 
@@ -468,14 +489,24 @@ else # LIONS file already exists
 	
 		$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT
 
+		# Sanity Check
+		if [ -s $libName.$RUNID.lions ] # was the lions file generated
+		then
+			echo "Lions file generated successfully."
+			lionSuccess='1'
+		else
+			echo "Lions file not generated. Something is amiss."
+			lionSuccess='0'
+		fi
 		echo ""
 
 	fi # End Bypass flow control
 
 fi # END Master Flow control
 
-
-# Add counter to summitLog_$RUNID that the run is completed successfully
-echo $libName $(date) >> $pDIR/summitLog_$RUNID
+# Summit Log
+	# Add counter to summitLog_$RUNID
+	# <LibName> <Successful? 1/0> <date>
+	echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
 
 # Done script :D

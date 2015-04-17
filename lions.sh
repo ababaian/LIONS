@@ -136,14 +136,26 @@ do
 	# Wait 10 minutes
 	sleep 600s # Actual
 
-	
-
 	# Recalculate summitN
 	summitN=$(wc -l $pDIR/summitLog_$RUNID | cut -f1 -d' ')
 
+
+
 done
 
-# All runs completed, clear summit log
+# All runs completed
+
+# Check if they are each succesful
+for Log in $(cut -f2 $pDIR/summitLog_$RUNID)
+do
+	if [ $Log = '0' ];
+	then
+		echo " ERROR 15: One of the East Lion Libraries didn't finish."
+		exit 15
+	fi
+done
+
+# Clear summit log
 rm $pDIR/summitLog_$RUNID
 
 echo ''

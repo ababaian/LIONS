@@ -12,9 +12,8 @@
 # CONTROL PANEL -----------------------------------------------------
 
 echo "     ... westLion.sh running"
-echo "     Project: $libName"
-echo "     Ouput Directory: $outDir"
-echo "     Working Directory: $WORK"
+echo "     Project: $PROJECT"
+echo "     Output Directory: $pDIR"
 echo ''
 
 # ===================================================================
@@ -55,8 +54,10 @@ fi
 # Loop through each library in input file
 iterN=$(wc -l $INPUT_LIST | cut -f1 -d' ' -)
 
+echo " Populating a Master LIONS file for $PROJECT"
 for nLib in $(seq $iterN)
 do
+	
 	# Extract row of entries from input list
 	rowN=$(sed -n "$nLib"p $INPUT_LIST)
 	# Library Name

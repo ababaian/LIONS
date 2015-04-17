@@ -81,7 +81,7 @@
 	# 1: Do not re-calculate the alignment, simply create
 	#    symbolic link to the bam file in <input.list> within
 	#    the LIONS folder architecture
-	export ALIGNBYPASS='0'
+	export ALIGNBYPASS='1'
 
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50

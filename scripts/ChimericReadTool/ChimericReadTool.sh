@@ -37,7 +37,8 @@ usage()
 	name=$libName # Alias for this script; imported from eastLion.sh
 
 	# For assembly-based method; takes the library name for accessing res
-	fwig="$pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz"
+	#fwig="$pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz"
+	fwig="$PWD/expression/wig/$libName.$QUALITY.wig.gz"
 	echo $fwig
 	species='assembly'
 

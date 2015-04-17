@@ -4,13 +4,16 @@
 
 # Intiailzation Codes ---------------------------
 # Error 2 - Initializal file missing or inaccesible
-	A file is missing. Ensure you have a complete version of LIONS and/or make the missing script readable/exectable
+	A file is missing. Ensure you have a complete version of LIONS and/or
+make the missing script readable/exectable
 
 # Error 3 - A LIONS script is missing
-	A script is missing from ./LIONS/scripts/ ; ensure your copy of LIONS is complete or redownload.
+	A script is missing from ./LIONS/scripts/ ; ensure your copy of LIONS is
+complete or redownload.
 
 # Error 4 - Initialization bin missing
-	A binary is not found on the system. Configure ./LIONS/bin/intializeBin.sh for your system
+	A binary is not found on the system. Configure 
+./LIONS/bin/intializeBin.sh for your system
 
 # Error 5 - A resource file is missing or unreadable
 	Checking/initialization of ./LIONS/scripts
@@ -20,6 +23,11 @@
 # eastLion Codes --------------------------------
 
 # Error 10 - alignment not generated
-	An attempt was made to generate an alignment but the output file was empty at the end of the script
+	An attempt was made to generate an alignment but the output file was
+empty at the end of the script
 
+# lions Codes -----------------------------------
 
+# Error 15 - A lions file wasn't generated
+	In the run, one of the lions files wasn't generated which means there
+was an error. Don't run West Lions pipeline.
