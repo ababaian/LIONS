@@ -176,6 +176,10 @@ else # Alignment Bypass is False, calculate Alignment
 	else
 		echo 'Alignment probably didnt work'
 		echo ' ============= ERROR 10: Alignment Not Generated ============='
+
+	lionsSuccess='0'
+	echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
+
 	exit 10 # Exit with error 10
 	fi
 
@@ -225,6 +229,9 @@ fi # Alignment Bypass Flow Control Ends
 			mv $WORK $outDir
 		fi
 		# Else the working directory is the output directory
+
+		lionsSuccess='0'
+		echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
 
 		exit 10 # Exit with error 10
 	fi
