@@ -26,6 +26,10 @@ complete or redownload.
 	An attempt was made to generate an alignment but the output file was
 empty at the end of the script
 
+# Error 12 - wig not generated
+	An attempt was made to generate the wig file but the output file wasn't
+there after the script ran
+
 # lions Codes -----------------------------------
 
 # Error 15 - A lions file wasn't generated

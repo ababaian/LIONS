@@ -350,6 +350,21 @@ else
 
 	echo ""
 
+	# Wig Sanity Check
+	if [ -s expression/$libname.*.wig.gz ] # was the wig file generated
+	then
+		echo "Wig file generated successfully."
+		# Continue
+	else
+		echo "Wig file not generated. Errors are afoot."
+		echo ' ============= ERROR 12: Wig Not Generated ============='
+		lionSuccess='0'
+		echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
+		exit 12
+		
+	fi
+	echo ""
+
 fi # End expression flow control
 
 # CHIMERICREADTOOL --------------------------------------------------

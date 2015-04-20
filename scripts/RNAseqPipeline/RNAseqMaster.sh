@@ -94,10 +94,10 @@ then
 	else	
 		date > $Wdir/$name.wig.log
 		echo "Generating Wig Files"
-		echo "$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log"
+		echo "$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log"
 		echo ''
-		$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $MRWdir -q 0 -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
-		$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
+		$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $MRWdir -q 0 -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
+		$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -s -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
 	fi
 
 else
@@ -106,10 +106,10 @@ else
 		echo "Wig file exist"
 	else	
 		date > $Wdir/$name.wig.log
-		echo "$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -samtools $lBIN/samtools -chr $chrfile >> $Wdir/$name.wig.log"
+		echo "$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -samtools $lBIN/samtools -chr $chrfile >> $Wdir/$name.wig.log"
 		echo ''
-		$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $MRWdir -q 0 -F $flag -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
-		$J -jar -Xmx10G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
+		$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $MRWdir -q 0 -F $flag -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
+		$J -jar -Xmx6G $JAVA_BASE/BAM2WIG.jar -bamFile $bam -out $Wdir -q $QC -F $flag -samtools $SAMTOOLS -chr $chrfile >> $Wdir/$name.wig.log
 	fi
 
 fi	

@@ -139,8 +139,6 @@ do
 	# Recalculate summitN
 	summitN=$(wc -l $pDIR/summitLog_$RUNID | cut -f1 -d' ')
 
-
-
 done
 
 # All runs completed
