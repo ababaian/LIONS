@@ -93,7 +93,7 @@ usage()
 	# REPORT (1:run, 0:norun)
 	
 	echo " cmd: "
-	echo " sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species R 0 1,1,0,0,1 $res $chrSize $chrfile"
+	echo " sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name pwd $species R 0 1,1,0,0,1 $res $chrSize $chrfile"
 	echo ''
 	sh $SHELL_BASE/RNAseqMaster.sh $bamFile $name `pwd` $species $sr 10 1,1,0,0,1 $res $chrSize $chrfile
 
