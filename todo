@@ -1,3 +1,4 @@
+
 lions.sh
 
 	line X: Add a flow control to also allow fastq input files
@@ -6,7 +7,6 @@ lions.sh
 	line 80: Control script for Cluster/Local runs (Qsub)
 
 initializeLIONS.sh
-
 
 
 RNAseqPipeline.sh
@@ -23,5 +23,6 @@ eastLions.sh
 
 	Add a global paramter to indicate how much virtual memory is used
 	especially for JAVA
-
+		RNAseqMaster.sh --> line 95 - 115; -Xmx6G
+		ChimericReadTool.sh --> line 237; -Xmx6G
 	

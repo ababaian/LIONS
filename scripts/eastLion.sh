@@ -333,7 +333,7 @@ fi # End resource flow control
 # Creates a wig file ** Edit this for UCSC compatability **
 
 # Expression Flow Control
-if [ -s expression/$libname.q10.F772.wig.gz ]
+if [ -s expression/wig/$libName.$QUALITY.wig.gz ]
 then
 	# RNA seq already ran
 	echo " RNAseq Pipeline already performed"
@@ -351,7 +351,9 @@ else
 	echo ""
 
 	# Wig Sanity Check
-	if [ -s expression/$libname.q10.F772.wig.gz ] # was the wig file generated
+	echo expression/wig/$libName.$QUALITY.wig.gz
+
+	if [ -s expression/wig/$libName.$QUALITY.wig.gz ] # was the wig file generated
 	then
 		echo "Wig file generated successfully."
 		# Continue

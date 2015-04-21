@@ -234,7 +234,7 @@ else
 	# Run Regions Coverage Calculator
 	# Exons / Repeats / Upstream Repeats
 
-	$J -jar -Xmx2G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $PWD/tmp_uniq_repeat_coords -s $chrs -o $PWD -n results
+	$J -jar -Xmx6G $JAVA_BASE/RegionsCoverageFromWigCalculator.jar -w $fwig -r $PWD/tmp_uniq_repeat_coords -s $chrs -o $PWD -n results
 
 
 # Integrate data into spreadsheet ---------------------------------------------

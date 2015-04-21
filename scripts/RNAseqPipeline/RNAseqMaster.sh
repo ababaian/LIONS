@@ -63,7 +63,9 @@ echo ''
 	# 516 =  Read unmapped, read fails QC [Default]
 	# 772 =  Read unmapped, read fails QC, not primary alignment
 	# 1796 = Read unmapped, read fails QC, not primary alignment, PCR duplicate
-	flag='772'
+	#flag='772'
+	flag=$(echo $QUALITY | cut -f2 -d'F' - )
+	QC=$(echo $QUALITY | cut -f1 -d'.' - | cut -f2 -d'q' - )
 
 # Directory Initialization
 	Bdir=$dir"/"expression # folder for individual library
@@ -138,17 +140,17 @@ echo ''
 echo ''
 
 # RPKM
-cd $Cdir
-	if [ "$RUN_RPKM" = "1" ]; then
-		echo " RPKM..."
-		$SHELL_BASE/RPKM.sh $name $length G A $species $sr
-	else
-		echo "Skipping RPKM..."
-	fi
-
-	cd $Bdir
-
-echo ''
+#cd $Cdir
+#	if [ "$RUN_RPKM" = "1" ]; then
+#		echo " RPKM..."
+#		$SHELL_BASE/RPKM.sh $name $length G A $species $sr
+#	else
+#		echo "Skipping RPKM..."
+#	fi
+#
+#	cd $Bdir
+#
+#echo ''
 
 # Leakage Claculations (if S reads)
 if [ "$sr" = "S" ]; then
