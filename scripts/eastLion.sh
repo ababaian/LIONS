@@ -51,7 +51,7 @@ then #Cluster
 # Copy over files for analysis on cluster node
 
 	# Working directories
-	WORK=$TMP # work on temporary space
+	export WORK=$TMP # work on temporary space
 
 	# BT2 Genome Index (copy to work space)
 	cp -R $RESOURCES/genome/* $WORK
@@ -67,7 +67,7 @@ then #Cluster
 else # Local
 # Create symbolic links to the output directory and work from there
 	# Working directories
-	WORK=$outDir # work in output space
+	export WORK=$outDir # work in output space
 
 	# BT2 Genome Index (link to work space)
 	ln -s $RESOURCES/genome/* $WORK
