@@ -64,7 +64,7 @@ usage()
 # Resource for RNAseqPipeline
 
 	# Reference Exon Annotation Folder
-	export res="$WORK/$name/resources"
+	export res="$WORK/resources"
 
 	# Chromosome Sizes File
 	export chrSize="$RESOURCES/genome/$INDEX.chr.size"
