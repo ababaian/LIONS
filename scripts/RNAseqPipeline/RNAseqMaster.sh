@@ -191,7 +191,8 @@ echo ''
 ################################
 
 if [ "$RUN_REPORT" = "1" ]; then
-	$SHELL_BASE/QCreport.sh $name $dir $sr
+	#$SHELL_BASE/QCreport.sh $name $dir $sr
+	# not used
 fi
 
 # Script over

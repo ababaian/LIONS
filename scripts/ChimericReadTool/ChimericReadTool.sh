@@ -78,8 +78,8 @@ usage()
 
 # Acquire Resources
 	# Reference Exon Annotation Folder
-	export res="$pDIR/$name/resources"
-	export exons="$pDIR/$name/resources/assembly_exons"
+	export res="$WORK/resources"
+	export exons="$WORK/resources/assembly_exons"
 
 	# Chromosome Sizes File
 	export chrs="$RESOURCES/genome/$INDEX.chr.size"
