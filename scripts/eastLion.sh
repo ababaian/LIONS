@@ -58,6 +58,9 @@ then #Cluster
 
 	# Bam input file (cp)
 	cp $outDir/$INPUT $WORK
+	
+	# Create a temporary symbolic link to the input
+	mv $outDir/$INPUT $outDir/$INPUT.tmp
 
 	# Running on temporary space
 	echo " Running on temporary space on cluster"
@@ -288,7 +291,7 @@ fi
 	echo ' Running Cufflinks ...'
 	echo "   cmd: $lBIN/cufflinks -o ./assembly -L $libName $ctrlCL2 $OUTPUT.bam"
 
-	$lBIN/cufflinks -o ./assembly -L $libName $ctrlCL2 $OUTPUT.bam
+	$lBIN/cufflinks -q -o ./assembly -L $libName $ctrlCL2 $OUTPUT.bam
 
 	echo " ... cufflinks completed."
 
@@ -457,6 +460,8 @@ fi # End chimera read tool flow
 	# Cluster migration to final output
 		if [ $SYSTEM == 'gsc' ]
 		then
+			# discard input bam file (which was copied to tmp)
+			rm $WORK/$INPUT
 			# copy files to output
 			cd $BASE
 			mv $WORK/* $outDir
