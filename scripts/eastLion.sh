@@ -153,6 +153,8 @@ else # Alignment Bypass is False, calculate Alignment
 	# temp.1.fq temp.2.fq
 	echo " Converting sorted bam file to fastq file"
 	$lBIN/bam2fastx -Q -q -A -P -N -o $WORK/temp.fq $WORK/temp_sort.bam
+	gzip temp.1.fq
+	gzip temp.2.fq
 	
 	# Clean Up from this point
 	rm temp_sort.bam
