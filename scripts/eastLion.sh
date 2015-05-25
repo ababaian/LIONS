@@ -60,7 +60,7 @@ then #Cluster
 	cp $outDir/$INPUT $WORK
 	
 	# Create a temporary symbolic link to the input
-	mv $outDir/$INPUT $outDir/$INPUT.tmp
+	ln -s $outDir/$INPUT $outDir/$INPUT.tmp
 
 	# Running on temporary space
 	echo " Running on temporary space on cluster"
