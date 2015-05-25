@@ -62,6 +62,9 @@ echo ''
 	WARE=$RSCRIPT; eval $wareExists
 		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/Rscript
 
+	# wigToBigWig
+	WIG2BIGWIG=$WIG2BIGWIG; eval $
+
 echo ''
 
 # Check that Python3 Modules are installed and function

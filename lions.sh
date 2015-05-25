@@ -114,7 +114,9 @@ do
 	# East Lion file already exists and bypass is true (1)
 	# Skip the east lion
 
-		echo "   East Lions has previously been completed. " 
+		echo "   East Lions has previously been completed. "
+		lionSuccess='1'
+		echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
 	fi
 
 	echo " ... run complete -------------------------------------------"

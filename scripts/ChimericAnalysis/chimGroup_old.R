@@ -12,20 +12,20 @@
   STDIN = commandArgs(trailingOnly = TRUE)
 
   pLIONS = STDIN[1] # Input LIONS project file
-  pNAME = as.character(strsplit(pLIONS, '.lions')) # project+run name
+   pNAME = as.character(strsplit(pLIONS, '.lions')) # project+run name
 
   stdOUTPUT = paste(pNAME, '.rslions', sep='') # Grouped Project Lions File
-
+  
   invOUTPUT = paste(pNAME, '.inv.rslions', sep='') # Inversed Grouped File
 
   GROUP_LIST = STDIN[2]
-  # by convention this file is the 3 column CSV file with:
-  # 1: Library Name, 2: Bam Path (on GSC), 3: Group Number
-  # Group Numbers: [Although assigned in parameters explicitely]
-  #   1: Normal/Baseline
-  #   2: Cancer/Group I
-  #   3: Other/ non-grouped samples
-  #   ...
+    # by convention this file is the 3 column CSV file with:
+    # 1: Library Name, 2: Bam Path (on GSC), 3: Group Number
+    # Group Numbers: [Although assigned in parameters explicitely]
+    #   1: Normal/Baseline
+    #   2: Cancer/Group I
+    #   3: Other/ non-grouped samples
+    #   ...
 
   RMDATA_PATH= STDIN[3]
 
@@ -269,7 +269,7 @@ Fishers.Matrix = function(X,Y){
   IDdup = !duplicated(ID)
   # Remove Duplicates
   Chimera = Chimera[IDdup,]
-     
+
 # Group Chimera
   # Assign biological catagories to Chimera from Groups
 
@@ -299,7 +299,7 @@ Fishers.Matrix = function(X,Y){
 # RepeatID Present
 
 Count = 0
-Go = T # Keep going through libraries
+Go = T
 
 while (Go == T){
   # Add to Counter
@@ -365,10 +365,22 @@ while (Go == T){
 #  \    @ /    
 #   \ @  /
 #    ----
- rm( ChimFiltered, Count, AXR, Filter, Filter_Cancer, Filter_Normal,
-      Go, ID, IDdup, Matches, MultiCan, RefID, NonNormal)
-  gc()
+# rm( ChimFiltered, Count, AXR, Filter, Filter_Cancer, Filter_Normal,
+#      Go, ID, IDdup, Matches, MultiCan, RefID, NonNormal)
 
+RecMatrix = Recurrence(Chimera) # custom function
+# Normalize Recurrence Matrix based on Total number of hits
+  RecMax = diag(RecMatrix)
+  RecMatrixNorm = 100*(RecMatrix / RecMax)
+
+# Subset LTR elements
+  # Which elements are LTR
+  LTR_MATCH = which("LTR" == matrix(unlist(strsplit(as.vector(
+    Chimera$repeatName),split=":")),ncol=3,byrow=T)[,2])
+  
+#  LtrMatrix = Recurrence(Chimera[LTR_MATCH,])
+#  LtrMax = diag(LtrMatrix)
+#  LtrMatrixNorm = 100*(RecMatrix / RecMax)
 
 # Library Statistics ------------------------------------------------
 
@@ -377,7 +389,7 @@ while (Go == T){
 
 # Parse RMDB to RepeatID Vector
 # chrX:<start>
-  RMDB_id = paste( MDB$genoName, RMDB$genoStart, sep=":")
+  RMDB_id = paste(RMDB$genoName, RMDB$genoStart, sep=":")
 
 # Link Chimera Table Elements with their RMDB element
   Chimera$RMDB = unlist(lapply(Chimera$RepeatID,
@@ -396,13 +408,65 @@ while (Go == T){
   
   FIRST = T # Initialization
 
+# # Iterate through each library and count 
+# # how much each element appears
+#   for (LIB in LIB_VECTOR) {
+#     
+#     if (LIB == 'Recurrent') {
+#       # Use Recurrent Library
+#       ChimLib = ChimeraOutput
+#     } else {
+#       
+#       # For each library create submatrix of only that libraries entries
+#       ChimLib = Chimera[ which(LIB == Chimera['LIBRARY']),]
+#     }
+#     
+# #     Repeats = matrix(unlist(
+# #       strsplit(as.character(
+# #         ChimLib[,'repeatName']),':'))
+# #                      ,ncol=3,byrow=T)
+#     
+#   # Initialize Outpute
+#     Hits = nrow(Repeats)
+#     hitName = length(repName)
+#     hitClass = length(repClass)
+#     OutLib = data.frame(Hits) # Hits in Library
+#     
+#   # TE Class
+#     OutLib$'LINE' = length(which(Repeats[,2] == 'LINE'))
+#     OutLib$'SINE' = length(which(Repeats[,2] == 'SINE'))
+#     OutLib$'LTR' = length(which(Repeats[,2] == 'LTR'))
+#     OutLib$'DNA' = length(which(Repeats[,2] == 'DNA'))
+#     OutLib$'Other' = length(which(Repeats[,2] == 'Other'))
+#     
+#   # LTR Family
+#     OutLib$'ERV1' = length(which(Repeats[,3] == 'ERV1'))
+#     OutLib$'ERVL' = length(which(Repeats[,3] == 'ERVL'))
+#     OutLib$'ERVL-MaLR' = length(which(Repeats[,3] == 'ERVL-MaLR'))
+#     
+#   # THE Family
+#     OutLib$'THE' = length(grep("THE*",Repeats[,1]))
+#     OutLib$'nonTHE' = OutLib$'ERVL-MaLR' - OutLib$'THE'
+#     
+#     OutLib$'THE1A' = length(which("THE1A" == Repeats[,1]))
+#     OutLib$'THE1B' = length(which("THE1B" == Repeats[,1]))
+#     OutLib$'THE1C' = length(which("THE1C" == Repeats[,1]))
+#     OutLib$'THE1D' = length(which("THE1D" == Repeats[,1]))
+#     OutLib$'THEint' = length(grep("THE.*int",Repeats[,1],perl=T))
+#     
+#     if (FIRST) {
+#       LIB_HITS = OutLib
+#       FIRST = F
+#     } else {
+#       LIB_HITS = rbind(LIB_HITS,OutLib)
+#     }}
 
 # Chimera Sense/Antisense Binary Model (presense absence) ----------
-# Protein Coding Genes and their interacting transcript orientation
-ChimProtIO = data.frame(Type = c('Sense','AntiS','Inter','Cmplx'))
+
+ChimIO = data.frame(Type = c('Sense','AntiS','Inter','Cmplx'))
   
 for (LIB in as.character(Groups[,1])) {
-  COL = colnames(ChimProtIO)
+  COL = colnames(ChimIO)
   Chimera.libary = Chimera[which(Chimera$LIBRARY == LIB),]
   
   Sense = Chimera.libary$RefID[which(Chimera.libary$assXref == 's')]
@@ -417,64 +481,7 @@ for (LIB in as.character(Groups[,1])) {
   Cmplx = Chimera.libary$RefID[which(Chimera.libary$assXref == 'c')]
     Cmplx = unique(unlist(strsplit(as.character(Cmplx),split='; ')))
 
-  ChimProtIO[,LIB] = list(rbind(list(Sense),list(AntiS),list(Inter),list(Cmplx)))
-}
-
-# Chimera Presense/Absense Vector
-# Protein Coding Genes and their interacting transcript orientation
-if (RUN == 1){
-  
-  #print(" Running standard analysis" )
-
-  # Chimeric Identifiers
-  ChimID = paste(as.character(RMDB$genoName),':',as.character(RMDB$genoStart),sep='')
-  
-  # Chimeric Bionary (IO) dataframe based on RMDB order
-  ChimIO = data.frame(ChimID)
-  
-  for (LIB in as.character(Groups[,1])) {
-    
-    # Initialize a FALSE vector for all RMDB
-    entryIO = vector('logical', length = nrow(RMDB))
-    
-    # Which Chimera in Library are present
-    # Assign those REFID true in EntryIO
-    Chimera.library = Chimera[which(Chimera$LIBRARY == LIB),]$RepeatID
-    
-    entryIO[which(ChimID %in% Chimera.library)] = TRUE
-    
-    # Pass this onto the ChimIO logical matrix
-    ChimIO[[LIB]] = entryIO
-  }
-  
-  # Recurrent and Specific Chimera as defiend by LIONS
-  # Initialize a FALSE vector for all RMDB
-  entryIO = vector('logical', length = nrow(RMDB))
-  
-  # Which Chimera in Library are present
-  # Assign those REFID true in EntryIO
-  Chimera.library = as.character(ChimeraOutput$RepeatID)
-  
-  entryIO[which(ChimID %in% Chimera.library)] = TRUE
-  
-  # Append recurrent and specific entries
-  ChimIO[['Recurrent']] = entryIO
-  
-} else {
-  #print(" Running inverse analysis" )
-  
-  # Inverse of Recurrent and Specific Chimera as defiend by LIONS
-  # Initialize a FALSE vector for all RMDB
-  entryIO = vector('logical', length = nrow(RMDB))
-  
-  # Which Chimera in Library are present
-  # Assign those REFID true in EntryIO
-  Chimera.library = as.character(ChimeraOutput$RepeatID)
-  
-  entryIO[which(ChimID %in% Chimera.library)] = TRUE
-  
-  # Append recurrent and specific entries
-  ChimIO[['invRecurrent']] = entryIO
+  ChimIO[,LIB] = list(rbind(list(Sense),list(AntiS),list(Inter),list(Cmplx)))
 }
 
 # Write Output ------------------------------------------------------
@@ -487,9 +494,17 @@ write.table(ChimeraOutput,
 	row.names = F,
 	col.names = T)
 
+# Write binary output
+	save(ChimIO,file=paste(OUTPUT,'IO.Rdata',sep=''))
+	
 } # End for loop
 
-# Write binary output
-save(ChimIO,file=paste(OUTPUT,'IO.Rdata',sep=''))
+# 
+# write.table(LIB_HITS,
+#             file = paste(OUTPUT,".stats.csv", sep=''),
+#             quote = F,
+#             sep = '\t',
+#             row.names = F,
+#             col.names = T)
 
 # End of Script
