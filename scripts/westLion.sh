@@ -95,7 +95,7 @@ done
 	echo ''
 	echo "     --- parameters --- "
 	echo "     Recurrence Cutoff # = $cgGroupRecurrence"
-	echo "     Specificity Cutoff #: = $cgSpecificity"
+	echo "     Specificity Cutoff # = $cgSpecificity"
 
 
 

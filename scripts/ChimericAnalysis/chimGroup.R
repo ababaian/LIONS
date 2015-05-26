@@ -366,7 +366,7 @@ while (Go == T){
 #   \ @  /
 #    ----
  rm( ChimFiltered, Count, AXR, Filter, Filter_Cancer, Filter_Normal,
-      Go, ID, IDdup, Matches, MultiCan, RefID, NonNormal)
+      Go, ID, IDdup, Matches, RefID)
   gc()
 
 
@@ -377,7 +377,7 @@ while (Go == T){
 
 # Parse RMDB to RepeatID Vector
 # chrX:<start>
-  RMDB_id = paste( MDB$genoName, RMDB$genoStart, sep=":")
+  RMDB_id = paste( RMDB$genoName, RMDB$genoStart, sep=":")
 
 # Link Chimera Table Elements with their RMDB element
   Chimera$RMDB = unlist(lapply(Chimera$RepeatID,
@@ -490,6 +490,6 @@ write.table(ChimeraOutput,
 } # End for loop
 
 # Write binary output
-save(ChimIO,file=paste(OUTPUT,'IO.Rdata',sep=''))
+save(ChimIO,file=paste(pNAME,'IO.Rdata',sep=''))
 
 # End of Script

@@ -63,7 +63,8 @@ echo ''
 		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/Rscript
 
 	# wigToBigWig
-	WIG2BIGWIG=$WIG2BIGWIG; eval $
+	WARE=$WIG2BIGWIG; eval $wareExists
+		ln -fs $(readlink -f $(command -v $WARE)) $BASE/bin/wig2bigwig
 
 echo ''
 
