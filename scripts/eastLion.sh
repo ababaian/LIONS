@@ -162,8 +162,8 @@ else # Alignment Bypass is False, calculate Alignment
 # Run Tophat2 Alignment
 	echo " Running tophat2 ..."
 
-	echo "  cmd: $lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq"
-	$lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq $WORK/temp.2.fq
+	echo "  cmd: $lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq.gz $WORK/temp.2.fq.gz"
+	$lBIN/tophat2 $ctrlTH2 -o $PWD $INDEX $WORK/temp.1.fq.gz $WORK/temp.2.fq.gz
 
 # Alignment Sanity Check I
 	# run a command; if bam file output is greater then 1 Mb
