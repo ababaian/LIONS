@@ -1,5 +1,6 @@
 bin/
 resources/
 projects/
+genBin/
 *~
 software/*/*

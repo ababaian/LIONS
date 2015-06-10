@@ -9,9 +9,9 @@
 	export BASE=$PWD # Base folder for ~/LIONS/
 
 # PROJECT -------------------------------------------------
-	export PROJECT='sandboxGen' # Project Name
+	export PROJECT='gscToy' # Project Name
 
-	export INPUT_LIST="$BASE/input.list" # <libName> <libPath> <group> csv file
+	export INPUT_LIST="$BASE/gsc.list" # <libName> <libPath> <group> csv file
 
 	export INDEX='hg19r' # Genome resource set to use
 	#  Should be a ~/LIONS/resources/<INDEX>/ folder
@@ -49,9 +49,11 @@
 # Cluster Commands
 	if [ $SYSTEM == 'gsc' ]
 	then # Cluster QSUB
+		export CLUSTER='1'
 		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
 
 	else # Local (no) QSUB
+		export CLUSTER='0'
 		export QSUB=''
 	fi
 
@@ -65,7 +67,7 @@
 	export BOWTIE_BUILD='bowtie2-build'
 	export CUFFLINKS='cufflinks'
 	export PYTHON3='/home/ababaian/software/python3/bin/python3'
-	export JAVA='java'
+	export JAVA='/gsc/software/linux-x86_64/jre1.7.0_03/bin/java'
 	export RSCRIPT='/home/ababaian/software/R-3.0.1/bin/Rscript'
 
 # EAST LION -----------------------------------------------
@@ -160,7 +162,7 @@
 	# do you want to re-calcualate the 'initiations'?
 	# 0 = Re-calcualte 'initiation' using parameters set below
 	# 1 = Don't re-calculate 'initiation' if it exists
-	export SORTBYPASS='0'
+	export SORTBYPASS='1'
 
 	# Number of Chimeric Reads Required (total)
 	export crtReads='3' # Variable: <Value below> or 1/20 RPM

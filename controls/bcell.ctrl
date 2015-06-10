@@ -1,0 +1,212 @@
+#!/bin/bash
+# parameter.ctrl
+# PARAMETER CONTROL FILE
+# Defines parameters with which to run LIONS
+# =========================================================
+# Adjust these to your system
+
+# The LIONS den
+	export BASE=$PWD # Base folder for ~/LIONS/
+
+# PROJECT -------------------------------------------------
+	export PROJECT='Bcell' # Project Name
+
+	export INPUT_LIST="$BASE/bcell.list" # <libName> <libPath> <group> csv file
+
+	export INDEX='hg19r' # Genome resource set to use
+	#  Should be a ~/LIONS/resources/<INDEX>/ folder
+	#  See README file 'RESOURCE INITIALIZATION' to set up
+	#  the folder prior to running LIONS the first time
+
+	export GENESET='refSeq_hg19.ucsc' # Reference Gene Set. UCSC format
+	# in ~/LIONS/resources/<INDEX>/annotation/<GENESET>	
+
+	export REPEATMASKER='rm_hg19.ucsc' # RepeatMasker. UCSC format
+	# in ~/LIONS/resources/<INDEX>/repeat/<REPEATMASKER>
+
+	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
+
+# Directories
+
+	export SCRIPTS="$BASE/scripts"
+
+	export TMP="/tmp/artmp" # Temporary working directory [Cluster-only]
+
+	export RESOURCES="$BASE/resources/$INDEX"
+
+	export pDIR="$BASE/projects/$PROJECT"
+	
+	export lBIN="$BASE/bin"
+
+# SYSTEM --------------------------------------------------
+# Performance
+	export SYSTEM='gsc' # System Name
+	# gsc = run with qsub commands on the gsc genesis cluster
+	# <local> = run on local machine.
+
+	export THREADS='4' # number of CPU cores to use
+
+# Cluster Commands
+	if [ $SYSTEM == 'gsc' ]
+	then # Cluster QSUB
+		export CLUSTER='1'
+		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=6G -l mem_token=6G -l h_vmem=6G -l tmp_token=20G"
+
+	else # Local (no) QSUB
+		export CLUSTER='0'
+		export QSUB=''
+	fi
+
+# SOFTWARE PATHS ------------------------------------------
+# For all software below, enter in where LIONS should access it on this system
+
+	export SAMTOOLS='samtools19' # Samtools (less than version 1.x)
+	export BAM2FASTX='bam2fastx'
+	export TOPHAT2='tophat2'
+	export BOWTIE2='bowtie2'
+	export BOWTIE_BUILD='bowtie2-build'
+	export CUFFLINKS='cufflinks'
+	export PYTHON3='/home/ababaian/software/python3/bin/python3'
+	export JAVA='/gsc/software/linux-x86_64/jre1.7.0_03/bin/java'
+	export RSCRIPT='/home/ababaian/software/R-3.0.1/bin/Rscript'
+
+# EAST LION -----------------------------------------------
+# Bowtie 2
+	# Alignment parameters passed on to Tophat2
+	export BOWTIE=''
+
+# Tophat 2
+	# Alignment Bypass
+	# 0: Calculate a new alignment for the input
+	# 1: Do not re-calculate the alignment, simply create
+	#    symbolic link to the bam file in <input.list> within
+	#    the LIONS folder architecture
+	export ALIGNBYPASS='0'
+
+	# Inner Read distance [-r]
+	# 200 - 75 - 75 = 50
+	INREAD='50'
+
+	export ctrlTH2=" $BOWTIE -p $THREADS -r $INREAD --b2-very-sensitive --report-secondary-alignments"
+
+# Cufflinks
+	# Ab initio (guided) or De Novo assembly?
+	export deNovo='1' # 1 = De Novo; 0 = Ab Initio
+
+	# Check that assembly guide GTF file exists if it's being used
+	if [ $deNovo == '0' ]
+	then
+		# Guide file upon which to assemble
+		guide="$RESOURCES/annotation/guide.gtf"
+
+		# Check of Guide file doesn't exists; exit
+		if [ ! -s $guide ]
+		then
+		echo " ERROR 5 - Missing resource file"
+		echo " Ab initio assembly selected (using a GTF guide -g)"
+		echo " but the guide file $guide does not exist or cannot be read"
+		echo " check parameter.ctrl and/or initialize a guide file"
+		exit 5
+		fi
+	fi
+
+	#Minimum fragments per transfrag
+	# default is 10
+	minFrag='--min-frags-per-transfrag 10'
+
+	# Multi-mapping transfrag fragments
+	# Default is 0.75;
+	multiFrag='--max-multiread-fraction 0.99'
+
+	# Minimum coveraged to attempt 3` trimming
+	# Default is 10
+	minTrim='--trim-3-avgcov-thresh 5'
+
+	# Minimum Trim dropoff in fraction
+	trimDrop='--trim-3-dropoff-frac=0.1'
+
+	# Merge Radius in bp
+	# Default is 50 bp
+	mergeR='--overlap-radius 50'
+
+	# Multiple Mapping read correction
+	# include [-u]
+	
+	if [ $deNovo == '1' ]
+	then # De Novo Assembly
+		export ctrlCL2="-u -p $THREADS $minFrag $multiFrag $minTrim $trimDrop $mergeR"
+	else # Ab Initio Assembly
+		export ctrlCL2="-u -p $THREADS -g $guide"
+	fi
+
+# RNAseqPipeline
+
+	# Reference Annotations
+	export REF='assembly'
+
+	# RNAseq Analysis Quality
+		# q = quality cutoff; F bam flags to discard
+		# i.e. 'q10.F772'
+		# i.e. 'q1.F1796' 
+	export QUALITY='q10.F772' 
+
+# Chimeric Read Tool
+	# self-contained
+
+# ChimSort
+	# These parameters define what is defined as a 
+	# "TE-initiated transcript" and what is exonization/termination are
+	# note: See chimSort.R script to see how these are used for sorting
+
+	# Sort Bypass: If a sorted .lions file is already present
+	# do you want to re-calcualate the 'initiations'?
+	# 0 = Re-calcualte 'initiation' using parameters set below
+	# 1 = Don't re-calculate 'initiation' if it exists
+	export SORTBYPASS='1'
+
+	# Number of Chimeric Reads Required (total)
+	export crtReads='3' # Variable: <Value below> or 1/20 RPM
+	
+	# Thread Ratio
+	export crtThread='10' # >=
+	export crtDownThread='10' # |number| required 
+
+	# RPKM cut-off to consider an exon 'expressed'
+	export crtRPKM='1' # >=
+
+	# Contribution of TE to total transcript expression (Exon / TE)
+	export crtContribution='0.1' # >=
+
+	# Expression immediatly upstream TE
+	export crtUpstreamCover='2' # >=
+
+	# Expression of exons upstream of involved exon
+	export crtUpstreamExonCover='1.5' # >=
+	
+	# Final Export String
+	export CRT=$( echo $crtReads $crtThread $crtDownThread $crtRPKM $crtContribution $crtUpstreamCover $crtUpstreamExonCover )
+
+	# Splice Partner Classification
+	# Repeat Rank > 0 AND RepeatExonic
+
+# WEST LION -----------------------------------------------
+# chimGroup.R
+	# These parameters define recurrent and specific
+	# 'TE initiated' events
+	# 
+	# The third column of <input.list> defines libraries as one of
+	# 1: Control / Normal
+	# 2: Experimental / Cancer
+	# 3: Other / unused
+
+	# Recurrent Cutoff
+	# Must be present in at least this many Group 2 libraries
+	export cgGroupRecurrence='2'
+
+	# Specificity Cutoff
+	# Must be absent in at least this many Group 1 libraires
+	export cgSpecificity='0'
+
+	# chimGroup command string
+	export CG=$(echo $cgGroupRecurrence $cgSpecificity)
+
