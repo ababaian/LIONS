@@ -135,7 +135,7 @@ do
 	mkdir -p $pDIR/$libName
 
 	# Check input files and link them to the project folder
-	if [[ $bamPath == *'.bam']]
+	if [[ $bamPath == *'.bam' ]]
 	then
 	# Input file is bam (standard)
 
