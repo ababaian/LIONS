@@ -20,6 +20,10 @@ complete or redownload.
 
 # Error 6 - A python requisite is missing.
 
+# Error 7 - The input read file (.bam or .fastq) is non-readable or empty
+	7A - Bam file error
+	7B - FastQ file error. Ensure the two files are comma seperated in the input
+
 # eastLion Codes --------------------------------
 
 # Error 10 - alignment not generated

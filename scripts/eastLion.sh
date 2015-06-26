@@ -138,10 +138,15 @@ else # Alignment Bypass is False, calculate Alignment
 # Declare the input/output files
 	echo "  No previous alignment detected"
 	echo "  Aligning reads to the genome"
-	echo "     Bam input: $INPUT"
+	echo "     Bam (or fq) input: $INPUT"
 	echo "     Bam output: $OUTPUT.bam"
 	echo "     Genome: $INDEX"
 
+
+if [ ! -s temp1.fq.gz ] && [ ! -s temp2.fq.gz ]
+then
+# if the input is a bam file generate fastq files
+# else fq files exist and will be used
 
 # Sort the input bam file for generating fastq files for input
 	echo " Sorting input bam file with samtools ..."
@@ -158,6 +163,7 @@ else # Alignment Bypass is False, calculate Alignment
 	
 	# Clean Up from this point
 	rm temp_sort.bam
+fi
 
 # Run Tophat2 Alignment
 	echo " Running tophat2 ..."

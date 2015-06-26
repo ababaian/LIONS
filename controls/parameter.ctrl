@@ -12,6 +12,10 @@
 	export PROJECT='sandbox' # Project Name
 
 	export INPUT_LIST="$BASE/input.list" # <libName> <libPath> <group> csv file
+	# <libPath> is one of
+	#     A) Paired end bam file. '/home/libPath.bam'
+	#     B) Sorted paired fastQ files. Comma seperated.
+	#        '/home/lib.fq1,/home/lib.fq2'
 
 	export INDEX='hg19r' # Genome resource set to use
 	#  Should be a ~/LIONS/resources/<INDEX>/ folder

@@ -16,6 +16,9 @@ RNAseqPipeline.sh
 
 parameter.ctrl
 
+	Split parameter.ctrl into two files;
+		A) User set parameters
+		B) LIONS internal parameters (SCRIPTS directory etc...)
 eastLions.sh
 
 	Simplify output files <Library>.lcsv and <Library>.pc.lcsv to a signle
