@@ -29,3 +29,6 @@ eastLions.sh
 		RNAseqMaster.sh --> line 95 - 115; -Xmx6G
 		ChimericReadTool.sh --> line 237; -Xmx6G
 	
+	chimSort.R
+		for EInside case add First Exon requirements
+		for RInside case add UpCov 0.5 requirements

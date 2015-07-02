@@ -30,12 +30,24 @@ LIONS pipeline architecture
 		The script reads and procceses all files in input.list
 		and all parameters can be controlled from parameter.ctrl
 
-	./parameter.ctrl
-		A bash script which defines global variables for all LIONS
-		scripts. Also defines project-specific variables such as
-		Project Name, library input list etc...
+#./controls
+	Control Files: This folder contains project and system-specific
+	parameters for running LIONS. There are three main files which
+	need to be set-up, LIONS run parameters, system parameters and
+	input RNA-seq libraries.
+	
 
-	./input.list
+	./controls/parameter.ctrl
+		A bash script which defines global project-specific 
+		variables such as Project Name, library input list etc...
+		The .sysctrl and .list file are defined here as well
+
+	./controls/system.sysctrl
+		A bash script which defines global variables for all LIONS
+		scripts. Also defines system-specific variables such as
+		System Name, number of CPU cores etc...
+
+	./controls/input.list
 		A three column tab-delimited file defining:
 		<Library_Name> <Library_Path_on_system> <Biological_Grouping>
 		Group Naming Convention: 1 = control 2 = experimental 3 = other
@@ -132,7 +144,8 @@ LIONS pipeline architecture
 
 	./resources/<INDEX>/repeat
 	<REPEATMASKER>.ucsc: a ucsc formatted file containing the repeatMasker
-	annotation for the genome. 
+	annotation for the genome.
+	(Download from UCSC genome browswer or format from RepeatMasker)
 	Columns are;
 	bin, swScore, milliDiv, milliDel, milliIns, genoName, genoStart,
 	genoEnd, genoEnd, genoLeft, strand, repName, repClass, repFamily,

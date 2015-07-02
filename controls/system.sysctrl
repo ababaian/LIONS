@@ -1,0 +1,51 @@
+#!/bin/bash
+# parameter.ctrl
+# PARAMETER CONTROL FILE - System Parameters
+# Defines parameters with which to run LIONS
+# =========================================================
+# Adjust these to your system
+
+# DIRECTORIES ---------------------------------------------
+
+	export SCRIPTS="$BASE/scripts"
+
+	export TMP="/tmp/artmp" # Temporary working directory [Cluster-only]
+
+	export RESOURCES="$BASE/resources/$INDEX"
+
+	export pDIR="$BASE/projects/$PROJECT"
+	
+	export lBIN="$BASE/bin"
+
+# SYSTEM --------------------------------------------------
+# Performance
+	export SYSTEM='glitch' # System Name
+	# <gsc> = run with qsub commands on the gsc genesis cluster
+	# <local> = run on local machine.
+
+	export THREADS='1' # number of CPU cores to use
+
+# Cluster Specific Commands
+	if [ $SYSTEM == 'gsc' ]
+	then # Cluster QSUB
+		export CLUSTER='1'
+		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
+
+	else # Local (no) QSUB
+		export CLUSTER='0'
+		export QSUB=''
+	fi
+
+# SOFTWARE PATHS ------------------------------------------
+# For all software below, enter in where LIONS should access it on this system
+
+	export SAMTOOLS='samtools_0.1.18' # Samtools (less than version 1.x)
+	export BAM2FASTX='bam2fastx'
+	export TOPHAT2='tophat2'
+	export BOWTIE2='bowtie2'
+	export BOWTIE_BUILD='bowtie-build'
+	export CUFFLINKS='cufflinks'
+	export PYTHON3='python3'
+	export JAVA='java'
+	export RSCRIPT='Rscript'
+	export WIG2BIGWIG="$BASE/software/wigToBigWig"

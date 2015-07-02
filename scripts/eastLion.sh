@@ -119,7 +119,7 @@ then
 else # Generate Alignment
 
 # Alignment Bypass Flow Control Starts
-if [ $ALIGNBYPASS == '1' ] # Bypass is True
+if [ $ALIGNBYPASS == '1' ] && [ -s $INPUT ] # Bypass is True
 then
 	# Create a symbolic link between the input bam file
 	# and the final output.bam file

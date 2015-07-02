@@ -6,7 +6,7 @@ LIONS Installation Steps
 
 4. Populate the resource files:
 
-	a) In ./LIONS/resources/<genomeName>/genome/ add a <genomeName>.fa genome file
+	a) In ./LIONS/resources/<genomeName>/genome/ add a <genomeName>.fa genome sequence file
 	b) In ./LIONS/resources/<genomeName>/annotation/ add the ucsc annotation file
 	c) In ./LIONS/resources/<genomeName>/repeat/ add the ucsc repeatMasker file
 

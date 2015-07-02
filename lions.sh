@@ -36,8 +36,8 @@ echo ''
 if [ -z $1 ]
 then
 	echo " No parameter input file specified. Importing default file:"
-	echo "      ./LIONS/parameter.ctrl"
-	export PARAMETER="parameter.ctrl"
+	echo "      ./LIONS/controls/parameter.ctrl"
+	export PARAMETER="controls/parameter.ctrl"
 	echo ''
 else
 	echo " Import parameter file."

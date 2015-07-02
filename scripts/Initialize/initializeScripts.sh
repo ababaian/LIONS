@@ -7,6 +7,11 @@
 
 # Script list----------------------------
 
+# Input Parameters
+	# <input>.list
+	# <parameters>.ctrl
+	# <system>.sysctrl
+
 # LIONS initialization
 	# initializeScripts.sh
 	# initializeBin.sh
@@ -50,6 +55,11 @@ FILE=''
 echo "     Check that LIONS scripts exist and are read/executable"
 
 echo ''
+
+# Parameter Input Initializations
+	FILE="$INPUT_LIST"; eval $FCHECK_rs #input.list
+	FILE="$PARAMETER"; eval $FCHECK_rs #parameter.ctrl
+	FILE="$SYSTEMCTRL"; eval $FCHECK_rs #system.sysctrl
 
 # Initializations
 	FILE='Initialize/initializeLIONS.sh'; eval $FCHECK_rs
