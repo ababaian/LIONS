@@ -1,8 +1,4 @@
-
 lions.sh
-
-	line X: Add a flow control to also allow fastq input files
-	into tophat and skip the bam extraction steps
 
 	line 80: Control script for Cluster/Local runs (Qsub)
 
@@ -32,3 +28,9 @@ eastLions.sh
 	chimSort.R
 		for EInside case add First Exon requirements
 		for RInside case add UpCov 0.5 requirements
+
+global
+
+	Add a way to liftOver from a genome to a consensus repeat sequence
+	using acrocentric arms of chromosomes as regions in which to contain
+	the consensus repeat sequences.
