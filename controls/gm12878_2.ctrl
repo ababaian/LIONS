@@ -9,9 +9,9 @@
 	export BASE=$PWD # Base folder for ~/LIONS/
 
 # PROJECT -------------------------------------------------
-	export PROJECT='sandbox' # Project Name
+	export PROJECT='gm12878_2' # Project Name
 
-	export INPUT_LIST="$BASE/controls/input.list" # <libName> <libPath> <group> csv file
+	export INPUT_LIST="$BASE/controls/gm12878_2.list" # <libName> <libPath> <group> csv file
 	# <libPath> is one of
 	#     A) Paired end bam file. '/home/libPath.bam'
 	#     B) Sorted paired fastQ files. Comma seperated.
@@ -33,7 +33,7 @@
 # SYSTEM --------------------------------------------------
 	# For each system you'd like to run LIONS on you can edit
 	# one <system>.ctrl file
-	export SYSTEMCTRL="$BASE/controls/system.sysctrl"
+	export SYSTEMCTRL="$BASE/controls/xhost.sysctrl"
 	source $SYSTEMCTRL
 
 	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
@@ -49,7 +49,7 @@
 	# 1: Do not re-calculate the alignment, simply create
 	#    symbolic link to the bam file in <input.list> within
 	#    the LIONS folder architecture
-	export ALIGNBYPASS='1'
+	export ALIGNBYPASS='0'
 
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50

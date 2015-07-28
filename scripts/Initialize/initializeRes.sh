@@ -12,7 +12,7 @@
 # which will allow for parallel computing
 
 # Resource Name:
-	# $INDEX
+	INDEX=$1
 
 # Resource Directory (from parent script)
 	#RESOURCES="$BASE/resources/$INDEX"
@@ -52,7 +52,7 @@
 FCHECK_rs='if [ -s $FILE -a -r $FILE ]; then echo "... $FILE found."; else echo "     $FILE not found (empty or non-readable)."; echo " Check if file exists or permissions"; echo " ===== ERROR 5: MISSING REQUISITE RESOURCE ===== "; echo Check README for more information; exit 2; fi'
 
 # GENOME FILE CHECK -----------------------------
-cd genome # go to genome directory
+cd $RESOURCES/genome # go to genome directory
 
 # ----- Check if genome.fa file is present
 	FILE="$genomeFa"; eval $FCHECK_rs

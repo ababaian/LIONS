@@ -1,23 +1,21 @@
 #!/bin/bash
 # parameter.ctrl
-# PARAMETER CONTROL FILE - Project Parameters
+# PARAMETER CONTROL FILE
 # Defines parameters with which to run LIONS
 # =========================================================
-# Adjust these parameters to run for a particular project
+# Adjust these to your system
 
 # The LIONS den
 	export BASE=$PWD # Base folder for ~/LIONS/
 
 # PROJECT -------------------------------------------------
-	export PROJECT='sandbox' # Project Name
+	export PROJECT='gm12878' # Project Name
 
-	export INPUT_LIST="$BASE/controls/input.list" # <libName> <libPath> <group> csv file
+	export INPUT_LIST="$BASE/controls/gm12878.list" # <libName> <libPath> <group> csv file
 	# <libPath> is one of
 	#     A) Paired end bam file. '/home/libPath.bam'
 	#     B) Sorted paired fastQ files. Comma seperated.
 	#        '/home/lib.fq1,/home/lib.fq2'
-
-# RESOURCES ----------------------------------------------
 
 	export INDEX='hg19r' # Genome resource set to use
 	#  Should be a ~/LIONS/resources/<INDEX>/ folder
@@ -30,13 +28,52 @@
 	export REPEATMASKER='rm_hg19.ucsc' # RepeatMasker. UCSC format
 	# in ~/LIONS/resources/<INDEX>/repeat/<REPEATMASKER>
 
-# SYSTEM --------------------------------------------------
-	# For each system you'd like to run LIONS on you can edit
-	# one <system>.ctrl file
-	export SYSTEMCTRL="$BASE/controls/system.sysctrl"
-	source $SYSTEMCTRL
-
 	export RUNID=$(date +%y%m%d_%H%M) # Unique Date Run ID; yymmdd_hhmm
+
+# Directories
+
+	export SCRIPTS="$BASE/scripts"
+
+	export TMP="/tmp/artmp" # Temporary working directory [Cluster-only]
+
+	export RESOURCES="$BASE/resources/$INDEX"
+
+	export pDIR="$BASE/projects/$PROJECT"
+	
+	export lBIN="$BASE/bin"
+
+# SYSTEM --------------------------------------------------
+# Performance
+	export SYSTEM='xhost' # System Name
+	# <gsc> = run with qsub commands on the gsc genesis cluster
+	# <local> = run on local machine.
+
+	export THREADS='1' # number of CPU cores to use
+
+# Cluster Specific Commands
+	if [ $SYSTEM == 'gsc' ]
+	then # Cluster QSUB
+		export CLUSTER='1'
+		export QSUB="qsub -S /bin/bash -V -m e -M ababaian@bccrc.ca -pe ncpus $THREADS -l mem_free=10G -l mem_token=10G -l h_vmem=10G -l tmp_token=35G"
+
+	else # Local (no) QSUB
+		export CLUSTER='0'
+		export QSUB=''
+	fi
+
+# SOFTWARE PATHS ------------------------------------------
+# For all software below, enter in where LIONS should access it on this system
+
+	export SAMTOOLS='samtools19' # Samtools (less than version 1.x)
+	export BAM2FASTX='bam2fastx'
+	export TOPHAT2='tophat2'
+	export BOWTIE2='bowtie2'
+	export BOWTIE_BUILD='bowtie2-build'
+	export CUFFLINKS='cufflinks'
+	export PYTHON3='python3'
+	export JAVA='java'
+	export RSCRIPT='Rscript'
+	export WIG2BIGWIG="$BASE/software/wigToBigWig"
 
 # EAST LION -----------------------------------------------
 # Bowtie 2
@@ -49,7 +86,7 @@
 	# 1: Do not re-calculate the alignment, simply create
 	#    symbolic link to the bam file in <input.list> within
 	#    the LIONS folder architecture
-	export ALIGNBYPASS='1'
+	export ALIGNBYPASS='0'
 
 	# Inner Read distance [-r]
 	# 200 - 75 - 75 = 50
@@ -109,7 +146,7 @@
 
 # RNAseqPipeline
 
-	# Reference Annotations ( = assembly , unless you know what you're doing)
+	# Reference Annotations
 	export REF='assembly'
 
 	# RNAseq Analysis Quality
