@@ -57,20 +57,22 @@ then #Cluster
 	cp -R $RESOURCES/genome/* $WORK
 
 	# Check if there is an input fastq file or bam file
-	if [ ! -s $outDir/temp1.fq.gz ] && [ ! -s $outDir/temp2.fq.gz ]
+	if [ ! -s $outDir/temp.1.fq.gz ] && [ ! -s $outDir/temp.2.fq.gz ]
 	then
 		inputType='bam'
 		# Bam input file (cp)
 		cp $outDir/$INPUT $WORK
+
+		# Create a temporary symbolic link to the input
+		ln -s $outDir/$INPUT $outDir/$INPUT.tmp
 	else
 		inputType='fastq'
 		# Fastq input file
-		cp $outDir/temp1.fq.gz $WORK
-		cp $outDir/temp2.fq.gz $WORK
+		cp $outDir/temp.1.fq.gz $WORK
+		cp $outDir/temp.2.fq.gz $WORK
 	fi
 	
-	# Create a temporary symbolic link to the input
-	ln -s $outDir/$INPUT $outDir/$INPUT.tmp
+
 
 	# Running on temporary space
 	echo " Running on temporary space on cluster"
@@ -152,7 +154,7 @@ else # Alignment Bypass is False, calculate Alignment
 	echo "     Bam output: $OUTPUT.bam"
 	echo "     Genome: $INDEX"
 
-if [ ! -s temp1.fq.gz ] && [ ! -s temp2.fq.gz ]
+if [ ! -s temp.1.fq.gz ] && [ ! -s temp.2.fq.gz ]
 then
 # if the input is a bam file generate fastq files
 # else fq files exist and will be used
