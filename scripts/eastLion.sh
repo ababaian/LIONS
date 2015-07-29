@@ -56,8 +56,18 @@ then #Cluster
 	# BT2 Genome Index (copy to work space)
 	cp -R $RESOURCES/genome/* $WORK
 
-	# Bam input file (cp)
-	cp $outDir/$INPUT $WORK
+	# Check if there is an input fastq file or bam file
+	if [ ! -s $outDir/temp1.fq.gz ] && [ ! -s $outDir/temp2.fq.gz ]
+	then
+		inputType='bam'
+		# Bam input file (cp)
+		cp $outDir/$INPUT $WORK
+	else
+		inputType='fastq'
+		# Fastq input file
+		cp $outDir/temp1.fq.gz $WORK
+		cp $outDir/temp2.fq.gz $WORK
+	fi
 	
 	# Create a temporary symbolic link to the input
 	ln -s $outDir/$INPUT $outDir/$INPUT.tmp
@@ -138,10 +148,9 @@ else # Alignment Bypass is False, calculate Alignment
 # Declare the input/output files
 	echo "  No previous alignment detected"
 	echo "  Aligning reads to the genome"
-	echo "     Bam (or fq) input: $INPUT"
+	echo "     Bam (or fq) input type: $inputType"
 	echo "     Bam output: $OUTPUT.bam"
 	echo "     Genome: $INDEX"
-
 
 if [ ! -s temp1.fq.gz ] && [ ! -s temp2.fq.gz ]
 then
