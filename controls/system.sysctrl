@@ -40,12 +40,12 @@
 # For all software below, enter in where LIONS should access it on this system
 
 	export SAMTOOLS='samtools_0.1.18' # Samtools (less than version 1.x)
-	export BAM2FASTX='bam2fastx'
+	export BAM2FASTX='bam2fastx' # part of tophat2
 	export TOPHAT2='tophat2'
 	export BOWTIE2='bowtie2'
-	export BOWTIE_BUILD='bowtie-build'
+	export BOWTIE_BUILD='bowtie2-build' # build function for bowtie2
 	export CUFFLINKS='cufflinks'
 	export PYTHON3='python3'
 	export JAVA='java'
 	export RSCRIPT='Rscript'
-	export WIG2BIGWIG="$BASE/software/wigToBigWig"
+	export WIG2BIGWIG="$BASE/software/wigToBigWig" # packed in ~/software/

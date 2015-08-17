@@ -216,9 +216,23 @@ fi
 	#ls -lh
 
 # Append tophat2 output bam files to a to single bam file
-	$lBIN/samtools cat -o unsorted.bam accepted_hits.bam unmapped.bam
-	$lBIN/samtools sort unsorted.bam $OUTPUT
+# (iff the bam file is less than 20G)
+	##$lBIN/samtools cat -o unsorted.bam accepted_hits.bam unmapped.bam
+	##$lBIN/samtools sort unsorted.bam $OUTPUT
+
+fileSize=$(du -m $(readlink -f accepted_hits.bam | cut -f1) # Mb size
+
+if [ $fileSize -ge 20000 ] # Bam > 20gb
+	then
+	# Rename accepted hits to output.bam
+	mv accepted_hits.bam $OUTPUT.bam
+	mv unmapped.bam $OUTPUT.unmapped.bam
 	$lBIN/samtools index $OUTPUT.bam
+	else
+	# Merge mapped/unmapped bam files and rename to output.bam
+	$lBIN/samtools merge -r $OUTPUT.bam accepted_hits.bam unmapped.bam
+	$lBIN/samtools index $OUTPUT.bam
+fi
 
 fi # Alignment Bypass Flow Control Ends
 

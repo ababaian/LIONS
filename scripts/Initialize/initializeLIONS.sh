@@ -50,6 +50,7 @@ echo ''
 	echo ''
 
 # BIN(aries) CHECK ------------------------------------------
+mkdir -p $BASE/bin
 cd $BASE/bin # Go to Binary folder
 
 	echo ' ... checking binaries'
@@ -107,6 +108,7 @@ cd $BASE
 # WORKSPACE ----------------------------------------------
 echo " ---------- Set-up Project Workspace ---------- "
 cd $BASE
+mkdir -p $BASE/projects
 
 # Make project folder 
 # ./LIONS/projects/<Project>
