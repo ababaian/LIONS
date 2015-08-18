@@ -220,7 +220,7 @@ fi
 	##$lBIN/samtools cat -o unsorted.bam accepted_hits.bam unmapped.bam
 	##$lBIN/samtools sort unsorted.bam $OUTPUT
 
-fileSize=$(du -m $(readlink -f accepted_hits.bam | cut -f1) # Mb size
+fileSize=$(du -m $(readlink -f accepted_hits.bam ) | cut -f1) # Mb size
 
 if [ $fileSize -ge 20000 ] # Bam > 20gb
 	then
