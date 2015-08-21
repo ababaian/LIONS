@@ -64,8 +64,8 @@
 		then
 			echo 'Running chimIntersect.sh script ---------------'
 			echo "    Chimeric file: $1"
-			echo "    Assembly file: $2"
-			echo "    Gene Ann File: $3"
+			echo "    Assembly file: $assemblyFile"
+			echo "    Gene Ann File: $refFile"
 			echo " "
 		else
 			echo "Missing parameters!"

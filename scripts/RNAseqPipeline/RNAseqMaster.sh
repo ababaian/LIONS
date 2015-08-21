@@ -190,10 +190,10 @@ echo ''
 #                              #
 ################################
 
-if [ "$RUN_REPORT" = "1" ]; then
+#if [ "$RUN_REPORT" = "1" ]; then
 	#$SHELL_BASE/QCreport.sh $name $dir $sr
 	# not used
-fi
+#fi
 
 # Script over
 echo " RNAseqMaster.sh Ran to completion "
