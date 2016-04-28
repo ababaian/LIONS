@@ -190,92 +190,221 @@ def file_exists(fpath):
 
 #readThread
 def readThread( samfile_path, Coords, Strand ):
-# <samfile_path>: bam file input for analysis
-# <Coords>: A 3-element object with Chromosome, Start, End of element
-# <ReadLength>: integer of read length
-# <Strand>: True = postive Strand, False = Negative strand
-#
-#           ___________________
-#__________|_____TE____________|_______________ read1 read2	Call
-#          |                   |
-#          |   1       2       |
-#            ;====---;====                      i	i	-
-#          |                   | 
-#	   |                   |
-#        ;====---;====                          -       u	u
-#          |                   |
-#    ;====---;====                              -	u	u
-#          |                   |
-#;====---;====                 |                -       -*2     -
-#          |                   |
-#                            ;====---;====      d	- *1	d
-#          |                   |
-#                       ;====---;====           d	-	d
-#          |                   |
-#                   ;====---;====               d       i	d
-#          |                   |
-#          |                   |
-#        ;====--------------;====               -*1	u	u
-#          |                   |
-#        ;====--------------------;====         -*1	-*2	-
-#          |                   |
+    # <samfile_path>: bam file input for analysis
+    # <Coords>: A 3-element object with Chromosome, Start, End of element
+    # <ReadLength>: integer of read length
+    # <Strand>: True = postive Strand, False = Negative strand
+    #
+    # Classify each read and it's mate based on their intersection to the TE
+    # Upstream   = Evidence of transcription going into a TE
+    # Downstream = Evidence of transcription being generated in a TE 
+    #
+    #     RepeatStart         RepeatEnd
+    #           ___________________
+    #__________|________TE_________|_______________
+    #          |                   |                Read Class
+    #  ;====   |                   |                Left
+    #        ;====                 |                LeftEdge
+    #          |      ;====        |                InExon
+    #          |                ;====               RightEdge
+    #          |                   |   ;====        Right
+    #       ;========================               Span
+    #          |                   |
+    #          |                   |
+    #
+    #
+    #          |                   |                Read-mate Cases
+    # ;====---;====                |                Upstream
+    #    ;====---;====             |                Upstream
+    #        ;====---;====         |                Upstream
+    #          |                   |
+    # ;==--;== |                   |                Discard (external)
+    #          |                   |  ;==--;==      Discard (external)
+    #          |   ;====---;====   |                Discard (internal)
+    #   ;====--|-------------------|-;====          Discard (Splice Span)
+    #          |                   |
+    #          |         ;====---;====              Downstream
+    #          |             ;====---;====          Downstream
+    #          |                 ;====---;====      Downstream
+    #          |                   |
+    #       ;========================----;====...   Force Upstream
+    # ;====----|-----------------;====              Force Upstream
+    #       ;====----------------;====              Force Upstream
+    #       ;====------------------|-----;====      Force Upstream             
+    #          |                   | 
+    #          |                   |
+    # Legend:
+    # ;     Leftmost position of read (ReadStart or MateStart)
+    # ====  Aligned read length (ReadLength)
+    # ---   Internal sequence
 
-# Legend:
-# ;	Leftmost position of read
-# ===	Aligned read length
-# ---	Internal sequence
-# i	Read Mate is internal to TE
-# -	Read Mate is uncounted/ implicit internal read
-# d	Read Mate is downstream of TE
-# u	Read Mate is upstream of TE
+    # Input Bam File
+    samfile = pysam.Samfile( samfile_path, "rb" )
 
-# Error *1, this implicit internal read is a downstream
-# Error *2, this implicit internal read is an upstream
+    # Import reads overlapping the element coordinates
+    # [0] = Chromosome , [1] = Start, [2] = End
+    ParsedCoord = 'chr{0[0]}:{0[1]}-{0[2]}'.format(Coords)
+    readIterator = samfile.fetch(region = ParsedCoord)
 
-	# Input Bam File
-	samfile = pysam.Samfile( samfile_path, "rb" )
+    #print(ParsedCoord)
 
-	# Import reads overlapping the element coordinates
-		# [0] = Chromosome , [1] = Start, [2] = End
-	ParsedCoord = 'chr{0[0]}:{0[1]}-{0[2]}'.format(Coords)
-	readIterator = samfile.fetch(region = ParsedCoord)
+    
+    # Initialize output
+    discardThread = 0
+    forceUpThread = 0
+    upThread = 0
+    downThread = 0
 
-	# Initialize output
-	upThread = 0
-	downThread = 0
-	internalThread = 0
+    RepeatStart = int(Coords[1])
+    RepeatEnd = int(Coords[2])
 
-	# Iterate through the reads
-	# Assume +ve strand, flip results if negative strand
-	for read in readIterator:
+    #print(RepeatStart, RepeatEnd)
+    
+    # Iterate through the reads
+    # Assume +ve strand, flip results if negative strand
+    for read in readIterator:
+        # VERBOSE DEBUG
+        # commented out #print
+        # read.start,read.end,mate.start,mate.end
+        # print(read.pos,(read.pos+read.rlen),"-",read.mpos,(read.mpos + read.rlen),"~")
 
-		# Paired reads on same chromosome only
-		if (read.is_paired and read.tid==read.rnext and int(read.mapq)>0):
+        # Paired reads on same chromosome only
+        if (read.is_paired and read.tid==read.rnext and int(read.mapq)>0):
+            # Accessing Mate Information
+            # read.pos = read start position (leftmost)
+            # readMate = samfile.mate(read)
+            # read.mpost = mate start position
+            # MateStart = read.mpos
 
-			# Accessing Mate Information
-				# readMate = samfile.mate(read)
-				# read.mpost = mate start position
+            ReadLength = read.rlen
+            ReadStart = read.pos
+            ReadEnd = ReadStart + ReadLength
 
-			MateStart = read.mpos
-			ReadLength = read.rlen
+            MateStart = read.mpos
+            MateEnd = MateStart + ReadLength
 
-			if ( MateStart < int(Coords[1])): # pair upstream element boundry
-				upThread = upThread + 1
+            # START CLASSIFICATION =====================================================
+            if ( ReadStart <= RepeatStart ): # (A) TRUE Read starts left of Repeat Start
 
-			elif ( (int(MateStart) + int(ReadLength)) > int(Coords[2])): # pair downstream
-				downThread = downThread + 1
+                if ( ReadEnd > RepeatStart): # (B) TRUE Read Ends right of Repeat Start
 
-			else: # internal pair, count but no worries...
-				internalThread = internalThread + 1
-	# Output
-	if (Strand):
-		localResults = ( upThread, downThread)
-	else:
-		localResults = ( downThread, upThread)
+                    if ( ReadEnd > RepeatEnd): # (C) TRUE Read Ends right of Repeat End
+                        # Case: Read spans the entire repeat
+                        # --> Force Upstream
+                        forceUpThread = forceUpThread + 1
+                        #print("FU 1: Read.ExonInside; Mate.UNK")
+                        
+                    else: # (C) FALSE Read Ends left of Repeat End
+                        # Case: Read is on left edge
 
-	return localResults
+                        # Requires mate classification ==
+                        if ( MateEnd > RepeatEnd ):
+                            # Mate Ends Right of Repeat End
 
-# End of readThread functio
+                            if ( MateStart <= RepeatStart):
+                                # Mate Starts Left of Repeat Start
+                                # Case: Mate spans repeat
+                                # --> Discard
+                                discardThread = discardThread + 1
+                                #print("DIS 1: Read.LeftEdge; Mate.ExonInside")
+                            else:
+                                # Mate Starts Right of Repaet Start
+                                # Mate is on right edge, or right of repeat
+                                # --> Force Upstream
+                                forceUpThread = forceUpThread + 1
+                                #print("FU 2: Read.LeftEdge; Mate.RightEdge,RightOf ")
+
+                        else: # Mate Ends Left of Repeat End
+                            # Mate is left, internal or on left edge
+                            # --> Upstream
+                            upThread = upThread + 1
+                            #print("U 1: Read.LeftEdge; Mate.Left,Internal,LeftEdge")
+                            
+                        # End Mate Logic ================
+
+                else: # (B) FALSE Read Ends left of Repeat Start
+                    # Case: Read is completely upstream of repeat
+                    # --> Discard
+                    discardThread = discardThread + 1
+                    #print("DIS 2: Read.UpStream; Mate.UNK")
+
+            else: # (A) FALSE Read start right of Repeat Start
+
+                if (ReadEnd > RepeatEnd): # (C) TRUE Read Ends right of Repeat End
+
+                    if (ReadStart > RepeatEnd): # (D) TRUE Read starts right of Repeat End
+                        # Case: Read Starts is downstream of Repeat
+                        # --> Discard
+                        discardThread = discardThread + 1
+                        #print("DIS 3: Read.Downstream; Mate.UNK")
+
+                    else: # (D) FALSE Read ends left of Repeat End
+                         # Case: Read is on right edge
+
+                            # Requires mate calssification ==
+                        if (MateStart <= RepeatStart): # (A)
+                            # Mate starts left of Repeat Start
+                            if (MateEnd > RepeatStart): # (B)
+                                # Case: Mate is on left edge or spans repeat
+                                # --> Discard
+                                discardThread = discardThread + 1
+                                #print("DIS 4: Read.RightEdge; Mate.LeftEdge,ExonIn")
+
+                            else: # (B) FALSE
+                                # Case: Mate is upstream of Repeat
+                                # --> Force Upstream
+                                forceUpThread = forceUpThread + 1
+                                #print(read)
+                                #print("FU 3: Read.RightEdge; Mate.Left")
+
+                        else: # (A) False
+                            # Case: Mate is internal, rightEdge or right of repeat
+                            # --> Downstream
+                            downThread = downThread + 1
+                            #print("D 1: Read.RightEdge; Mate.Right")
+
+                            # End Mate Logic ================
+
+                else: #(C) FALSE Read Ends left of Repeat End
+                    # Case: Read is internal to Repeat
+                    # Requires Mate Classification ==
+                    if (MateStart > RepeatEnd): # Mate Starts Right of Repeat End (D)
+                        # Case: Mate is Right of repeat
+                        # --> Upstream
+                        downThread = downThread + 1
+                        #print("D 2: Read.Internal; Mate.Right")
+
+                    elif (MateEnd <= RepeatStart): # Mate Ends Left of Repeat Start (E)
+                        # Case: Mate is right of repeat
+                        # --> Downstream
+                        upThread = upThread + 1
+                        #print("U 2: Read.Internal; Mate.Left")
+
+                    else: 
+                        # Mate is rightEdge, internal, leftEdge or spans repeat
+                        # --> Discard
+                        discardThread = discardThread + 1
+                        #print("DIS 5: Read.Internal; Mate.Internal")
+                        
+                    # End Mate Logic ================
+        #  END CLASSIFICATION =============================================================
+
+
+    #print(discardThread, forceUpThread, upThread, downThread)
+        
+    # Output
+    if (Strand): # True = Positive Strand Orientation
+        upThread = upThread + forceUpThread
+        localResults = (upThread, downThread)
+
+    else:# False = Negative Strand
+        downThread = downThread + forceUpThread
+        localResults = (downThread, upThread)
+
+    #print(localResults)
+    return(localResults)
+
+# End of readThread function
 # SCRIPT INITILIZATION ----------------------------------------------------------
 
 if __name__ == '__main__':
