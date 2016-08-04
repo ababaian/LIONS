@@ -5,3 +5,4 @@ genBin/
 *~
 software/*/*
 #controls/inactive/*
+*\.*

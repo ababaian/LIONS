@@ -81,7 +81,7 @@ do
 	libName=$(echo $rowN | cut -f1 -d' ')
 
 	echo " Iteration $nLib: $libName ------------------------------------------"
-	echo "      run: eastLion.sh $libName"
+	echo "      run: $QSUB eastLion.sh $libName"
 
 	if [ ! -e $pDIR/$libName/$libName.lions ]
 	then

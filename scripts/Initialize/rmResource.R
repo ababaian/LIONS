@@ -57,6 +57,9 @@
 if ( makeChimericSearch == 1 ){
 
 # Initialize the bed file
+  # Columns from RMDB file (UCSC) Should be the same as below
+  # #bin  swScore	milliDiv	milliDel	milliIns	genoName	genoStart	genoEnd	genoLeft	strand	repName	repClass	repFamily	repStart	repEnd	repLeft	id
+  #
 forChimericSearch = cbind( RMDB[,c('genoName','genoStart','genoEnd',
                                    'strand','repName','repClass','repFamily')])
 
