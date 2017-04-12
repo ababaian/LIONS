@@ -2,6 +2,10 @@ lions.sh
 
 	line 80: Control script for Cluster/Local runs (Qsub)
 
+initalizeRes.sh
+	line 61: self check fails if .fai files aren't provided
+	Do full explicit check for them
+
 initializeLIONS.sh
 
 
@@ -17,6 +21,10 @@ parameter.ctrl
 		B) LIONS internal parameters (SCRIPTS directory etc...)
 eastLions.sh
 
+	Core Script: Line 143. When GSC computing is used and ALINGMENTBYPASS =1
+	The linked file in ./alignment/ ends up going to /tmp/ instead should
+	re-route to the input.list entry for that library
+	
 	Simplify output files <Library>.lcsv and <Library>.pc.lcsv to a signle
 	<Library>.lcsv file (with pc information). These are redundant.
 
@@ -28,6 +36,17 @@ eastLions.sh
 	chimSort.R
 		for EInside case add First Exon requirements
 		for RInside case add UpCov 0.5 requirements
+
+
+	chimGroup.R
+		Increase efficiency of search/match function
+	Replace:
+	"  Chimera$RMDB  = unlist(lapply(Chimera$RepeatID,
+                               FUN=function(Key,Query=RMDB_id){
+                                 return(which(Key == Query))}
+                )) "
+	with:
+	"  Chimera$RMDB = unlist(lapply(Chimera$RepeatID[1:1000], match, table = RMDB_id)) "
 
 global
 
