@@ -6,7 +6,7 @@
 # Intersects Chimeric_output transcripts to RefSeq_UCSC output
 # to return overlapping gene names.
 #
-# <LIBRARY.raw.lions> standard output from ChimericReadTool.sh 
+# <LIBRARY.lcsv> standard output from ChimericReadTool.sh 
 # <Assembly.GTF> is the matched cufflinks assembly GTF file
 # <refGene.bed> is the refGene table downloaded from UCSC table
 
@@ -46,7 +46,7 @@
 	# Library Name Input
 	libName=$1
 
-	# Chimeric Read Tool output .raw.lions file
+	# Chimeric Read Tool output raw .lcsv file
 	chimFile="$libName.lcsv"
 
 	# Cufflinks output

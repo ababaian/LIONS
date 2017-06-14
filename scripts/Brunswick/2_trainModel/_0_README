@@ -1,0 +1,10 @@
+# Brunswick: 2_trainModel
+
+This is the ANN training scripts. It uses the defintions set-up in
+1_simulateData to train a neural network.
+
+
+## Requisites installed on system
+- R
+- library(neuralnet)
+- library(GenomicRanges) 

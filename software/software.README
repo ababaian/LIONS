@@ -1,7 +1,7 @@
 # LIONS requisites to be installed
 
-# Easy Way: Install pip 1.5.4
-# then:		sudo pip install pysam
+# Easy Way: Install pip (v.9.0.1)
+# then:		sudo pip3 install pysam
 
 # Hard Way: Install from source
 	# setuptools 14.3

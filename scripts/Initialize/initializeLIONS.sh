@@ -17,6 +17,7 @@ echo "     System: $SYSTEM"
 echo "             cores: $THREADS"
 echo "             qsub: $QSUB (if applicable)"
 echo "     LIONS base dir: $BASE"
+echo "     Call Settings: $CALLSETTINGS"
 echo ""
 
 #cd $BASE #Go to base folder

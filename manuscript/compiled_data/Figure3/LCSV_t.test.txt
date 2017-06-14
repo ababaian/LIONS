@@ -1,0 +1,13 @@
+> t.test(log(PRO$RPKM[which(PRO$TE == "+" & PRO$LCSV == "+")]), log(PRO$RPKM[which(PRO$TE == "+" & PRO$LCSV == "-")]))
+
+	Welch Two Sample t-test
+
+data:  log(PRO$RPKM[which(PRO$TE == "+" & PRO$LCSV == "+")]) and log(PRO$RPKM[which(PRO$TE == "+" & PRO$LCSV == "-")])
+t = 5.5539, df = 489.69, p-value = 4.589e-08
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.4651724 0.9744805
+sample estimates:
+mean of x mean of y 
+ 2.785866  2.066040 
+

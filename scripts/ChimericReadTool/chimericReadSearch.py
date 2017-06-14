@@ -54,9 +54,9 @@ def processReads(samfile_path, exonTrees, repeatTrees, chimericBedFile):
 	readIterator = samfile.fetch()
 	
 	# Horrible code to extract total number of reads in BAM file
-	readCount = sum([ eval('+'.join(l.rstrip('\n').split('\t')[2:]) ) for l in pysam.idxstats(samfile_path) ])
+	#readCount = sum([ eval('+'.join(l.rstrip('\n').split('\t')[2:]) ) for l in pysam.idxstats(samfile_path) ])
 	
-	print("	" + str(readCount) + " reads in BAM file",file=sys.stderr)
+	#print("	" + str(readCount) + " reads in BAM file",file=sys.stderr)
 	
 	localResults = {}
 	count = 0
@@ -165,12 +165,12 @@ def processReads(samfile_path, exonTrees, repeatTrees, chimericBedFile):
 				localResults[p] = result
 				
 		count = count + 1
-		perc = round((count/float(readCount))*100.0,1)
+		#perc = round((count/float(readCount))*100.0,1)
 		
 		# Print status to standard output
-		if (perc >= nextPerc):
-			print("	 " + str(perc) + "% (" + str(datetime.time(datetime.now())) + ")",file=sys.stderr)
-			nextPerc = nextPerc + 5.0
+		#if (perc >= nextPerc):
+		#	print("	 " + str(perc) + "% (" + str(datetime.time(datetime.now())) + ")",file=sys.stderr)
+		#	nextPerc = nextPerc + 5.0
 		
 	
 	return localResults

@@ -151,15 +151,18 @@ ChimeraTable = read.csv(file=INPUT,
                             ChimeraTable$ExonInGene == 2 &
                             ChimeraTable$ThreadRatio >= scTHREAD )
 
-# CASE 4: Repeat Inside Interaction
-  RETAIN_RINSIDE = which( ChimeraTable$ER_Interaction == 'RInside' &
-                          ChimeraTable$Total >= scREADS &
-			  ChimeraTable$ExonInGene == 2 &
-			  ChimeraTable$ThreadRatio >= scTHREAD &
-			  ChimeraTable$DownThread >= scDownThread )
+## CASE 4: Repeat Inside Interaction
+#  RETAIN_RINSIDE = which( ChimeraTable$ER_Interaction == 'RInside' &
+#                          ChimeraTable$Total >= scREADS &
+#			  ChimeraTable$ExonInGene == 2 &
+#			  ChimeraTable$ThreadRatio >= scTHREAD &
+#			  ChimeraTable$DownThread >= scDownThread )
+#
+## with RInside
+#  ChimeraOut = ChimeraTable[c(RETAIN_UPEDGE, RETAIN_EINSIDE, RETAIN_UP, RETAIN_RINSIDE),]
 
-
-  ChimeraOut = ChimeraTable[c(RETAIN_UPEDGE, RETAIN_EINSIDE, RETAIN_UP, RETAIN_RINSIDE),]
+# without RInside cases
+  ChimeraOut = ChimeraTable[c(RETAIN_UPEDGE, RETAIN_EINSIDE, RETAIN_UP),]
                       
 # PARSE and OUTPUT ============================================================
 

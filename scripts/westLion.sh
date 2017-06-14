@@ -5,7 +5,7 @@
 #	.westLion.sh
 #	ran from lions.sh
 #
-# Wrapper for processing .lions files
+# Wrapper for processing .lion files
 # with a semblence of sanity
 #
 
@@ -27,9 +27,9 @@ cd $pDIR #./LIONS/projects/<projectName>
 
 # PROJECT LIONS FILE ------------------------------------------------
 
-# Initialize a project-wide .lions file: <pLionFile>
+# Initialize a project-wide .lion file: <pLionFile>
 	# If it exists, append RUNID
-if [ ! -e $PROJECT.lions ]
+if [ ! -e $PROJECT.lion ]
 then
 	#No <Project>.lions file exists; initialize it
 	pLionFile="$PROJECT.lions"
@@ -64,7 +64,7 @@ do
 	libName=$(echo $rowN | cut -f1 -d' ')
 
 	# Most Recently generated lions file
-	recentLion=$(ls -t $libName/*.lions | sed -n 1p)
+	recentLion=$(ls -t $libName/*.lion | sed -n 1p)
 	
 	# If first loop; initialize master output file
 	if [ $nLib == '1' ]
@@ -74,7 +74,7 @@ do
 	fi
 
 	# Append filtered list to master list
-	echo "     append $libName.lions to $pLionFile"
+	echo "     append $libName.lion to $pLionFile"
 	sed '1d' $recentLion >> $pLionFile
 
 done
@@ -82,7 +82,7 @@ done
 	echo ''
 
 # ChimGroup ---------------------------------------------------------
-# Using a the project.lions file look for TE-initiated transcripts
+# Using a the project.lion file look for TE-initiated transcripts
 # which are recurrent and specific to a library grouping
 # i.e. Cancer Recurrent and Specific Chimera
 

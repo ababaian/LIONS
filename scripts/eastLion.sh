@@ -10,7 +10,7 @@
 # Runs RNAseqPipeline and generates a per-library
 # complete lions file and filters to TE-initiated transcripts
 # only.
-# Output: <library.lions> file
+# Output: <library.lion> file
 #
 
 # CONTROL PANEL -----------------------------------------------------
@@ -41,7 +41,7 @@
 
 
 # MASTER FLOW CONTROL ===============================================
-if [ ! -e $outDir/$libName.lions ] # no primary LIONS file exists
+if [ ! -e $outDir/$libName.lion ] # no primary LIONS file exists
 then
 # RUN LIONS PIPELINE FROM THE START
 
@@ -408,7 +408,7 @@ fi # End expression flow control
 # CHIMERICREADTOOL --------------------------------------------------
 # Core protocol for detecting TE-Transcript interactions
 # This run script sets up the file architecture 
-# and runs the python script to generate the core values for the .lions
+# and runs the python script to generate the core values for the .lion
 # files
 
 # Chimera Read Tool Flow Control
@@ -428,7 +428,7 @@ else
 	#bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam $pDIR/$libName/expression/wig/$libName.$QUALITY.wig.gz $REF
 
 	bash $SCRIPTS/ChimericReadTool/ChimericReadTool.sh $OUTPUT.bam expression/wig/$libName.$QUALITY.wig.gz $REF
-	# Output is <libName>.raw.lions
+	# Output is <libName>.lcsv raw file
 	# Total TE-Transcript interaction table
 
 	# ChimIntersect
@@ -455,36 +455,55 @@ fi # End chimera read tool flow
 	echo ' ChimSort'
 	echo "     Library: $libName"
 	echo "     Raw Lions File: $libName.pc.lcsv" 
-	echo "     Output: $libName.lions"
+	echo "     Output: $libName.lion"
 	echo ''
-	echo "     --- parameters --- "
-	echo "     Mapped Reads: $mappedReads"
-	echo "     # Read Support = $crtReads"
-	echo "     ThreadRatio = $crtThread"
-	echo "     DownStream Threads = $crtDownThread"
-	echo "     RPKM = $crtRPKM"
-	echo "     TE Contribution = $crtContribution"
-	echo "     Upstream Coverage = $crtUpstreamCover"
-	echo "     Upstream Exon Expression = $crtUpstreamExonCover"
-	echo ''
+	echo "     --- classification parameters --- "
 
-
-	# Chimeric Filtering
-	echo "  Run ChimSort"
-	echo "     Rscript chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT"
-	
-	$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lions $mappedReads $CRT
-
-	# Sanity Check
-	if [ -s $libName.lions ] # was the lions file generated
-	then
-		echo "Lions file generated successfully."
-		lionSuccess='1'
+	if [ $CALLSETTINGS == 'custom' ]
+	then 
+		# A custom setting was defined and will be printed out
+		echo "     Mapped Reads: $mappedReads"
+		echo "     # Read Support = $crtReads"
+		echo "     ThreadRatio = $crtThread"
+		echo "     DownStream Threads = $crtDownThread"
+		echo "     RPKM = $crtRPKM"
+		echo "     TE Contribution = $crtContribution"
+		echo "     Upstream Coverage = $crtUpstreamCover"
+		echo "     Upstream Exon Expression = $crtUpstreamExonCover"
 	else
-		echo "Lions file not generated. Something is amiss."
-		lionSuccess='0'
+		# A pre-defined setting was used
+		echo "     Predefined sort settings: $CALLSETTINGS"
 	fi
 
+	echo ''
+
+	# use ANN-based classifier or custom classifier
+	if [ $CALLSETTINGS = 'transcriptomeANN' ]
+	then
+		# Chimeric Filtering use ANN model
+		echo " Run ChimANNSort"
+		echo "     Rscript chimANNSort.R $libName.pc.lcsv $libName.ann.lion $ANNMODEL"
+
+		$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimAnnSort.R $libName.pc.lcsv $libName.ann.lion $ANNMODEL
+
+	else	
+		# Chimeric Filtering using thresholds
+		echo "  Run ChimSort"
+		echo "     Rscript chimSort.R $libName.pc.lcsv $libName.lion $mappedReads $CRT"
+	
+		$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.lion $mappedReads $CRT
+
+		# Sanity Check
+		if [ -s $libName.lion ] # was the lions file generated
+		then
+			echo "Lions file generated successfully."
+			lionSuccess='1'
+		else
+			echo "Lions file not generated. Something is amiss."
+			lionSuccess='0'
+		fi
+
+	fi
 	echo ""
 
 # CLEAN-UP ----------------------------------------------------------
@@ -510,13 +529,13 @@ else # LIONS file already exists
 	then
 	# East Lion already complete; don't recalculate sort
 		echo " East Lions has already been completed. "
-		echo "    $libName.lions exists"
+		echo "    $libName.lion exists"
 		echo "    not re-calculating chimSort (SORTBYPASS = 1)"
 
 	else
 	# East Lion already completed; re-calcualte sort though
 		echo " East Lions has already been completed. "
-		echo "    $libName.lions exists"
+		echo "    $libName.lion exists"
 		echo "    SORTBYPASS = 0, "
 		echo "    will re-recalcualte chimSort ..."
 
@@ -531,35 +550,55 @@ else # LIONS file already exists
 		echo ' Re-calculate ChimSort'
 		echo "     Library: $libName"
 		echo "     Raw Lions File: $libName.pc.lcsv" 
-		echo "     Output: $libName.lions"
+		echo "     Output: $libName.lion"
 		echo "     Run ID: $RUNID"
 		echo ''
-		echo "     --- parameters --- "
-		echo "     Mapped Reads: $mappedReads"
-		echo "     # Read Support = $crtReads"
-		echo "     ThreadRatio = $crtThread"
-		echo "     DownStream Threads = $crtDownThread"
-		echo "     RPKM = $crtRPKM"
-		echo "     TE Contribution = $crtContribution"
-		echo "     Upstream Coverage = $crtUpstreamCover"
-		echo "     Upstream Exon Expression = $crtUpstreamExonCover"
-		echo ''
+		echo "     --- Classification parameters --- "
 
-		# Chimeric Filtering
-		echo "  Run ChimSort"
-		echo "     Rscript chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT"
-	
-		$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lions $mappedReads $CRT
-
-		# Sanity Check
-		if [ -s $libName.$RUNID.lions ] # was the lions file generated
-		then
-			echo "Lions file generated successfully."
-			lionSuccess='1'
+		if [ $CALLSETTINGS == 'custom' ]
+		then 
+			# A custom setting was defined and will be printed out
+			echo "     Mapped Reads: $mappedReads"
+			echo "     # Read Support = $crtReads"
+			echo "     ThreadRatio = $crtThread"
+			echo "     DownStream Threads = $crtDownThread"
+			echo "     RPKM = $crtRPKM"
+			echo "     TE Contribution = $crtContribution"
+			echo "     Upstream Coverage = $crtUpstreamCover"
+			echo "     Upstream Exon Expression = $crtUpstreamExonCover"
 		else
-			echo "Lions file not generated. Something is amiss."
-			lionSuccess='0'
+			# A pre-defined setting was used
+			echo "     Predefined sort settings: $CALLSETTINGS"
 		fi
+
+		# use ANN-based classifier or custom classifier
+		if [ $CALLSETTINGS = 'transcriptomeANN' ]
+		then
+			# Chimeric Filtering use ANN model
+			echo " Run ChimANNSort"
+			echo "     Rscript chimANNSort.R $libName.pc.lcsv $libName.$RUNID.ann.lion $ANNMODEL"
+
+			$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimAnnSort.R $libName.pc.lcsv $libName.$RUNID.ann.lion $ANNMODEL
+
+		else	
+			# Chimeric Filtering using thresholds
+			echo "  Run ChimSort"
+			echo "     Rscript chimSort.R $libName.pc.lcsv $libName.$RUNID.lion $mappedReads $CRT"
+	
+			$lBIN/Rscript $SCRIPTS/ChimericReadTool/chimSort.R $libName.pc.lcsv $libName.$RUNID.lion $mappedReads $CRT
+
+			# Sanity Check
+			if [ -s $libName.$RUNID.lion ] # was the lions file generated
+			then
+				echo "Lions file generated successfully."
+				lionSuccess='1'
+			else
+				echo "Lions file not generated. Something is amiss."
+				lionSuccess='0'
+			fi
+
+		fi
+
 		echo ""
 
 	fi # End Bypass flow control

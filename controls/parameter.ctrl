@@ -5,7 +5,7 @@
 # =========================================================
 # Adjust these parameters to run for a particular project
 
-# The LIONS den
+# The LIONS home folder
 	export BASE=$PWD # Base folder for ~/LIONS/
 
 # PROJECT -------------------------------------------------
@@ -16,6 +16,14 @@
 	#     A) Paired end bam file. '/home/libPath.bam'
 	#     B) Sorted paired fastQ files. Comma seperated.
 	#        '/home/lib.fq1,/home/lib.fq2'
+
+	export CALLSETTINGS='oncoexaptation'
+	# Pre-set TE-initiation classification settings
+        # - 'oncoexapatation'  : Detect high abundance TE isoforms
+        # - 'transcriptomeANN' : Artifical Neural Network based classifier
+        # - 'screenTE'         : High sensitivity, low specificity detection
+        # - 'driverTE'         : TE-initiations as main drivers of gene-expression
+        # = 'custom'           : Use custom settings defined below
 
 # RESOURCES ----------------------------------------------
 
@@ -40,7 +48,7 @@
 
 # EAST LION -----------------------------------------------
 # Bowtie 2
-	# Alignment parameters passed on to Tophat2
+	# Additional alignment parameters passed on to Tophat2
 	export BOWTIE=''
 
 # Tophat 2
@@ -122,15 +130,21 @@
 	# self-contained
 
 # ChimSort
-	# These parameters define what is defined as a 
-	# "TE-initiated transcript" and what is exonization/termination are
-	# note: See chimSort.R script to see how these are used for sorting
 
 	# Sort Bypass: If a sorted .lions file is already present
 	# do you want to re-calcualate the 'initiations'?
 	# 0 = Re-calcualte 'initiation' using parameters set below
 	# 1 = Don't re-calculate 'initiation' if it exists
 	export SORTBYPASS='0'
+
+	# These parameters define what is defined as a 
+	# "TE-initiated transcript" and what is exonization/termination are
+	# note: See chimSort.R script to see how these are used for sorting
+        # in more detail
+
+if [ $CALLSETTINGS == 'custom' ]
+then
+	# Define call settings manually
 
 	# Number of Chimeric Reads Required (total)
 	export crtReads='3' # Variable: <Value below> or 1/20 RPM
@@ -150,12 +164,42 @@
 
 	# Expression of exons upstream of involved exon
 	export crtUpstreamExonCover='1.5' # >=
-	
-	# Final Export String
-	export CRT=$( echo $crtReads $crtThread $crtDownThread $crtRPKM $crtContribution $crtUpstreamCover $crtUpstreamExonCover )
 
 	# Splice Partner Classification
 	# Repeat Rank > 0 AND RepeatExonic
+	
+	# Final Custom Export String
+	export CRT=$( echo $crtReads $crtThread $crtDownThread $crtRPKM $crtContribution $crtUpstreamCover $crtUpstreamExonCover )
+
+elif [ $CALLSETTINGS == 'oncoexaptation' ]
+then
+	# Oncoexaptation Export String
+	export CRT=$( echo '3 10 10 1 0.1 2 1.5' )
+
+elif [ $CALLSETTINGS == 'screenTE' ]
+then
+	# Screen TE-initiations Export String
+	export CRT=$( echo '2 5 5 1 0.05 2 1' )
+
+elif [ $CALLSETTINGS == 'driverTE' ]
+then
+	# driverTE export string. Same as Oncoexaptation but a higher
+	# contribution score (0.75 vs 0.1) required as  the 'driver'
+	# of expression.
+	export CRT=$( echo '5 10 10 1 0.75 2 1.5' )
+
+elif [ $CALLSETTINGS == 'transcritomeANN' ]
+then
+	# ANN classifier
+	# standard 'onco-exaptation' classification will be done
+	# and the ANN classifier is 'on top' of that
+	export CRT=$( echo '3 10 10 1 0.1 2 1.5' )
+
+	# ANN model to use (stored in ~/LIONS/resources/ANN
+	export ANNMODEL="$RESOURCES/ANN/ANN_Model_160919.Rdata"
+	
+fi
+
 
 # WEST LION -----------------------------------------------
 # chimGroup.R
@@ -177,6 +221,5 @@
 
 	# chimGroup command string
 	export CG=$(echo $cgGroupRecurrence $cgSpecificity)
-
 
 
