@@ -21,6 +21,7 @@
 	- [pysam](http://pysam.readthedocs.io/en/latest/api.html)
 	- [R](https://www.r-project.org/)
 	- [samtools v0.1.18](https://sourceforge.net/projects/samtools/files/samtools/0.1.18/)
+	- [bedtools v2.18+](http://bedtools.readthedocs.io/en/latest/)
 	- [Java OpenJDK](http://openjdk.java.net/)
 
 3. Initialize the 'Parameter Files' for your system for `LIONS`

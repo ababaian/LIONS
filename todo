@@ -8,7 +8,7 @@ initalizeRes.sh
 
 initializeLIONS.sh
 	Check for python3 in bin folder
-
+	Check for bedtools installed
 
 RNAseqPipeline.sh
 	
