@@ -5,9 +5,9 @@
 
  LIONS is a bioinformatic analysis pipeline which brings together a  few pieces of software and some home-brewed scripts to annotate a paired-end RNAseq library against a reference TE annotation set (such as Repeat Masker)
 
- `East Lion` scripts a bam file input, re-aligns it to a genome,  builds an ab initio assembly using Tophat2. This assembly is then  proccessed and local read searches are done at the 5' ends to find  additional transcript start sites and quality control the 5' ends of the assembly. The output is a file-type <library>.lions which annotates the intersection between the assembly, a reference gene set and repeat set.
+ `East Lion` scripts processes bam file input, re-aligns it to a genome,  builds an ab initio assembly using Tophat2. This assembly is then  proccessed and local read searches are done at the 5' ends to find  additional transcript start sites and quality control the 5' ends of the assembly. The output is a file-type <library>.lions which annotates the intersection between the assembly, a reference gene set and repeat set.
 
- `West Lion` scripts compiles different `.lions` files, groups them into biological catagories (i.e. Cancer vs. Normal or Treatment vs. Control) and compares and analyzes the data to create graphs and meaningful interpretation of the data.
+ `West Lion` scripts compile different `.lions` files, groups them into biological catagories (i.e. Cancer vs. Normal or Treatment vs. Control) and compares and analyzes the data to create graphs and meaningful interpretation of the data.
 
 ### Installation
 
