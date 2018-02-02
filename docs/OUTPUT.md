@@ -21,15 +21,25 @@ the standard outputs one would expect (.bam / .gtf).
 	as "TE-Initiations" or TE transcription start sites. This is per-library
 	input.
 
-`<project>.lions` / `.inv.lions`
+`<project>.lions` / 
 	A merged file of several `.lion` files combining biological groups defined
 	in the `input.list`. A good example of this is merging 10 cancer libraries
 	and 10 normal libraries and outputing only those TE-initiations which are
 	in at least 20% of Cancer and no Normal libraries. These parameters can be
 	changed in the `paramter.ctrl` input.
-	The `.inv.` pre-suffix is simply the **inverse** of the `.lion` file. So
+
+`<project>.rslions`	
+	The `rs` is for Recurrent and Specific TE-initiations only. That is if you
+	compare the set of libraries 1 (Normal) vs set 2 (Cancer), this contains only
+	those TE-initiations which occur multiple times in Cancer (recurrant) and do
+	not occur in Normal (specific). As defined by `$cgGroupRecurrence` and
+	`$cgSpecificity` in the `paramter.ctrl` file.
+
+`<project>.inv.rslions`	
+	The `.inv.` pre-suffix is simply the **inverse** of the `.rslion` file. So
 	instead of "Cancer vs. Normal", "Normal vs. Cancer". A neccesary control if
 	one makes any conclusions based on enrichment/depletion.
+
 
 ## Output Columns
 Most columns should be self-explanatory, some are not.
