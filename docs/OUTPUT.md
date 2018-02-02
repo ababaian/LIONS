@@ -42,6 +42,8 @@ the standard outputs one would expect (.bam / .gtf).
 
 
 ## Output Columns
+
+### `.lions`
 Most columns should be self-explanatory, some are not.
 
 transcriptID: Unique identifier for the transcript (isoform). Usually taken
@@ -118,7 +120,7 @@ Contribution: An estimate of the promoter contribution of this Repeat TSS to
 
 UpCov: Ratio of the coverage adjacent to an exon and the exon expression
 
-UpEoxnRatio: Ratio of hte expression of the exon and it's upstream exon
+UpExonRatio: Ratio of hte expression of the exon and it's upstream exon
 
 ThreadRatio: DownThread / UpThread. Set to [10] if dividing by zero.
 
@@ -127,3 +129,14 @@ RepeatID: A unique Identifer for each Repeat in the genome (left-most
 	inititating a trancsript in different assemblies.
 
 LIBRARY: Library from which this repeat-exon interaction was calculated from.
+
+### `.rslions`
+
+Normal_occ: Number of times this TE-initiation was found in the "normal" set of
+	libraries. (Usually set 1)
+
+Cancer_occ: Number of times this TE-initiation was found in the "cancer" set of
+	libraries. (Usually set 2)
+
+Library: A semi-colon seperated list of the LIBRARY identifiers in which this
+	TE-initiation was found in.
