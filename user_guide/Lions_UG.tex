@@ -1,0 +1,530 @@
+% !TEX TS-program = XeLaTeX-shellescape
+% !TEX encoding = UTF-8 Unicode
+% !BIB TS-program = biber
+% !BIB program = biber
+
+\documentclass[11pt]{scrartcl}
+\usepackage{geometry} % See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper}  % ... or a4paper or a5paper or ... 
+%\geometry{landscape} % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\graphicspath{{./media/}}
+\usepackage{amssymb}
+\usepackage[toc,page]{appendix}
+%\usepackage[pagewise,modulo]{lineno}
+\usepackage{enumitem}
+\usepackage{minted}
+\newminted[bash]{bash}{breaklines, breaksymbol={},breakindent=1cm}
+\newmintinline{bash}{}
+\usepackage{hyperref}
+\usepackage{nameref}
+\usepackage[en-GB]{datetime2}
+\usepackage{subfigure}
+% using biber!!
+\usepackage[natbib=true,style=authoryear]{biblatex}
+\addbibresource{alea.bib}
+\usepackage{framed}
+\usepackage{pifont}
+%\usepackage{lineno}
+
+
+
+\title{Lions User Guide}
+\author{Dr. Richard Thompson}
+
+\newcommand{\arrows}[1]{\textless #1\textgreater}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%\linenumbers
+
+\section{LIONS Pipeline Architecture}
+LIONS is a bioinformatic analysis pipeline which brings together a
+ few pieces of software and some home-brewed scripts to annotate a
+ paired-end RNAseq library against a reference TE annotation set
+ (such as Repeat Masker).
+
+ East Lion processes a bam file input, re-aligns it to a genome,
+ builds an ab initio assembly using Tophat2. This assembly is then
+ proccessed and local read searches are done at the 5' ends to find
+ additional transcript start sites and quality control the 5' ends of
+ the assembly. The output is a file-type \arrows{library} .lions which
+ annotates the intersection between the assembly, a reference gene set
+ and repeat set.
+
+ West Lion compiles different .lions files, groups them into biological
+ catagories (i.e. Cancer vs. Normal or Treatment vs. Control) and
+ compares and analyzes the data to create graphs and meaningful
+ interpretation of the data.
+
+\section{LIONS Installation}
+
+Lions can be installed as a Docker container, which is built using
+
+\begin{bash}
+Docker build -t lions .
+\end{bash}
+
+from the directory containing the Dockerfile, which can be downloaded from ?.
+\vspace{2em}
+
+Users with experience of the linux commandline may wish to download the package from github and run it directly without using Docker, the commands will be the same as those described below for users of the docker container. In this case, users will need to ensure the following software is installed on their systems: 
+
+\begin{itemize}
+\item Python3 and pysam
+\item Bowtie2
+\item Tophat2
+\item Java v8 or higher
+\item Samtools v0.1.18
+\item R v3.5.0 or higher
+\item Bedtools v2.25.0
+\item Cufflinks v2.2.1
+\end{itemize}
+
+once the dependencies are in place, it is simply a question of:
+\begin{enumerate}
+\item Download LIONS core files from github
+\item In ./LIONS/resources copy 'example' folder to '\arrows{genomeName}' folder
+
+\item Populate the resource files:
+\begin{enumerate}
+\item In ./LIONS/resources/\arrows{genomeName}/genome/ add a \arrows{genomeName}.fa genome sequence file
+\item In ./LIONS/resources/\arrows{genomeName}/annotation/ add the ucsc annotation file
+\item In ./LIONS/resources/\arrows{genomeName}/repeat/ add the ucsc repeatMasker file
+\end{enumerate}
+\item Set up the project in parameter.ctrl:
+\begin{enumerate}
+\item Give your project a name and fill out all the parameters as you see fit.
+\item In the software list, refer LIONS to the paths for each software on your system. If it's in \$BIN/ already then you can simply type the command; LIONS will create links in it's own folder structure to the software designated in the software list.
+\end{enumerate}
+\end{enumerate}
+
+\clearpage
+\section{Running LIONS}
+\label{lions_run}
+
+Once the container has been built, lions can be run inside an interactive docker container
+
+\begin{bash}
+Docker run -ti lions
+\end{bash}
+
+The data directory can be made available inside the docker container by creating a mount point using the \texttt{-v} docker option. 
+ 
+\begin{bash}
+Docker run -v <data_dir>:<mount_point> -ti lions
+\end{bash}
+
+where <data\_dir> is the directory on the host machine containg the data for analysis and <mount\_point> is the directory inside the container where the data will be accessed, \textit{e.g.} \bashinline{Docker run -v /home/rich/lion_data:/lion_data -ti lions} will allow the user to access to the contents of /home/rich/lion\_data from /lion\_data within the container.
+
+\begin{framed}
+As LIONS requires resources to be located in a specfic directory location, the author recommends adding the following additional option:
+\begin{bash}
+-v <resource_directory>:/RE_Pipeline-master/resources/<ref>
+\end{bash}
+for example:
+\begin{bash}
+-v ~/hg19:/RE_Pipeline-master/resources/hg19
+\end{bash}
+this will avoid adding resources to the image eachtime the container is run, or swelling the container size.
+\end{framed}
+
+\subsection{Running LIONS using a parameter file}
+
+The default parameter file for LIONS is \texttt{/RE\_Pipeline-master/controls/parameter.ctrl}. 
+
+However, the user can run LIONS with with a specified parameter file as follows:
+\begin{bash}
+./lions.sh <path/to/parameter/ctrl>
+\end{bash}
+
+\textit{\textbf{N.B.}} As the docker container will not carry across changes to the file structure, such as saved output files, it is advised that the mount point identified with the \texttt{-v} option is used to save output files and modified \texttt{parameter.ctrl} and \texttt{input.list} files, in addition to supplying input files.
+
+\subsection{Running LIONS using commandline options}
+
+\clearpage
+\section{LIONS File Architecture}
+
+% ===================================================================
+\subsection{./}
+  base directory:  LIONS is a self-contained pipeline and 
+  references needed by LIONS from the system are linked
+  within this directory.
+
+\begin{description}
+\item[./lions.sh \arrows{parameter.ctrl}]
+    The master script from which the entire pipeline is ran
+    The script reads and procceses all files in input.list
+    and all parameters can be controlled from parameter.ctrl
+\end{description}
+
+\subsection{./controls}
+  Control Files: This folder contains project and system-specific
+  parameters for running LIONS. There are three main files which
+  need to be set-up, LIONS run parameters, system parameters and
+  input RNA-seq libraries.
+  
+\begin{description}
+\item[./controls/parameter.ctrl]
+    A bash script which defines global project-specific 
+    variables such as Project Name, library input list etc...
+    The .sysctrl and .list file are defined here as well
+
+\item[./controls/system.sysctrl]
+    A bash script which defines global variables for all LIONS
+    scripts. Also defines system-specific variables such as
+    System Name, number of CPU cores etc...
+
+\item[./controls/input.list]
+    A three column tab-delimited file defining: \newline
+    \arrows{Library\_Name}\hspace{2em}\arrows{Library\_Path\_on\_system}\hspace{2em}\arrows{Biological\_Grouping}
+    Group Naming Convention: 1 = control 2 = experimental 3 = other
+\end{description}
+    
+\subsection{./bin}
+  LIONS internal folder for symbolic links to binaries needed by
+  the pipeline and script to initialize the folder. Make sure to set
+  the correct commands for the software list in parameters.ctrl for
+  your system
+
+
+\subsection{./projects}
+  For each \arrows{Project\_Name} a single folder will be initilized in which
+  the data will be organized.
+
+\begin{description}
+\item[./projects/\arrows{Project\_Name}]
+  The main directory for this project. Each individual library in the
+  input will have a folder generated here called \arrows{Library}.
+
+\item[./projects/\arrows{Project\_Name}/logs]
+  Folder contains run-specific information such as input file at time
+  of run and a copy of the input parameter file at time of run.
+
+\item[./projects/\arrows{Project\_Name}/Analysis(\_RUNID)]
+  Not implemented yet. This contains all data analysis for a run
+  of LIONS. All graphs and project-wide .lions files are stored here
+  
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}]
+  Library-specific data and primary analysis files.
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/\arrows{Library}.lcsv]
+  Raw output file from LIONS containing all possible TE-Exon interaction
+  data. This will include initiations, exonizations and terminations
+  along with many calculated values about these loci from which
+  LIONS will sort initiation events from the others. \arrows{Library}.pc.lcsv
+  is the same file with additional information about overlapping protein
+  coding genes.
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/\arrows{Library}.lions]
+  Initiation only TE-exon data from post-sorting. This file is the 
+  complete list of transcripts initiated by TEs in this library. This
+  data is passed on to the West Lion protocol to compare TE usage
+  between libraries.
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/alignment]
+  tophat2-generated alignment and the re-aligned .bam file which
+  will be used for analysis. Also contains flagstats and log files.
+  Note: Once the alignment is generated it will not be re-generated
+  even if you change the alignment parameters in parameter.ctrl. To
+  re-make alignments simply start the project with a new name or delete
+  these files.
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/assembly]
+  cufflinks-generated assembly in 'transcripts.gtf'
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/expression]
+  The output from a series of custom scripts 'RNAseqPipeline' which
+  will generate wig files and perform RPKM calculations on a series 
+
+\item[./projects/\arrows{Project\_Name}/\arrows{Library}/resources]
+  Charlie-foxtrot of library-specific files used to calculate a score
+  of parameters in the pipeline.
+\end{description}
+
+ \subsection{./scripts}
+  Scripts: all scripts to run lions are held here except for the
+  controlling lions.sh script which is in the base folder.
+  Check initializeScripts.sh for complete list of scripts
+  The main scripts are 
+
+\begin{description}
+\item[./scripts/eastLion.sh]
+    Alignment, Assembly, Chimeric Detection pipeline
+
+\item[./scripts/westLion.sh]
+    LIONS analysis pipeline
+\end{description}
+
+  \subsection{./resources}
+  Input files containg resource information needed for LIONS to run the analysis. The geneset and RepeatMasker files should be set in the \texttt{parameter.ctrl} file.
+  
+\begin{description}
+\item[./resources/\arrows{INDEX}/annotation/\arrows{GENESET}] A ucsc formatted file containing a gene set to be
+  used in the analysis (i.e. look for overlapping genes to transcripts)
+  Download from: https://genome.ucsc.edu/cgi-bin/hgTables
+  The standard annotation set used was RefSeq 'RefGene' table.
+
+\item[./resources/\arrows{INDEX}/genome/\arrows{INDEX}.fa] The only requisite file here for running LIONS is a fasta
+  formatted genome. This could be a symbolic link. LIONS will generate
+  the other files necessary from INDEX.fa. If you have the .bt2 index
+  files already generated you can symbolically link them in this folder
+  to skip re-generating them.
+
+\item[./resources/\arrows{INDEX}/repeat/\arrows{REPEATMASKER}.ucsc] a ucsc formatted file containing the repeatMasker
+  annotation for the genome.
+  (Download from UCSC genome browswer or format from RepeatMasker)
+  Columns are;
+  bin, swScore, milliDiv, milliDel, milliIns, genoName, genoStart,
+  genoEnd, genoEnd, genoLeft, strand, repName, repClass, repFamily,
+  repStart, repEnd, repLeft, id
+\end{description}
+\begin{framed}
+\arrows{INDEX} : the name of the index set. To be compatible with different
+  genome versions, species and gene sets there can be different sets
+  of data. The \arrows{INDEX} global variable is set in parameter.ctrl file.
+\end{framed}
+
+  \subsection{./software}
+  Packaged with LIONS is a few bits of software which will set-up your
+  system to run the pipeline. Namely setuptools and pysam are the most
+  challenging things to install. I found that it's easiest to set-up
+  the pipeline using pip and download the package pysam from there.
+  Pysam is used to read teh bam files in the python scripts.
+
+
+
+
+\clearpage
+\section{LIONS Error Codes}
+
+% LIONS ERROR CODES
+
+\begin{description}
+\item[Error 1] Internal software error - Check last-run software.
+\end{description}
+
+\subsection{Initialization Codes}
+\begin{description}
+
+
+\item[Error 2] Initialization file missing or inaccesible -
+  A file is missing or is unreadable. Ensure you have a complete version of LIONS and/or
+make the missing script readable/exectable
+
+\item[Error 3] A LIONS script is missing -
+  A script is missing from \texttt{./LIONS/scripts/}; ensure your copy of LIONS is
+complete or redownload.
+
+\item[Error 4] Initialization bin missing -
+  A binary is not found on the system. Configure \texttt{./LIONS/bin/initializeBin.sh} for your system
+
+\item[Error 5] A resource file is missing or unreadable - 
+  Checking/initialization of \texttt{./LIONS/scripts}.
+
+\item[Error 6] A Python requisite is missing.
+
+\item[Error 7] The input read file (.bam or .fastq) is non-readable or empty
+\begin{description}
+\item[7A] Bam file error
+\item[7B] FastQ file error. Ensure the two files are comma seperated in the input
+\end{description}
+\end{description}
+
+\subsection{eastLion Error Codes}
+%% eastLion Codes --------------------------------
+
+\begin{description}
+\item[Error 10] alignment not generated -
+  An attempt was made to generate an alignment but the output file was
+empty at the end of the script
+
+\item[Error 12] wig not generated -
+  An attempt was made to generate the wig file but the output file wasn't
+present after the script ran
+\end{description}
+
+\subsection{westLion Error Codes}
+
+%% westLion Codes -----------------------------------
+\begin{description}
+\item[Error 15] A lions file wasn't generated -
+  In the run, one of the lions files wasn't generated which means there
+was an error. Don't run West Lions pipeline.
+\end{description}
+
+
+
+
+
+\clearpage
+\section{LIONS output definitions}
+
+\subsection{Output File Types}
+
+LIONS produces several outputs from different stages of the analysis in addition to the standard outputs one would expect (.bam / .gtf).
+
+\begin{description}
+\item[`\arrows{library}.lcsv' / `.pc.lcsv']
+  These are LIONS CSV files which contain the raw calculations for all major
+  numeric operations.
+  This includes ALL TE-exon interactions types (Initiation, Exonization and
+  Termination). As such there are usually hundreds of thousands of TEs which
+  have read fragments joining them to some assembled exon.
+
+  The `.pc.' pre-suffix means the data has been intersected to the input
+  set of protein coding genes.
+
+  Use this file for re-calculating ``TE-Initiations'' with new parameters.
+
+\item[`\arrows{library}.lion']
+  This is the filtered set of TE-exon interactions which have been classified
+  as ``TE-Initiations'' or TE transcription start sites. This is per-library
+  input.
+
+\item[`\arrows{project}.lions'] A merged file of several `.lion' files combining biological groups defined in the `input.list'. A good example of this is merging 10 cancer libraries and 10 normal libraries and outputing only those TE-initiations which are in at least 20\% of Cancer and no Normal libraries. These parameters can be changed in the `paramter.ctrl' input.
+
+\item[`\arrows{project}.rslions'] The `rs' is for Recurrent and Specific TE-initiations only. That is if you   compare the set of libraries 1 (Normal) vs set 2 (Cancer), this contains only those TE-initiations which occur multiple times in Cancer (recurrant) and do not occur in Normal (specific). As defined by `\$cgGroupRecurrence' and `\$cgSpecificity' in the `paramter.ctrl' file.
+
+\item[`\arrows{project}.inv.rslions'] The `.inv.' pre-suffix is simply the \textbf{inverse} of the `.rslion' file. So instead of ``Cancer vs. Normal'', ``Normal vs. Cancer''. A necessary control if one makes any conclusions based on enrichment/depletion.
+\end{description}
+
+\subsection{Output Columns}
+
+\subsubsection{`\arrows{project}.lions'}
+Most columns should be self-explanatory, some are not.
+
+\begin{description}
+\item[transcriptID] Unique identifier for the transcript (isoform). Usually taken
+  from the assembly/reference transcriptome
+
+\item[exonRankInTranscript] For each TE-exon interaction combination (row) which exon
+  in the `transcriptID' is this row referring to
+
+\item[repeatName] The \arrows{repeat\_name}:\arrows{repeat\_class}:\arrows{repeat\_family} taken from input
+  set
+
+\item[coordinates] Useful coordinates for visualizing the interaction. It starts/ends
+  in the exon and repeat so when opening in a visualization tool you can see
+  the reads spanning this area.
+
+ER\_Interaction: The type of relative intersection in the genome between the exon
+  and the repeat. Definitions are relative to the exon. Can be ``Up'', ``UpEdge'', ``EInside'', ``RInside'', ``Down'', ``DownEdge''.
+
+\item[IsExonic] ??
+
+\item[ExonsOverlappingWithRepeat] A list of \arrows{transcriptID:exonRank} which overlap
+  the repeat.
+
+\item[ER / DR / DE / DD / Total] A count of the number of TE-Exon sequence fragments
+  which join this rows TE and Exon. ER means that one end overlaps the Exon
+  and one end overlaps the Repeat exclusively, DD means that both ends of the
+  fragment overlap both (dual) exon and repeat ...
+
+\item[Chromosome / EStart / EEnd / EStrand] Start, end and strand of the exon
+
+\item[RStart / REnd / RStrand] Start, end and strand of the repeat
+
+\item[RepeatRank] Relative exon/intron position of the repeat to the contig
+
+\item[UpExonStart / UpExonEnd] Coordinates used for calculating expression of
+  genome immediatly adjacent an exon boundary. Useful for quantifying read-
+  through or spurious transcriptional events.
+
+\item[UpThread] The number of read 'threads' going upstream of the exon.
+  See Manuscript for a figure explaining this.
+
+\item[DownThread] The number of read 'threads' going downstream of the exon.
+  See Manuscript for a figure explaining this.
+
+\item[ExonRPKM] RPKM calculation for this exon
+
+\item[ExonMax] The maximum coverage count reached within the exon boundaries. Often
+  more reliable measure of expression then RPKM for small exons.
+
+\item[UpExonRPKM / UpExonMax] The expression of the exon immediatly upstream of the
+  one this row is referring to. (i.e. Exon 1 expression if the row refers
+  to Exon 2). Useful for quantifying the relative increase in expression
+  when a TE is acting as an alternative promoter into a downstream exon.
+
+\item[RepeatRPKM / RepeatMaxCoverage]  Expression level within repeat boundaries.
+
+\item[UpstreamRepeatRPKM / UpstreamRepeatMaxCoverage] The expression adjacent to the
+  repeat, a test for background expression levels.
+
+\item[RefID] When intersecting to a reference gene set, the gene symbol of any genes
+  which intersect the area between the Exon-Repeat coordinates.
+
+\item[RefStrand] Strand of the reference genes defined above
+
+\item[assXref] The strand-relationship between the reference gene and the contig exon
+  This accounts for anti-sense long non-coding RNA (as), or transcripts
+  which run anti-sense to the reference gene. (s) is sense and (c) means
+  complex, often some combination of multiple genes. (u) means it could not
+  be determined.
+
+\item[Contribution] An estimate of the promoter contribution of this Repeat TSS to
+  the expression of gene in total. Calculated with ExonMax and UpExonMax.
+
+\item[UpCov] Ratio of the coverage adjacent to an exon and the exon expression
+
+\item[UpExonRatio] Ratio of hte expression of the exon and it's upstream exon
+
+\item[ThreadRatio] DownThread / UpThread. Set to [10] if dividing by zero.
+
+\item[RepeatID] A unique Identifer for each Repeat in the genome (left-most
+  coordinate). Can repeat and thus be used for determining one repeat
+  inititating a trancsript in different assemblies.
+
+\item[LIBRARY] Library from which this repeat-exon interaction was calculated from.
+\end{description}
+
+
+\subsubsection{`\arrows{project}.rslions'}
+\begin{description}
+\item[Normal\_occ] Number of times each TE-initiation was found in the ''normal'' set of libraries. (Usually set 1)
+
+\item[Cancer\_occ] Number of times each TE-initiation was found in the ''cancer'' set of libraries. (Usually set 2)
+
+\item[Library] A semi-colon seperated list of the LIBRARY identifiers in which each TE-initiation was found in.
+\end{description}  
+
+\clearpage
+\appendix
+%\begin{appendices}
+\section{Appendices}
+\subsection{Running Docker on the command line}
+
+Often it is useful to detach the ryunning Docker container from the terminal, This can be acheived in a number of ways. The official Docker method is to detach the terminal using 
+
+\texttt{Ctrl-p Ctrl-q}
+
+to diconnect, however this is dependent on using the \texttt{\textbf{-t}} option when running the container. Once detached the user can reconnect to the container using
+
+\begin{bash}
+docker attach <container-id or name >
+\end{bash}
+
+It is possible to name a docker container using the \texttt{-n <name>} option to the \bashinline{docker run} command. However where the container name is not specified or known,
+the container-id can be found using the \bashinline{docker ps} command.
+
+\vspace{2em}
+
+The author prefers using GNU Screen as it is capable of presenting a split screen allowing the user to monitor LIONS whilst continuing to work. 
+Screen is invoked using the command \bashinline{screen} which opens a virtual terminal, the LIONS docker can then be run as described in section \ref{lions_run}. 
+
+Screen sessions can be detached using \texttt{Ctrl-a d} and reconnected using \bashinline{screen -r}. 
+
+A single screen session allows a user to simultaneously run multiple virtual terminals; known as `windows'. New windows are created within a session using \texttt{Ctrl-a c}, whilst \texttt{Ctrl-a n} and \texttt{Ctrl-a p} allow the user to switch between windows within a session.
+
+Screen is able to split the terminal view vertically using \texttt{Ctrl-a |} or \texttt{Ctrl-a V}, depending on the implementation; \texttt{Ctrl-a S} can be used to split the window horizontally. Once split the user can switch between view regions using \texttt{Ctrl-a Tab}.
+
+\subsection{can't Remember!}
+ 
+%\end{appendices}
+\end{document}
