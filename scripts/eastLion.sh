@@ -85,7 +85,7 @@ else # Local
 	export WORK=$outDir # work in output space
 
 	# BT2 Genome Index (link to work space)
-	ln -s $RESOURCES/genome/* $WORK
+	ln $RESOURCES/genome/* $WORK
 
 	# Bam input file (link)
 	#ln -s $INPUT $WORK/input.bam
