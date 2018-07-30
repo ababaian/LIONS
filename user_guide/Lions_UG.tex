@@ -26,11 +26,12 @@
 \addbibresource{alea.bib}
 \usepackage{framed}
 \usepackage{pifont}
-%\usepackage{lineno}
+\usepackage{comment}
 
 
 
 \title{Lions User Guide}
+\subtitle{v.0.1}
 \author{Dr. Richard Thompson}
 
 \newcommand{\arrows}[1]{\textless #1\textgreater}
@@ -70,7 +71,7 @@ Lions can be installed as a Docker container, which is built using
 Docker build -t lions .
 \end{bash}
 
-from the directory containing the Dockerfile, which can be downloaded from ?.
+from the directory containing the Dockerfile, which can be downloaded from \url{https://github.com/ababaian/LIONS/blob/master/Dockerfile}.
 \vspace{2em}
 
 Users with experience of the linux commandline may wish to download the package from github and run it directly without using Docker, the commands will be the same as those described below for users of the docker container. In this case, users will need to ensure the following software is installed on their systems: 
@@ -88,7 +89,10 @@ Users with experience of the linux commandline may wish to download the package 
 
 once the dependencies are in place, it is simply a question of:
 \begin{enumerate}
-\item Download LIONS core files from github
+\item Download LIONS core files from github:  
+\begin{bash}
+git clone git@github.com:ababaian/LIONS.git
+\end{bash}
 \item In ./LIONS/resources copy 'example' folder to '\arrows{genomeName}' folder
 
 \item Populate the resource files:
@@ -100,7 +104,7 @@ once the dependencies are in place, it is simply a question of:
 \item Set up the project in parameter.ctrl:
 \begin{enumerate}
 \item Give your project a name and fill out all the parameters as you see fit.
-\item In the software list, refer LIONS to the paths for each software on your system. If it's in \$BIN/ already then you can simply type the command; LIONS will create links in it's own folder structure to the software designated in the software list.
+\item In the software list, refer LIONS to the paths for each software on your system. If it's in \$BIN already then you can simply type the command; LIONS will create links in it's own folder structure to the software designated in the software list.
 \end{enumerate}
 \end{enumerate}
 
@@ -109,10 +113,13 @@ once the dependencies are in place, it is simply a question of:
 \label{lions_run}
 
 Once the container has been built, lions can be run inside an interactive docker container
+which can be started using the following command:
 
 \begin{bash}
 Docker run -ti lions
 \end{bash}
+
+This command will open a (bash) terminal to the container, in the LIONS base directory.
 
 The data directory can be made available inside the docker container by creating a mount point using the \texttt{-v} docker option. 
  
@@ -145,7 +152,144 @@ However, the user can run LIONS with with a specified parameter file as follows:
 
 \textit{\textbf{N.B.}} As the docker container will not carry across changes to the file structure, such as saved output files, it is advised that the mount point identified with the \texttt{-v} option is used to save output files and modified \texttt{parameter.ctrl} and \texttt{input.list} files, in addition to supplying input files.
 
+\newpage
 \subsection{Running LIONS using commandline options}
+
+Lions can be run andline th commandline options using the \bashinline{lions_cli.sh} script. Any options not provided on the commandline will be taken from the default parameter file.
+\begin{bash}
+./lions_opt.sh [options]
+\end{bash}
+
+Where options include:
+
+\begin{description}
+\item[-h | -{}-help] Show commandlines usage
+\item[-P | -{}-parameter] Define user parameter.ctrl file, see section \ref{controls}; \textit{\textbf{N.B.}} This option must be defined first in order that the other options are used correctly. 
+\item[-b | -{}-base <path>] Sets the LIONS base directory to be <path>, defaults to \$PWD.
+\item[-p | -{}-project <project-name>] Set name of the project, and therefore the output directory name in the projects folder, to <project\_name>
+\item[-i | -{}-inputlist <path/to/input.list>] Identifies the input file containing the sample names and input files for the analysis, see section \ref{controls}
+%	# <libPath> is one of
+%	#     A) Paired end bam file. '/home/libPath.bam'
+%	#     B) Sorted paired fastQ files. Comma seperated.
+%	#        '/home/lib.fq1,/home/lib.fq2'
+\item[-{}-callsettings \arrows{pre-set-name}] Tells LIONS which settings to use for the TE-initiation. Expected values include: 
+        \begin{description}
+        \item['oncoexapatation'] Detect high abundance TE isoforms
+        \item['transcriptomeANN'] Artifical Neural Network based classifier
+        \item['screenTE'] High sensitivity, low specificity detection
+        \item['driverTE'] TE-initiations as main drivers of gene-expression
+        \item['custom'] Use custom settings defined below
+        \end{description}
+	default setting is \textbf{'oncoexaptation'}.
+
+\item[-I | -{}-index <INDEX>] Sets the LIONS Resource index, see section \ref{resources}.
+\item[-{}-geneset <geneset.file>] Options identifies a ucsc formatted file containing a gene set to be
+  used in the analysis, see section \ref{resources}.
+\item[-{}-repeatmasker <repeat.file>] Identifies a ucsc formatted file containing the repeatMasker
+  annotation for the genome, see section \ref{resources}.
+
+\item[-{}-systemctrl <system.ctrl>] Identifies the control file used for passing system settings to LIONS, see section \ref{controls} 
+ 
+\item[-{}-bowtie <?>] ?Additional Bowtie options? .. or command?
+
+\item[-{}-alignbypass \#] binary switch to tell LIONS whether to run a new alignment on input files, or to use that provided in the input files. Default is `\texttt{1}'.
+       \begin{description}
+	\item[0] Calculate a new alignment for the input
+	\item[1] Do not re-calculate the alignment, simply create symbolic link to the bam file in <input.list> within the LIONS folder architecture
+       \end{description}
+
+\item[-{}-inread \#]  The Inner Read distance to be used by Bowtie during alignment (Bowtie's \texttt{-r} option). 
+
+\item[-{}-threads \#] The number of parallel threads to be used by Tophat/Bowtie and Cufflinks during the analysis. \textbf{\textit{N.B.}} presently it is necessary to ensure that the \texttt{-{}-threads} option is passed after the \texttt{-{}-systemctrl}, if both are used, in order to ensure the threads option is used correctly throughout the analysis. This will be corrected in future versions.
+
+% Cufflinks
+\item[-{}-denovo \#] Tell Cufflinks whether to carry out a \textit{de novo} or \textit{ab initio} assembly, LIONS defaults to \textit{de novo}.
+	\begin{description}
+        \item[0] \textit{Ab Initio}
+        \item[1] \textit{De Novo}
+        \end{description}
+
+\item[-{}-minfrags \#] Set Cufflink's `minimum fragments per transfrag', default is 10.
+\item[-{}-multiflag \#] Set Cufflink's `multi-mapping transfrag fragments' option, default is 0.75.
+\item[-{}-mintrim \#] Set Cufflink's `minimum coverage to attempt 3` trimming' option, default is 10.
+\item[-{}-trimdrop \#] Set Cufflink's `minimum Trim dropoff in fraction' option.
+\item[-{}-merger \#] Set Cufflink's `merge radius in bp', default is 50 bp.
+	
+
+%# RNAseqPipeline
+
+\item[-{}-quality <qual>] RNAseq Analysis Quality, defined by the string `q\#.F\#' where  q = quality cutoff; F bam flags to discard, \textit{e.g.} `q10.F772' and `q1.F1796'. 
+
+
+\end{description}
+\begin{comment}
+
+
+% ChimSort
+
+	# Sort Bypass: If a sorted .lions file is already present
+	# do you want to re-calcualate the 'initiations'?
+	# 0 = Re-calcualte 'initiation' using parameters set below
+	# 1 = Don't re-calculate 'initiation' if it exists
+	export SORTBYPASS='0'
+
+	# These parameters define what is defined as a 
+	# "TE-initiated transcript" and what is exonization/termination are
+	# note: See chimSort.R script to see how these are used for sorting
+        # in more detail
+
+if [ $CALLSETTINGS == 'custom' ]
+then
+	# Define call settings manually
+
+	# Number of Chimeric Reads Required (total)
+	export crtReads='3' # Variable: <Value below> or 1/20 RPM
+	
+	# Thread Ratio
+	export crtThread='10' # >=
+	export crtDownThread='10' # |number| required 
+
+	# RPKM cut-off to consider an exon 'expressed'
+	export crtRPKM='1' # >=
+
+	# Contribution of TE to total transcript expression (Exon / TE)
+	export crtContribution='0.1' # >=
+
+	# Expression immediatly upstream TE
+	export crtUpstreamCover='2' # >=
+
+	# Expression of exons upstream of involved exon
+	export crtUpstreamExonCover='1.5' # >=
+
+	# Splice Partner Classification
+	# Repeat Rank > 0 AND RepeatExonic
+	
+	# Final Custom Export String
+	export CRT=$( echo $crtReads $crtThread $crtDownThread $crtRPKM $crtContribution $crtUpstreamCover $crtUpstreamExonCover )
+
+
+
+# WEST LION Parameters-{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--
+# chimGroup.R
+	# These parameters define recurrent and specific
+	# 'TE initiated' events
+	# 
+	# The third column of <input.list> defines libraries as one of
+	# 1: Control / Normal
+	# 2: Experimental / Cancer
+	# 3: Other / unused
+
+	# Recurrent Cutoff
+	# Must be present in at least this many Group 2 libraries
+	export cgGroupRecurrence='1'
+
+	# Specificity Cutoff
+	# Must be absent in at least this many Group 1 libraires
+	export cgSpecificity='1'
+
+	# chimGroup command string
+	export CG=$(echo $cgGroupRecurrence $cgSpecificity)
+\end{comment}
 
 \clearpage
 \section{LIONS File Architecture}
@@ -159,11 +303,12 @@ However, the user can run LIONS with with a specified parameter file as follows:
 \begin{description}
 \item[./lions.sh \arrows{parameter.ctrl}]
     The master script from which the entire pipeline is ran
-    The script reads and procceses all files in input.list
+    The script reads and processes all files in input.list
     and all parameters can be controlled from parameter.ctrl
 \end{description}
 
 \subsection{./controls}
+\label{controls}
   Control Files: This folder contains project and system-specific
   parameters for running LIONS. There are three main files which
   need to be set-up, LIONS run parameters, system parameters and
@@ -181,9 +326,19 @@ However, the user can run LIONS with with a specified parameter file as follows:
     System Name, number of CPU cores etc...
 
 \item[./controls/input.list]
-    A three column tab-delimited file defining: \newline
-    \arrows{Library\_Name}\hspace{2em}\arrows{Library\_Path\_on\_system}\hspace{2em}\arrows{Biological\_Grouping}
-    Group Naming Convention: 1 = control 2 = experimental 3 = other
+    A three column tab-delimited file defining:
+
+    \arrows{Library\_Name}\hspace{2em}\arrows{LibPath}\hspace{2em}\arrows{Grouping}
+
+where \texttt{Grouping} is one of:
+\begin{center}
+    \begin{description}
+    \item[1] control
+    \item[2] experimental
+    \item[3] other
+    \end{description}
+\end{center}
+ .. and \texttt{<libPath>} is either a paired end bam file, \textit{e.g.} `/home/libPath.bam', or a pair of sorted fastQ files (as a comma seperated list), \textit{e.g.} `/home/lib.fq1,/home/lib.fq2'.
 \end{description}
     
 \subsection{./bin}
@@ -262,6 +417,7 @@ However, the user can run LIONS with with a specified parameter file as follows:
 \end{description}
 
   \subsection{./resources}
+  \label{resources}
   Input files containg resource information needed for LIONS to run the analysis. The geneset and RepeatMasker files should be set in the \texttt{parameter.ctrl} file.
   
 \begin{description}
@@ -337,7 +493,7 @@ complete or redownload.
 \end{description}
 
 \subsection{eastLion Error Codes}
-%% eastLion Codes --------------------------------
+%% eastLion Codes -{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}-
 
 \begin{description}
 \item[Error 10] alignment not generated -
@@ -351,7 +507,7 @@ present after the script ran
 
 \subsection{westLion Error Codes}
 
-%% westLion Codes -----------------------------------
+%% westLion Codes -{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--{}--
 \begin{description}
 \item[Error 15] A lions file wasn't generated -
   In the run, one of the lions files wasn't generated which means there
@@ -524,7 +680,7 @@ A single screen session allows a user to simultaneously run multiple virtual ter
 
 Screen is able to split the terminal view vertically using \texttt{Ctrl-a |} or \texttt{Ctrl-a V}, depending on the implementation; \texttt{Ctrl-a S} can be used to split the window horizontally. Once split the user can switch between view regions using \texttt{Ctrl-a Tab}.
 
-\subsection{can't Remember!}
+%\subsection{can't Remember!}
  
 %\end{appendices}
 \end{document}
