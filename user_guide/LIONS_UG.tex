@@ -29,16 +29,9 @@
 \usepackage{pifont}
 \usepackage{comment}
 
-
-
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
 \title{\textit{LIONS} Manual}
-\author{Artem Babaian, Dr. Richard Thompson}
-=======
-\title{Lions User Guide}
 \subtitle{v.0.1}
-\author{Dr. Richard Thompson}
->>>>>>> 4e19a95cca4846ce447146a8397f798dabee0c62:user_guide/Lions_UG.tex
+\author{Artem Babaian, Dr. Richard Thompson}
 
 \newcommand{\arrows}[1]{\textless #1\textgreater}
 
@@ -82,14 +75,9 @@ cd \$LIONS/
 Docker build -t lions .
 \end{bash}
 
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
 You still will need to download the LIONS resource files. (See below)
 
-=======
-from the directory containing the Dockerfile, which can be downloaded from \url{https://github.com/ababaian/LIONS/blob/master/Dockerfile}.
->>>>>>> 4e19a95cca4846ce447146a8397f798dabee0c62:user_guide/Lions_UG.tex
 \vspace{2em}
-
 \subsection{LIONS Command Line}
 
 Users with experience of the linux commandline may wish to download the package from github and run it directly without using Docker. This is especially useful for cluster-computing.In this case ensure the following software is installed on your system: 
@@ -108,15 +96,12 @@ Users with experience of the linux commandline may wish to download the package 
 \subsection{Initializing LIONS Resources}
 
 \begin{enumerate}
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
-\item Initialize genomic resources for LIONS in./LIONS/resources copy 'example' folder to '\arrows{genomeName}' folder
-=======
-\item Download LIONS core files from github:  
+\item If you don't have LIONS downloaded already; clone it
 \begin{bash}
 git clone git@github.com:ababaian/LIONS.git
 \end{bash}
-\item In ./LIONS/resources copy 'example' folder to '\arrows{genomeName}' folder
->>>>>>> 4e19a95cca4846ce447146a8397f798dabee0c62:user_guide/Lions_UG.tex
+
+\item Initialize genomic resources for LIONS in./LIONS/resources copy 'example' folder to '\arrows{genomeName}' folder
 
 \item Populate the resource files:
 \begin{enumerate}
@@ -150,24 +135,25 @@ https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/rm_hg19.ucsc.zip
 \textit{(The UCSC files are downloaded from the UCSC Table Browser as the `all fields from selected table` output format)}
 \end{enumerate}
 
+
 \item Initialize the project parameters in parameter.ctrl:
 \begin{enumerate}
 \item Give your project a name and fill out all the parameters
  software designated in the software list.
 \end{enumerate}
 
-\item Initialize the system parameters in <systemName>.sysctrl:
-\begin{enumerate}
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
+
 \item This file contains all the \textit{system-specific} parameters for LIONS to run on your computer. Go through this file and ensure the parameters make sense and the software pointers are compatible.
-=======
+\begin{enumerate}
 \item Give your project a name and fill out all the parameters as you see fit.
 \item In the software list, refer LIONS to the paths for each software on your system. If it's in \$BIN already then you can simply type the command; LIONS will create links in it's own folder structure to the software designated in the software list.
->>>>>>> 4e19a95cca4846ce447146a8397f798dabee0c62:user_guide/Lions_UG.tex
 \end{enumerate}
 \end{enumerate}
 
 \clearpage
+
+
+
 
 \section{Running LIONS}
 \label{lions_run}
@@ -179,15 +165,10 @@ which can be started using the following command:
 Docker run -ti lions
 \end{bash}
 
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
 It's a good idea to create a local LIONS directory (\$LIONS) outside of the container with all the resources and parameter files set-up. You can then mount the \$LIONS directory into the container using \textit{-v}.
 
-=======
 This command will open a (bash) terminal to the container, in the LIONS base directory.
-
-The data directory can be made available inside the docker container by creating a mount point using the \texttt{-v} docker option. 
  
->>>>>>> 4e19a95cca4846ce447146a8397f798dabee0c62:user_guide/Lions_UG.tex
 \begin{bash}
 cd \$LIONS
 Docker run -v \$LIONS:/LIONS -ti lions
@@ -751,8 +732,7 @@ Screen sessions can be detached using \texttt{Ctrl-a d} and reconnected using \b
 A single screen session allows a user to simultaneously run multiple virtual terminals; known as `windows'. New windows are created within a session using \texttt{Ctrl-a c}, whilst \texttt{Ctrl-a n} and \texttt{Ctrl-a p} allow the user to switch between windows within a session.
 
 Screen is able to split the terminal view vertically using \texttt{Ctrl-a |} or \texttt{Ctrl-a V}, depending on the implementation; \texttt{Ctrl-a S} can be used to split the window horizontally. Once split the user can switch between view regions using \texttt{Ctrl-a Tab}.
-<<<<<<< HEAD:user_guide/LIONS_UG.tex
-=======
+
 
 %\end{appendices}
 \end{document}
