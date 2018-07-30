@@ -6,6 +6,9 @@ FROM centos:7
 RUN yum -y install yum-utils make wget xz-devel unzip epel-release gcc-gfortran libXt-devel libcurl-devel vim less 
 RUN yum-builddep -y python
 
+# Install pnglib for wigToBigWig to run
+RUN yum install libpng12.x86_64 libpng12-devel.x86_64
+
 # Install Python 3 and pysam
 RUN wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz && \
     tar xf Python-3.5.0.tgz && \
@@ -57,7 +60,6 @@ RUN wget https://excellmedia.dl.sourceforge.net/project/samtools/samtools/0.1.18
 
 RUN yum-builddep -y R
 
-
 RUN wget https://cloud.r-project.org/src/base/R-3/R-3.5.0.tar.gz && \
     tar -zxf R-3.5.0.tar.gz && \
     cd R-3.5.0 && \
@@ -84,7 +86,6 @@ RUN wget http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks
 # Get LIONS
 RUN wget https://github.com/ababaian/LIONS/archive/master.zip && \
     unzip master.zip
-	mv /LIONS-master /LIONS
-#git clone https://github.com/mmkarimi1/RE_pipeline.git
-
-WORKDIR /LIONS
+	mv /LIONS-master /LIONS-docker
+    
+WORKDIR /LIONS-docker
