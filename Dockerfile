@@ -85,7 +85,7 @@ RUN wget http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks
 
 # Get LIONS
 RUN wget https://github.com/ababaian/LIONS/archive/master.zip && \
-    unzip master.zip
-	mv /LIONS-master /LIONS-docker
+    unzip master.zip && \
+    mv /LIONS-master /LIONS-docker
     
 WORKDIR /LIONS-docker
