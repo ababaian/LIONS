@@ -7,7 +7,7 @@ RUN yum -y install yum-utils make wget xz-devel unzip epel-release gcc-gfortran 
 RUN yum-builddep -y python
 
 # Install pnglib for wigToBigWig to run
-RUN yum install libpng12.x86_64 libpng12-devel.x86_64
+RUN yum -y install libpng12.x86_64 libpng12-devel.x86_64
 
 # Install Python 3 and pysam
 RUN wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz && \
