@@ -218,9 +218,9 @@ Where options include:
 \begin{description}
 \item[-h | -{}-help] Show commandlines usage
 \item[-P | -{}-parameter] Define user parameter.ctrl file, see section \ref{controls}; \textit{\textbf{N.B.}} This option must be defined first in order that the other options are used correctly. 
-\item[-b | -{}-base <path>] Sets the LIONS base directory to be <path>, defaults to \$PWD.
-\item[-p | -{}-project <project-name>] Set name of the project, and therefore the output directory name in the projects folder, to <project\_name>
-\item[-i | -{}-inputlist <path/to/input.list>] Identifies the input file containing the sample names and input files for the analysis, see section \ref{controls}
+\item[-b | -{}-base \arrows{path}] Sets the LIONS base directory to be <path>, defaults to \$PWD.
+\item[-p | -{}-project \arrows{project-name}] Set name of the project, and therefore the output directory name in the projects folder, to <project\_name>
+\item[-i | -{}-inputlist \arrows{path/to/input.list}] Identifies the input file containing the sample names and input files for the analysis, see section \ref{controls}
 %	# <libPath> is one of
 %	#     A) Paired end bam file. '/home/libPath.bam'
 %	#     B) Sorted paired fastQ files. Comma seperated.
@@ -235,20 +235,20 @@ Where options include:
         \end{description}
 	default setting is \textbf{'oncoexaptation'}.
 
-\item[-I | -{}-index <INDEX>] Sets the LIONS Resource index, see section \ref{resources}.
-\item[-{}-geneset <geneset.file>] Options identifies a ucsc formatted file containing a gene set to be
+\item[-I | -{}-index \arrows{INDEX}] Sets the LIONS Resource index, see section \ref{resources}.
+\item[-{}-geneset \arrows{geneset.file}] Options identifies a ucsc formatted file containing a gene set to be
   used in the analysis, see section \ref{resources}.
-\item[-{}-repeatmasker <repeat.file>] Identifies a ucsc formatted file containing the repeatMasker
+\item[-{}-repeatmasker \arrows{repeat.file}] Identifies a ucsc formatted file containing the repeatMasker
   annotation for the genome, see section \ref{resources}.
 
-\item[-{}-systemctrl <system.ctrl>] Identifies the control file used for passing system settings to LIONS, see section \ref{controls} 
+\item[-{}-systemctrl \arrows{system.ctrl}] Identifies the control file used for passing system settings to LIONS, see section \ref{controls} 
  
-\item[-{}-bowtie <?>] ?Additional Bowtie options? .. or command?
+\item[-{}-bowtie \arrows{?}] ?Additional Bowtie options? .. or command?
 
 \item[-{}-alignbypass \#] binary switch to tell LIONS whether to run a new alignment on input files, or to use that provided in the input files. Default is `\texttt{1}'.
        \begin{description}
 	\item[0] Calculate a new alignment for the input
-	\item[1] Do not re-calculate the alignment, simply create symbolic link to the bam file in <input.list> within the LIONS folder architecture
+	\item[1] Do not re-calculate the alignment, simply create symbolic link to the bam file in \arrows{input.list} within the LIONS folder architecture
        \end{description}
 
 \item[-{}-inread \#]  The Inner Read distance to be used by Bowtie during alignment (Bowtie's \texttt{-r} option). 
@@ -271,7 +271,7 @@ Where options include:
 
 %# RNAseqPipeline
 
-\item[-{}-quality <qual>] RNAseq Analysis Quality, defined by the string `q\#.F\#' where  q = quality cutoff; F bam flags to discard, \textit{e.g.} `q10.F772' and `q1.F1796'. 
+\item[-{}-quality \arrows{qual}] RNAseq Analysis Quality, defined by the string `q\#.F\#' where  q = quality cutoff; F bam flags to discard, \textit{e.g.} `q10.F772' and `q1.F1796'. 
 
 
 \end{description}
