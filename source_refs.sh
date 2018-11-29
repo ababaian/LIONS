@@ -78,10 +78,12 @@ then
   cd ../annotation
   echo "Downloading RefGene resource: refseq_hg38.ucsc.gz"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg38/refseq_hg38.ucsc.gz
+  gunzip -v refseq_hg38.ucsc.gz
   # Repeat Masker
   cd ../repeat
   echo "Downloading Repeat Masker resource: rm_hg38.ucsc.gz"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg38/rm_hg38.ucsc.gz
+  gunzip -v rm_hg38.ucsc.gz
   echo "hg38 successfully downloaded"
 
 elif [ $ref == "hg19" ]
@@ -94,12 +96,16 @@ then
   $cmd http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
   # Gene Annotation (RefSeq)
   cd ../annotation
-  echo "Downloading RefGene resource: refseq_hg19.ucsc.gz"
+  echo "Downloading RefGene resource: refseq_hg19.ucsc"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/refSeq_hg19.ucsc.zip
+  unzip refSeq_hg19.ucsc.zip
+  rm -v refSeq_hg19.ucsc.zip
   # Repeat Masker
   cd ../repeat
-  echo "Downloading Repeat Masker resource: rm_hg19.ucsc.gz"
+  echo "Downloading Repeat Masker resource: rm_hg19.ucsc"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/rm_hg19.ucsc.zip
+  unzip rm_hg19.ucsc.zip
+  rm -v rm_hg19.ucsc.zip
   echo "hg19 successfully downloaded"
 
 else
