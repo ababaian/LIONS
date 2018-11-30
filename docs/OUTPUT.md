@@ -1,142 +1,91 @@
 # LIONS output definitions
 
-## Ouptut File-types
-LIONS produces several outputs from different stages of the analysis apart from
-the standard outputs one would expect (.bam / .gtf).
+## Output File-types
+LIONS produces several outputs from different stages of the analysis apart from the standard outputs one would expect (.bam / .gtf).
 
-`<library>.lcsv` / `.pc.lcsv`
-	These are LIONS CSV files; that is the raw calculations for all major
-	numeric operations.
-	This includes ALL TE-exon interactions types (Initiation, Exonization and
-	Termination). As such there are usually hundreds of thousands of TEs which
-	have read fragments joining them to some assembled exon.
+`<library>.lcsv` / `.pc.lcsv` These are LIONS CSV files; that is the raw calculations for all major numeric operations. This includes ALL TE-exon interactions types (Initiation, Exonization and Termination). As such there are usually hundreds of thousands of TEs which have read fragments joining them to some assembled exon.
 
-	The `.pc.` pre-suffix means the data has been intersected to the input
-	set of protein coding genes.
+ The `.pc.` pre-suffix means the data has been intersected to the input set of protein coding genes.
+ Use this file for re-calculating "TE-Initiations" with new parameters.
 
-	Use this file for re-calculating "TE-Initiations" with new parameters.
+`<library>.lion` This is the filtered set of TE-exon interactions which have been classified as "TE-Initiations" or TE transcription start sites. This is per-library input.
 
-`<library>.lion`
-	This is the filtered set of TE-exon interactions which have been classified
-	as "TE-Initiations" or TE transcription start sites. This is per-library
-	input.
+`<project>.lions` /  A merged file of several `.lion` files combining biological groups defined in the `input.list`. A good example of this is merging 10 cancer libraries and 10 normal libraries and outputting only those TE-initiations which are in at least 20% of Cancer and no Normal libraries. These parameters can be changed in the `parameter.ctrl` input.
 
-`<project>.lions` / 
-	A merged file of several `.lion` files combining biological groups defined
-	in the `input.list`. A good example of this is merging 10 cancer libraries
-	and 10 normal libraries and outputing only those TE-initiations which are
-	in at least 20% of Cancer and no Normal libraries. These parameters can be
-	changed in the `paramter.ctrl` input.
+`<project>.rslions`	 The `rs` is for Recurrent and Specific TE-initiations only. That is if you compare the set of libraries 1 (Normal) vs set 2 (Cancer), this contains only those TE-initiations which occur multiple times in Cancer (recurrant) and do not occur in Normal (specific). As defined by `$cgGroupRecurrence` and `$cgSpecificity` in the `parameter.ctrl` file.
 
-`<project>.rslions`	
-	The `rs` is for Recurrent and Specific TE-initiations only. That is if you
-	compare the set of libraries 1 (Normal) vs set 2 (Cancer), this contains only
-	those TE-initiations which occur multiple times in Cancer (recurrant) and do
-	not occur in Normal (specific). As defined by `$cgGroupRecurrence` and
-	`$cgSpecificity` in the `paramter.ctrl` file.
-
-`<project>.inv.rslions`	
-	The `.inv.` pre-suffix is simply the **inverse** of the `.rslion` file. So
-	instead of "Cancer vs. Normal", "Normal vs. Cancer". A neccesary control if
-	one makes any conclusions based on enrichment/depletion.
+`<project>.inv.rslions`	The `.inv.` pre-suffix is simply the **inverse** of the `.rslion` file. So instead of "Cancer vs. Normal", "Normal vs. Cancer". A necessary control if one makes any conclusions based on enrichment/depletion.
 
 
 ## Output Columns
+For a simplified output see: `~/LIONS/scripts/lions2bed.sh` conversion script.
 
-### `.lions`
-Most columns should be self-explanatory, some are not.
+### `.lion` & `.lions`
+Descriptions of each column in the `.lion(s)` output format. This format contains many data fields which can be used for downstream analysis. 
 
-transcriptID: Unique identifier for the transcript (isoform). Usually taken
-	from the assembly/reference transcriptome
+1. *transcriptID*: Unique identifier for the transcript (transfrag) of origin. Taken from the assembly or reference transcriptome
 
-exonRankInTranscript: For each TE-exon interaction combination (row) which exon
-	in the 'transcriptID' is this row referring to
+2. *exonRankInTranscript*: The exon # of the *transcriptID* for which this row (unique TE-Exon interaction) is referring
 
-repeatName: The <repeat_name>:<repeat_class>:<repeat_family> taken from input
-	set
+3. *repeatName:* The <repeat_name>:<repeat_class>:<repeat_family> taken from input set of TEs (RepeatMasker UCSC)
 
-coordinates: Useful coordinates for visualizing the interaction. It starts/ends
-	in the exon and repeat so when opening in a visualization tool you can see
-	the reads spanning this area.
+4. *coordinates:* Coordinates for visualizing the TE-Exon interaction. These coordinates connect the transcript-exon and TE for which this row refers
 
-ER_Interaction: The type of relative intersection in the genome between the exon
-	and the repeat. Definitions are relative to the exon. Can be "Up", "UpEdge",
-	"EInside", "RInside", "Down", "DownEdge".
+5. *ER_Interaction:* The type of relative intersection in the genome between the exon and the TE, defined relative to the exon. Can be "Up", "UpEdge", "EInside", "RInside", "Down", "DownEdge"
 
-IsExonic: ??
+6. *IsExonic:* <Yes/No> Does the TE overlap with a known exon?
 
-ExonsOverlappingWithRepeat: A list of <transcriptID:exonRank> which overlap
-	the repeat.
+7. *ExonsOverlappingWithRepeat:* A list of <transcriptID:exonRank> which overlap the TE
 
-ER / DR / DE / DD / Total: A count of the number of TE-Exon sequence fragments
-	which join this rows TE and Exon. ER means that one end overlaps the Exon
-	and one end overlaps the Repeat exclusively, DD means that both ends of the
-	fragment overlap both (dual) exon and repeat ...
+8. *ER / DR / DE / DD / Total:* A count of the number of TE-Exon read fragments joining this TE and Exon. E(xon), R(epeat) and D(ual) relate to how each of the two paired-end reads of a single fragment intersect the transcript-exon, TE or both, respectively
 
-Chromosome / EStart / EEnd / EStrand: Start, end and strand of the exon
+13. *Chromosome / EStart / EEnd / EStrand:* Start, end and strand of the transcript- exon
 
-RStart / REnd / RStrand: Start, end and strand of the repeat
+16. *RStart / REnd / RStrand:* Start, end and strand of the repeat/TE
 
-RepeatRank: Relative exon/intron position of the repeat to the contig
+20. *RepeatRank:* The relative exon/intron position of the repeat with respect to transcript-exon. -1 means the TE is upstream of the first exon. If <IsExonic> is `No` and the RepeatRank is 5, then the TE is in the fifth intron of the transcript and does not intersect exon 5
 
-UpExonStart / UpExonEnd: Coordinates used for calculating expression of
-	genome immediatly adjacent an exon boundary. Useful for quantifying read-
-	through or spurious transcriptional events.
+21. *UpExonStart / UpExonEnd:* Coordinates of the most immediate upstream exon of the transcript. If exonRankInTranscript = 8, then this is the coordinates of for the 7th exon in that transcript. If exonRank = 1, then it returns exon 1 coordinates
 
-UpThread: The number of read 'threads' going upstream of the exon.
-	See Manuscript for a figure explaining this.
+23. *UpThread / DownThread:* The number of read 'threads' going upstream of the exon. See User Manual {ref} for a figure explaining this.
 
-DownThread: The number of read 'threads' going downstream of the exon.
-	See Manuscript for a figure explaining this.
+25. *ExonInGene:* Deprecated
 
-ExonRPKM: RPKM calculation for this exon
+26. *ExonRPKM:* RPKM calculation for the transcript-exon only (not the entire transcript)
 
-ExonMax: The maximum coverage count reached within the exon boundaries. Often
-	more reliable measure of expression then RPKM for small exons.
+27. *ExonMax:* The maximum coverage count reached within the exon boundaries. Often more reliable measure of expression then RPKM for small exons.
 
-UpExonRPKM / UpExonMax: The expression of the exon immediatly upstream of the
-	one this row is referring to. (i.e. Exon 1 expression if the row refers
-	to Exon 2). Useful for quantifying the relative increase in expression
-	when a TE is acting as an alternative promoter into a downstream exon.
+28. *UpExonRPKM / UpExonMax:* The expression of the exon immediately upstream of the one this row is referring to. (i.e. Exon 1 expression if the row refers to Exon 2). Useful for quantifying the relative increase in expression when a TE is acting as an alternative promoter into a downstream exon.
 
-RepeatRPKM / RepeatMaxCoverage:	Expression level within repeat boundaries.
+30. *RepeatRPKM / RepeatMaxCoverage:* Expression within TE boundaries.
 
-UpstreamRepeatRPKM / UpstreamRepeatMaxCoverage: The expression adjacent to the
-	repeat, a test for background expression levels.
+32. *UpstreamRepeatRPKM / UpstreamRepeatMaxCoverage:* The level of expression adjacent to the TE in the genome, a measure of background expression or spurious transcription at this locus
 
-RefID: When intersecting to a reference gene set, the gene symbol of any genes
-	which intersect the area between the Exon-Repeat coordinates.
+34. *RefID / RefStrand :* The gene symbol and strand for any known genes which intersect the area between the TE and the transcript-exon coordinates. Taken from the input reference gene set. Under the standard pipeline, this is restricted to protein-coding genes.
 
-RefStrand: Strand of the reference genes defined above
+36. *assXref:* The strand-relationship transcript-exon and the reference gene. Can be sense (s), anti-sense (as), intergenic (i), complex (c) or unknown (u). Complex often refers to cases where multiple genes are present.
 
-assXref: The strand-relationship between the reference gene and the contig exon
-	This accounts for anti-sense long non-coding RNA (as), or transcripts
-	which run anti-sense to the reference gene. (s) is sense and (c) means
-	complex, often some combination of multiple genes. (u) means it could not
-	be determined.
+37. *Contribution:* An estimate of the promoter contribution of this TE-initiation to the expression of gene in total. Calculated as ExonMax/UpExonMax.
 
-Contribution: An estimate of the promoter contribution of this Repeat TSS to
-	the expression of gene in total. Calculated with ExonMax and UpExonMax.
+38. *UpCov:* Ratio of the coverage adjacent to the repeat and the repeat itself. Calculated as RepeatMax / UpstreamRepeatMax.
 
-UpCov: Ratio of the coverage adjacent to an exon and the exon expression
+39. *UpExonRatio:* Ratio of the expression of the exon and its upstream exon.
 
-UpExonRatio: Ratio of hte expression of the exon and it's upstream exon
+40. *ThreadRatio:* DownThread / UpThread. Set to [10] if dividing by zero.
 
-ThreadRatio: DownThread / UpThread. Set to [10] if dividing by zero.
+41. *RepeatID:* A unique Identifer for each Repeat in the genome (left-most coordinate). Can repeat and thus be used for determining one repeat inititating a trancsript in different assemblies.
 
-RepeatID: A unique Identifer for each Repeat in the genome (left-most
-	coordinate). Can repeat and thus be used for determining one repeat
-	inititating a trancsript in different assemblies.
+42. *LIBRARY:* Library from which this repeat-exon interaction was calculated from.
 
-LIBRARY: Library from which this repeat-exon interaction was calculated from.
+### `.rslions` & `.inv.rs.lions`
+The `recurrant` and `specific` TE-initiations from the biological grouping of libraries
+as defined in `input.list` (Set 2 vs. Set 1). This is a collapsed table of `.lions` 
+in which common TE-initiation events are collapsed into a single entry.
 
-### `.rslions`
+The `inv.rs.lions` file is the equivalent inverse analysis (Set 1 vs. Set 2).
 
-Normal_occ: Number of times this TE-initiation was found in the "normal" set of
-	libraries. (Usually set 1)
+11. *Normal_occ:* Number of times this TE-initiation was found in the "normal" set of libraries (Set #1)
 
-Cancer_occ: Number of times this TE-initiation was found in the "cancer" set of
-	libraries. (Usually set 2)
+12. *Cancer_occ:* Number of times this TE-initiation was found in the "cancer" set of libraries (Set #2)
 
-Library: A semi-colon seperated list of the LIBRARY identifiers in which this
-	TE-initiation was found in.
+13. *Library:* A semi-colon seperated list of the LIBRARY identifiers in which this TE-initiation was found in.
