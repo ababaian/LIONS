@@ -18,7 +18,7 @@ LIONS produces several outputs from different stages of the analysis apart from 
 
 
 ## Output Columns
-For a simplified output see: `~/LIONS/scripts/lions2bed.sh` conversion script.
+For a simplified output see: `~/LIONS/scripts/lion2bed.sh` conversion script.
 
 ### `.lion` & `.lions`
 Descriptions of each column in the `.lion(s)` output format. This format contains many data fields which can be used for downstream analysis. 
