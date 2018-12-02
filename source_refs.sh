@@ -74,6 +74,7 @@ then
   # Genome
   echo "Downloading Reference: hg38.fa.gz"
   $cmd http://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
+  gunzip -v hg38.fa.gz
   # Gene Annotation (RefSeq)
   cd ../annotation
   echo "Downloading RefGene resource: refseq_hg38.ucsc.gz"
@@ -94,7 +95,11 @@ then
   # Genome
   echo "Downloading Reference: hg19.2bit"
   $cmd http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit
-  # Gene Annotation (RefSeq)
+  $cmd http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+  chmod 755 twoBitToFa
+  ./twoBitToFa hg19.2bit hg19.fa
+  rm -v hg19.2bit twoBitToFa
+# Gene Annotation (RefSeq)
   cd ../annotation
   echo "Downloading RefGene resource: refseq_hg19.ucsc"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/refSeq_hg19.ucsc.zip
