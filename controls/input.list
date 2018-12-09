@@ -1,2 +1,2 @@
-kmh2	/home/artem/tmp/kmh1.bam	1
-kmh3	/home/artem/tmp/kmh1.bam	2
+gm12878	/LIONS-data/GM12878.rep1.R1.fastq.gz,/LIONS-data/GM12878.rep1.R2.fastq.gz	1
+k562	/LIONS-data/K562.rep1.R1.fastq.gz,/LIONS-data/K562.rep1.R2.fastq.gz	2

@@ -5,8 +5,8 @@
 # LIONS analysis pipeline - commandline arguments
 # ===================================================================
 #
-# To download known (currently hg19 or hg38) references and associated 
-# resources for the appropriate online repositories into directoryies 
+# To download known (currently hg19 or hg38) references and associated
+# resources for the appropriate online repositories into directoryies
 # containing the required sub-directory structure
 #
 # Details can be found in README
@@ -51,7 +51,7 @@ ref=$1
 cmd=""
 
 if [ wgt ]
-then 
+then
   cmd="$wgt"
 elif [ crl ]
 then
@@ -67,7 +67,7 @@ fi
 
 
 if [ $ref == "hg38" ]
-then 
+then
   # genomeName = hg38 ========================
   mkdir -p hg38/{genome,annotation,repeat}
   cd hg38/genome
@@ -77,7 +77,7 @@ then
   gunzip -v hg38.fa.gz
   # Gene Annotation (RefSeq)
   cd ../annotation
-  echo "Downloading RefGene resource: refseq_hg38.ucsc.gz"
+    echo "Downloading RefGene resource: refseq_hg38.ucsc.gz"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg38/refseq_hg38.ucsc.gz
   gunzip -v refseq_hg38.ucsc.gz
   # Repeat Masker
@@ -88,7 +88,7 @@ then
   echo "hg38 successfully downloaded"
 
 elif [ $ref == "hg19" ]
-then 
+then
   # genomeName = hg19 ========================
   mkdir -p hg19/{genome,annotation,repeat}
   cd hg19/genome
@@ -98,19 +98,23 @@ then
   $cmd http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
   chmod 755 twoBitToFa
   ./twoBitToFa hg19.2bit hg19.fa
-  rm -v hg19.2bit twoBitToFa
+  if [ -e hg19.fa ]
+  then
+    rm -v hg19.2bit twoBitToFa
+  else
+    echo "\nPlease run 'twoBitToFa hg19.2bit hg19.fa' manually to convert hg19 for LIONS\n"
+  fi  
+
 # Gene Annotation (RefSeq)
   cd ../annotation
   echo "Downloading RefGene resource: refseq_hg19.ucsc"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/refSeq_hg19.ucsc.zip
-  unzip refSeq_hg19.ucsc.zip
-  rm -v refSeq_hg19.ucsc.zip
+  unzip refSeq_hg19.ucsc.zip && rm -v refSeq_hg19.ucsc.zip
   # Repeat Masker
   cd ../repeat
   echo "Downloading Repeat Masker resource: rm_hg19.ucsc"
   $cmd https://s3-us-west-2.amazonaws.com/lionproject/resources/hg19/rm_hg19.ucsc.zip
-  unzip rm_hg19.ucsc.zip
-  rm -v rm_hg19.ucsc.zip
+  unzip rm_hg19.ucsc.zip && rm -v rm_hg19.ucsc.zip
   echo "hg19 successfully downloaded"
 
 else
