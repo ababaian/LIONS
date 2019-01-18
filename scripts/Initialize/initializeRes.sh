@@ -34,6 +34,9 @@
 	bt_chr="$INDEX.chr.size"
 	bt_bwa="$INDEX.bwa.names"
 
+	# Long index names (if genome is >4 Gb)
+	bt_r2_long="$INDEX.rev.2.bt2l" #Bowtie 2 index files for genome
+
 # RESOURCES/repeat
 	repeatMasker="$REPEATMASKER" # RepeatMasker UCSC download	
 	rmSearch="ForChimericSearch_hg19" # LINE SINE LTR DNA Other elements only
@@ -75,10 +78,23 @@ then
 fi
 
 # -----  Check if bowtie2 index is present, if not generate it
-if [ ! -r $bt_1 ];
+if [ ! -r $bt_r2 ];
 then
-	echo ' Bowtie2 index file not found. Generating...'
-	$lBIN/bowtie-build $genomeFa $INDEX
+	# Check for a large index file
+	if [ -r $bt_2r_long ];
+		echo ' Bowtie2 index file not found. Generating...'
+		$lBIN/bowtie-build $genomeFa $INDEX
+	fi
+
+	# Check if long indices are used, switch to long index names
+	if [ ! -r $bt_r2_long ];
+		bt_1="$INDEX.1.bt2l"
+		bt_2="$INDEX.2.bt2l"
+		bt_3="$INDEX.3.bt2l"
+		bt_4="$INDEX.4.bt2l"
+		bt_r1="$INDEX.rev.1.bt2l"
+		bt_r2="$INDEX.rev.2.bt2l"
+	fi
 fi
 
 cd ..
