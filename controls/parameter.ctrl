@@ -23,11 +23,12 @@
         # - 'transcriptomeANN' : Artifical Neural Network based classifier
         # - 'screenTE'         : High sensitivity, low specificity detection
         # - 'driverTE'         : TE-initiations as main drivers of gene-expression
+        # - 'simuOptimal'      : Empirically derived optimal from simulation data (beta)
         # = 'custom'           : Use custom settings defined below
 
 # RESOURCES ----------------------------------------------
 
-	export INDEX='hg19r' # Genome resource set to use
+	export INDEX='hg19' # Genome resource set to use
 	#  Should be a ~/LIONS/resources/<INDEX>/ folder
 	#  See README file 'RESOURCE INITIALIZATION' to set up
 	#  the folder prior to running LIONS the first time
@@ -198,6 +199,13 @@ then
 	# ANN model to use (stored in ~/LIONS/resources/ANN
 	export ANNMODEL="$RESOURCES/ANN/ANN_Model_160919.Rdata"
 	
+elif [ $CALLSETTINGS == 'simuOptimal']
+then
+	# RNAseq Simulation based optima
+	# empirically derived for maximization of sensitivity
+	# and specificity. Based on simulated data, may be
+	# more noisey on real data.
+		export CRT=$( echo '1 2 10 2 0.1 2 1.5' )
 fi
 
 
