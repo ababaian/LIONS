@@ -165,7 +165,7 @@ do
 		if [ -s $fq1 ] && [ -s $fq2 ] # Both files exist/ aren't empty
 		then
 
-			if [[ ${fq1: -3} == “.gz" ]] 
+			if [[ ${fq1: -3} == ".gz" ]] 
 			then
 				# Link both fastq files as input.fq_1 and input.fq_2
 				ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
