@@ -97,7 +97,7 @@ fi
 
 echo "     ... eastLion.sh running"
 echo "     Library: $libName"
-echo "     Ouput Directory: $outDir"
+echo "     Output Directory: $outDir"
 echo "     Working Directory: $WORK"
 echo "     Alignment Bypass: $ALIGNBYPASS"
 echo ''
@@ -194,9 +194,9 @@ fi
 
 	if [ $fileSize -ge $minSize ] # bam file must be 1 Mb 
 	then
-		echo 'Alignment likley completed successfully!'
+		echo 'Alignment likely completed successfully!'
 	else
-		echo 'Alignment probably didnt work'
+		echo "Alignment probably didn't work"
 		echo ' ============= ERROR 10: Alignment Not Generated ============='
 
 	lionsSuccess='0'
@@ -254,7 +254,7 @@ fi # Alignment Bypass Flow Control Ends
 		rm -f unsorted.bam
 		
 	else
-		echo 'Alignment probably didnt work'
+		echo "Alignment probably didn't work"
 		echo ' ============= ERROR 10: Alignment Not Generated ============='
 
 		# Cluster migration upon failure
