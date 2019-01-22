@@ -82,12 +82,14 @@ if [ ! -r $bt_r2 ];
 then
 	# Check for a large index file
 	if [ -r $bt_2r_long ];
+	then
 		echo ' Bowtie2 index file not found. Generating...'
 		$lBIN/bowtie-build $genomeFa $INDEX
 	fi
 
 	# Check if long indices are used, switch to long index names
 	if [ ! -r $bt_r2_long ];
+	then
 		bt_1="$INDEX.1.bt2l"
 		bt_2="$INDEX.2.bt2l"
 		bt_3="$INDEX.3.bt2l"
