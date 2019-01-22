@@ -101,7 +101,12 @@ GroupAssign = function(Library){
   # Use sapply to work it
   
   Match = which(as.character(Library) == as.character(Groups[,1]))
-  Assign = as.numeric(Groups[Match,3])
+
+  if ( length(Match) == 0){
+    Assign = '0'
+  } else {
+    Assign = as.numeric(Groups[Match,3])
+  }
   
   return(Assign)
 }
