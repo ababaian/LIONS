@@ -164,9 +164,18 @@ do
 
 		if [ -s $fq1 ] && [ -s $fq2 ] # Both files exist/ aren't empty
 		then
-			# Link both fastq files as input.fq_1 and input.fq_2
-			ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
-			ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+
+			if [[ ${fq1: -3} == “.gz" ]] 
+			then
+				# Link both fastq files as input.fq_1 and input.fq_2
+				ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
+				ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+			else
+				# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
+				gzip -c $fq1 > $pDIR/$libName/temp.1.fq.gz
+				gzip -c $fq2 > $pDIR/$libName/temp.2.fq.gz
+			fi
+
 	
 		else
 			echo ' ERROR 7B: Input File Not Accesible (Fastq)'
