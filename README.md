@@ -2,7 +2,7 @@
 ## Detecting TE-initiated transcripts from paired-end RNAseq
 
 
-#### [LIONS Paper](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btz130/5355055?redirectedFrom=fulltext) [(on bioRxiv)](https://www.biorxiv.org/content/early/2017/06/13/149864)
+#### [LIONS Publication](https://doi.org/10.1093/bioinformatics/btz130) ( or [preprint](https://www.biorxiv.org/content/early/2017/06/13/149864))
 
  LIONS is a bioinformatic analysis pipeline which brings together a  few pieces of software and some home-brewed scripts to annotate a paired-end RNAseq library against a reference TE annotation set (such as Repeat Masker)
 
