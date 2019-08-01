@@ -128,64 +128,68 @@ do
 	# Extract row of entries from input list
 	rowN=$(sed -n "$nLib"p $INPUT_LIST)
 
-	# Library Name
-	libName=$(echo $rowN | cut -f1 -d' ')	
+        # test to ignore empty lines in $INPUT_LIST
+        if [[ ! -z "$rowN" ]]
+        then 
+		# Library Name
+		libName=$(echo $rowN | cut -f1 -d' ')	
 
-	# Bam File Path (or FastQ files)
-	bamPath=$(echo $rowN | cut -f2 -d' ') 
+		# Bam File Path (or FastQ files)
+		bamPath=$(echo $rowN | cut -f2 -d' ') 
 
-	# Make library directory in project folder
-	mkdir -p $pDIR/$libName
+		# Make library directory in project folder
+		mkdir -p $pDIR/$libName
 
-	# Check input files and link them to the project folder
-	if [[ $bamPath == *'.bam' ]]
-	then
-	# Input file is bam (standard)
-
-		if [ -s $bamPath ] #File is not empty
+		# Check input files and link them to the project folder
+		if [[ $bamPath == *'.bam' ]]
 		then
-		
-			# Link the bam file to the project folder
-			ln -fs $bamPath $pDIR/$libName/input.bam
-		else
-			# File is empty
-			echo ' ERROR 7A: Input Bam File is not readable / empty'
-			echo " file: $bamPath"
-			echo '  a) The input file (.bam or .fq_1 & .fq_2) isnt found'
-			echo '  b) If youre using FASTQ; the input name for the read pairs'
-			echo '    should be suffixed with _0'
-			exit 7
-		fi
+		# Input file is bam (standard)
 
-	else
-	# Input file should then be fastqs (comma seperated)
-		fq1=$(echo $bamPath | cut -f1 -d',' - )
-	 	fq2=$(echo $bamPath | cut -f2 -d',' - )
-
-		if [ -s $fq1 ] && [ -s $fq2 ] # Both files exist/ aren't empty
-		then
-
-			if [[ ${fq1: -3} == ".gz" ]] 
+			if [ -s $bamPath ] #File is not empty
 			then
-				# Link both fastq files as input.fq_1 and input.fq_2
-				ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
-				ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+			
+				# Link the bam file to the project folder
+				ln -fs $bamPath $pDIR/$libName/input.bam
 			else
-				# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
-				gzip -c $fq1 > $pDIR/$libName/temp.1.fq.gz
-				gzip -c $fq2 > $pDIR/$libName/temp.2.fq.gz
+				# File is empty
+				echo ' ERROR 7A: Input Bam File is not readable / empty'
+				echo " file: $bamPath"
+				echo '  a) The input file (.bam or .fq_1 & .fq_2) isnt found'
+				echo '  b) If youre using FASTQ; the input name for the read pairs'
+				echo '    should be suffixed with _0'
+				exit 7
 			fi
 
-	
 		else
-			echo ' ERROR 7B: Input File Not Accesible (Fastq)'
-			echo " files: $fq1 ; $fq2"
-			echo '  a) The non-bam input file (.fq_1 & .fq_2) isnt found'
-			echo '  b) If youre using FASTQ; make sure youre listing two'
-			echo '     files in the input.list file seperated by a comma'
-			exit 7
-		fi
-	fi	
+		# Input file should then be fastqs (comma seperated)
+			fq1=$(echo $bamPath | cut -f1 -d',' - )
+			fq2=$(echo $bamPath | cut -f2 -d',' - )
+
+			if [ -s $fq1 ] && [ -s $fq2 ] # Both files exist/ aren't empty
+			then
+
+				if [[ ${fq1: -3} == ".gz" ]] 
+				then
+					# Link both fastq files as input.fq_1 and input.fq_2
+					ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
+					ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+				else
+					# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
+					gzip -c $fq1 > $pDIR/$libName/temp.1.fq.gz
+					gzip -c $fq2 > $pDIR/$libName/temp.2.fq.gz
+				fi
+
+		
+			else
+				echo ' ERROR 7B: Input File Not Accesible (Fastq)'
+				echo " files: $fq1 ; $fq2"
+				echo '  a) The non-bam input file (.fq_1 & .fq_2) isnt found'
+				echo '  b) If youre using FASTQ; make sure youre listing two'
+				echo '     files in the input.list file seperated by a comma'
+				exit 7
+			fi
+		fi	
+        fi
 done
 
 # Initialize parameter folder  ******** NOT IMPLEMENTED YET *********
