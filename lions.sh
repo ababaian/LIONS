@@ -77,51 +77,56 @@ for nLib in $(seq $iterN)
 do
 	# Extract row of entries from input list
 	rowN=$(sed -n "$nLib"p $INPUT_LIST)
-	# Library Name
-	libName=$(echo $rowN | cut -f1 -d' ')
+        
+	# test to ignore empty lines in $INPUT_LIST
+        if [[ ! -z "$rowN" ]]
+        then 
+		# Library Name
+		libName=$(echo $rowN | cut -f1 -d' ')
 
-	echo " Iteration $nLib: $libName ------------------------------------------"
-	echo "      run: $QSUB eastLion.sh $libName"
+		echo " Iteration $nLib: $libName ------------------------------------------"
+		echo "      run: $QSUB eastLion.sh $libName"
 
-	if [ ! -e $pDIR/$libName/$libName.lions ]
-	then
-	# Lions output for this library doesn't exist
-	# so let's make it.
+		if [ ! -e $pDIR/$libName/$libName.lions ]
+		then
+		# Lions output for this library doesn't exist
+		# so let's make it.
 
-		if [ $CLUSTER == '1' ]
-		then # Cluster QSUB
-			$QSUB $SCRIPTS/eastLion.sh $libName
+			if [ $CLUSTER == '1' ]
+			then # Cluster QSUB
+				$QSUB $SCRIPTS/eastLion.sh $libName
 
-		else # Local (no) QSUB
-			$SCRIPTS/eastLion.sh $libName
+			else # Local (no) QSUB
+				$SCRIPTS/eastLion.sh $libName
+			fi
+
+		elif [ $SORTBYPASS = '0' ]
+		then
+		# Lions output already exists but
+		# East Lion bypass is set to false, re-calculate lions file
+		# so let's make it.
+
+			if [ $CLUSTER == '1' ]
+			then # Cluster QSUB
+				$QSUB $SCRIPTS/eastLion.sh $libName
+
+			else # Local (no) QSUB
+				$SCRIPTS/eastLion.sh $libName
+			fi
+
+		else
+		# East Lion file already exists and bypass is true (1)
+		# Skip the east lion
+
+			echo "   East Lions has previously been completed. "
+			lionSuccess='1'
+			echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
 		fi
 
-	elif [ $SORTBYPASS = '0' ]
-	then
-	# Lions output already exists but
-	# East Lion bypass is set to false, re-calculate lions file
-	# so let's make it.
-
-		if [ $CLUSTER == '1' ]
-		then # Cluster QSUB
-			$QSUB $SCRIPTS/eastLion.sh $libName
-
-		else # Local (no) QSUB
-			$SCRIPTS/eastLion.sh $libName
-		fi
-
-	else
-	# East Lion file already exists and bypass is true (1)
-	# Skip the east lion
-
-		echo "   East Lions has previously been completed. "
-		lionSuccess='1'
-		echo $libName $lionSuccess $(date) >> $pDIR/summitLog_$RUNID
+		echo " ... run complete -------------------------------------------"
+		echo ''
+		echo ''
 	fi
-
-	echo " ... run complete -------------------------------------------"
-	echo ''
-	echo ''
 done
 
 # Check that all libraries have completed
