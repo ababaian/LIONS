@@ -117,6 +117,8 @@ echo " Initializing $PROJECT Directory: $pDIR"
 	mkdir -p $pDIR # ./LIONS/projects/<projectName>
 	echo $INPUT_LIST $PARAMETER
 	mkdir -p $pDIR/logs/run$RUNID
+	awk -f $SCRIPTS/Initialize/input.list.awk  $INPUT_LIST > $pDIR/input.list
+	export INPUT_LIST="$pDIR/input.list" # <libName> <libPath> <group> csv file
 	cp $INPUT_LIST $pDIR/logs/run$RUNID/input.list
 	cp $PARAMETER $pDIR/logs/run$RUNID/parameter.ctrl
 
