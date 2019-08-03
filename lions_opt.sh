@@ -357,6 +357,7 @@ echo ' running initializeLIONS.sh'
 echo ' initialization completed successfully.'
 echo ''
 
+	export INPUT_LIST="$pDIR/input.list" # <libName> <libPath> <group> csv file
 
 # EAST LION =========================================================
 echo ''
