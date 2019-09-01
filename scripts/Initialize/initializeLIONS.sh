@@ -167,6 +167,23 @@ do
 			fq1=$(echo $bamPath | cut -f1 -d',' - )
 			fq2=$(echo $bamPath | cut -f2 -d',' - )
 
+			# check file type (uncompressed or compressed) in input.list matches available files
+			if [[ ${fq1: -3} == ".gz" ]] && [ -s ${fq1%.gz} ]
+			then
+				fq1=${fq1%.gz}
+			elif [[ ${fq1: -3} != ".gz" ]] && [ -s ${fq1}.gz ]
+			then
+				fq1=${fq1}.gz
+			fi 
+
+			if [[ ${fq2: -3} == ".gz" ]] && [ -s ${fq2%.gz} ]
+			then
+				fq2=${fq2%.gz}
+			elif [[ ${fq2: -3} != ".gz" ]] && [ -s ${fq2}.gz ]
+			then
+				fq2=${fq2}.gz
+			fi 
+ 
 			if [ -s $fq1 ] && [ -s $fq2 ] # Both files exist/ aren't empty
 			then
 
@@ -174,10 +191,17 @@ do
 				then
 					# Link both fastq files as input.fq_1 and input.fq_2
 					ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
-					ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
 				else
 					# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
 					gzip -c $fq1 > $pDIR/$libName/temp.1.fq.gz
+				fi
+
+				if [[ ${fq2: -3} == ".gz" ]] 
+				then
+					# Link both fastq files as input.fq_1 and input.fq_2
+					ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+				else
+					# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
 					gzip -c $fq2 > $pDIR/$libName/temp.2.fq.gz
 				fi
 

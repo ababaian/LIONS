@@ -85,7 +85,7 @@ def processReads(samfile_path, exonTrees, repeatTrees, chimericBedFile):
 			valid.append('X') # chrX
 			valid.append('Y') # chrY
 		
-			if (chr not in str(valid)):
+			if (chr not in str(valid)) :
 			# if read is not canonon chromosome skip
 				continue
 
