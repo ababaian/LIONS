@@ -7,19 +7,18 @@ BEGIN{
 
 { 
   s = $1; 
-  if (s in a){
+  if (s in b){
     t++
   } else {
     t=1
   }; 
-  $1 = $1"_"t; 
-  a[s][t] = $0; 
+  b[s] = t;
+  $1 = $1"_"b[s]; 
+  a[$1] = $0; 
 }; 
 
 END{
   for (i in a) {
-    for ( j in a[i]) {
-      print a[i][j]
-    }
+      print a[i]
   }
 };

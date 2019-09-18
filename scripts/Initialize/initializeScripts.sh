@@ -16,6 +16,7 @@
 	# initializeScripts.sh
 	# initializeBin.sh
 	# initializeRes.sh
+	# input.list.awk
 
 # eastLion.sh
 	# runTH2.sh
@@ -66,6 +67,7 @@ echo ''
 	FILE='Initialize/initializeScripts.sh'; eval $FCHECK_rs
 	FILE='Initialize/initializeBin.sh'; eval $FCHECK_rs
 	FILE='Initialize/initializeRes.sh'; eval $FCHECK_rs
+	FILE='Initialize/input.list.awk'; eval $FCHECK_rs
 
 # East Lion
 	FILE='eastLion.sh'; eval $FCHECK_rs

@@ -109,6 +109,7 @@ cd repeat
 # Check if the Repeat Masker annotation file defined in parameter.ctrl exists
 	FILE=$repeatMasker; eval $FCHECK_rs
 
+echo "\$repeatMasker: $repeatMasker"
 # Generate rmStats Statistics Data-frame for R-based analyses
 if [ ! -r 'rmStats.Rdata' ]
 then
