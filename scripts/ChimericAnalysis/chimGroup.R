@@ -45,6 +45,7 @@
 
     NonNormal = as.numeric(STDIN[5])
 
+
 # BEGIN SCRIPT LOOPING ===============================================
 # two iteration for loop to run
 # analysis of Group 1 v 2
@@ -275,6 +276,7 @@ Fishers.Matrix = function(X,Y){
   # Remove Duplicates
   Chimera = Chimera[IDdup,]
      
+
 # Group Chimera
   # Assign biological catagories to Chimera from Groups
 
@@ -366,14 +368,13 @@ while (Go == T){
   # Remove Duplicates
   ChimeraOutput = ChimeraOutput[IDdup,]
 
-# Clean Up
+# Clean Upmas.sou
 #  \    @ /    
 #   \ @  /
 #    ----
  rm( ChimFiltered, Count, AXR, Filter, Filter_Cancer, Filter_Normal,
       Go, ID, IDdup, Matches, RefID)
   gc()
-
 
 # Library Statistics ------------------------------------------------
 
@@ -382,7 +383,8 @@ while (Go == T){
 
 # Parse RMDB to RepeatID Vector
 # chrX:<start>
-  RMDB_id = paste( RMDB$genoName, RMDB$genoStart, sep=":")
+  RMDB_id <- unique( paste( RMDB$genoName, RMDB$genoStart, sep=":") )
+
 
 # Link Chimera Table Elements with their RMDB element
   Chimera$RMDB = unlist(lapply(Chimera$RepeatID,
@@ -405,7 +407,7 @@ while (Go == T){
 # Chimera Sense/Antisense Binary Model (presense absence) ----------
 # Protein Coding Genes and their interacting transcript orientation
 ChimProtIO = data.frame(Type = c('Sense','AntiS','Inter','Cmplx'))
-  
+
 for (LIB in as.character(Groups[,1])) {
   COL = colnames(ChimProtIO)
   Chimera.libary = Chimera[which(Chimera$LIBRARY == LIB),]
@@ -428,7 +430,6 @@ for (LIB in as.character(Groups[,1])) {
 # Chimera Presense/Absense Vector
 # Protein Coding Genes and their interacting transcript orientation
 if (RUN == 1){
-  
   #print(" Running standard analysis" )
 
   # Chimeric Identifiers

@@ -33,6 +33,11 @@ FCHECK_x='if [ -s $FILE -a -x $FILE ]; then echo "     $FILE found."; else echo 
 
 FILE='' # File to check
 
+# create links function
+lionlinkf () {
+  ln -fs $1 $2 || ln -f $1 $2 || cp -f $1 $2
+}
+
 # Resource Check
 echo ' ------ Run LIONS self-check procedures ------ '
 echo ''
@@ -151,7 +156,7 @@ do
 			then
 			
 				# Link the bam file to the project folder
-				ln -fs $bamPath $pDIR/$libName/input.bam
+				lionlinkf $bamPath $pDIR/$libName/input.bam
 			else
 				# File is empty
 				echo ' ERROR 7A: Input Bam File is not readable / empty'
@@ -190,7 +195,7 @@ do
 				if [[ ${fq1: -3} == ".gz" ]] 
 				then
 					# Link both fastq files as input.fq_1 and input.fq_2
-					ln -fs $fq1 $pDIR/$libName/temp.1.fq.gz
+					lionlinkf $fq1 $pDIR/$libName/temp.1.fq.gz
 				else
 					# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
 					gzip -c $fq1 > $pDIR/$libName/temp.1.fq.gz
@@ -199,7 +204,7 @@ do
 				if [[ ${fq2: -3} == ".gz" ]] 
 				then
 					# Link both fastq files as input.fq_1 and input.fq_2
-					ln -fs $fq2 $pDIR/$libName/temp.2.fq.gz
+					lionlinkf $fq2 $pDIR/$libName/temp.2.fq.gz
 				else
 					# gzip both uncompressed fastq files as temp.1.fq.gz and temp.2.fq.gz
 					gzip -c $fq2 > $pDIR/$libName/temp.2.fq.gz
