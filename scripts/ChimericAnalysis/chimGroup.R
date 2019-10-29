@@ -368,7 +368,7 @@ while (Go == T){
   # Remove Duplicates
   ChimeraOutput = ChimeraOutput[IDdup,]
 
-# Clean Upmas.sou
+# Clean Up
 #  \    @ /    
 #   \ @  /
 #    ----
