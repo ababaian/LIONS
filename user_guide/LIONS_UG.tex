@@ -113,7 +113,7 @@ git clone git@github.com:ababaian/LIONS.git
 
 \item Populate the resource files:
 \begin{enumerate}
-\item In ./LIONS/resources/\arrows{genomeName}/genome/ add a \arrows{genomeName}.fa genome sequence file
+\item In ./LIONS/resources/\arrows{genomeName}/genome/ add a \arrows{genomeName}.fa genome sequence file\footnote{2bit files can be converted to fa using twoBitToFa available from UCSC (\url{http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa}).}
 \item In ./LIONS/resources/\arrows{genomeName}/annotation/ add the ucsc annotation file
 \item In ./LIONS/resources/\arrows{genomeName}/repeat/ add the ucsc repeatMasker file
 
@@ -140,8 +140,8 @@ https://s3-us-west-2.amazonaws.com/lionproject/resources\
 
 # Repeat Masker
 https://s3-us-west-2.amazonaws.com/lionproject/resources\
-/hg19/rm_hg19.ucsc.zip	
-	
+/hg19/rm_hg19.ucsc.zip
+
 \end{bash}
 
 \textit{(The UCSC files are downloaded from the UCSC Table Browser as the `all fields from selected table` output format)}
@@ -403,7 +403,7 @@ where \texttt{Grouping} is one of:
     \item[3] other
     \end{description}
 \end{center}
- .. and \texttt{<libPath>} is either a paired end bam file, \textit{e.g.} `/home/libPath.bam', or a pair of sorted fastQ files (as a comma seperated list), \textit{e.g.} `/home/lib.fq1,/home/lib.fq2'.
+ .. and \texttt{<libPath>} is either a paired end bam file, \textit{e.g.} `/home/libPath.bam', or a pair of sorted fastQ files (as a comma seperated list), \textit{e.g.} `/home/lib.fq1,/home/lib.fq2'. Please note that each line should have a unique Library name.
 \end{description}
     
 \subsection{./bin}
